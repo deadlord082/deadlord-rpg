@@ -6,6 +6,15 @@ import { Tiles } from "@/game/data/tiles/tileSet"
 import { Entity } from "@/game/entities/Entity"
 import Image from "next/image"
 
+const TILE_SIZE = 64
+
+const VIEW_TILES_X = 17
+const VIEW_TILES_Y = 17
+
+const CAMERA_RADIUS_X = Math.floor(VIEW_TILES_X / 2)
+const CAMERA_RADIUS_Y = Math.floor(VIEW_TILES_Y / 2)
+
+
 export default function Page() {
   const [game, setGame] = useState<Game | null>(null)
   const [, forceUpdate] = useState(0) // world re-render
@@ -62,21 +71,54 @@ export default function Page() {
 
   const { currentMap, player } = game.state
 
+  const cameraX = Math.max(
+    0,
+    Math.min(
+      player.x - CAMERA_RADIUS_X,
+      currentMap.width - VIEW_TILES_X
+    )
+  )
+  
+  const cameraY = Math.max(
+    0,
+    Math.min(
+      player.y - CAMERA_RADIUS_Y,
+      currentMap.height - VIEW_TILES_Y
+    )
+  )
+  
+
   const renderEntities = (entities: Entity[]) => {
-    return entities.map((e) => (
-      <img
-        key={e.id}
-        src={e.image || "/assets/entities/player.png"}
-        style={{
-          position: "absolute",
-          width: 32,
-          height: 32,
-          left: e.x * 32,
-          top: e.y * 32,
-        }}
-      />
-    ))
+    return entities.map((e) => {
+      const screenX = e.x - cameraX
+      const screenY = e.y - cameraY
+  
+      // skip entities outside camera
+      if (
+        screenX < 0 ||
+        screenY < 0 ||
+        screenX >= VIEW_TILES_X ||
+        screenY >= VIEW_TILES_Y
+      ) {
+        return null
+      }
+  
+      return (
+        <img
+          key={e.id}
+          src={e.image || "/assets/entities/player.png"}
+          style={{
+            position: "absolute",
+            width: TILE_SIZE,
+            height: TILE_SIZE,
+            left: screenX * TILE_SIZE,
+            top: screenY * TILE_SIZE,
+          }}
+        />
+      )
+    })
   }
+  
 
   function advanceDialog() {
     if (!dialogState || !game) return
@@ -174,12 +216,14 @@ export default function Page() {
 
   return (
     <div
-      style={{
-        position: "relative",
-        width: currentMap.width * 32,
-        height: currentMap.height * 32,
-      }}
-    >
+  style={{
+    position: "relative",
+    width: "100vw",
+    height: "100vh",
+    overflow: "hidden",
+    background: "black",
+  }}
+>
       {/* WORLD LAYER */}
       <div
         style={{
@@ -188,21 +232,33 @@ export default function Page() {
           border: "2px solid black",
         }}
       >
-        {currentMap.tiles.map((row, y) =>
-          row.map((tileId, x) => {
+        {Array.from({ length: VIEW_TILES_Y }).map((_, screenY) =>
+          Array.from({ length: VIEW_TILES_X }).map((_, screenX) => {
+            const mapX = cameraX + screenX
+            const mapY = cameraY + screenY
+
+            const tileId = currentMap.tiles[mapY]?.[mapX]
+            if (tileId == null) return null
+
             const tile = Tiles[tileId]
+
             return (
               <Image
-                key={`${x}-${y}`}
+                key={`${mapX}-${mapY}`}
                 src={tile.image || "/assets/tiles/placeholder.png"}
                 alt={tile.name}
-                width={32}
-                height={32}
-                style={{ position: "absolute", left: x * 32, top: y * 32 }}
+                width={TILE_SIZE}
+                height={TILE_SIZE}
+                style={{
+                  position: "absolute",
+                  left: screenX * TILE_SIZE,
+                  top: screenY * TILE_SIZE,
+                }}
               />
             )
           })
         )}
+
         {renderEntities([...currentMap.entities, player])}
       </div>
 
