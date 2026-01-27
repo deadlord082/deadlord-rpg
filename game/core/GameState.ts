@@ -4,6 +4,7 @@ import { ChoiceEvent } from "../events/ChoiceEvent"
 import { FightEvent } from "../events/FightEvent"
 import { MerchantEvent } from "../events/MerchantEvent"
 import { GameEvent } from "../events/Event"
+import { DialogLine } from "../data/dialogs/DialogLine"
 
 export interface GameState {
   currentMap: GameMap
@@ -11,7 +12,7 @@ export interface GameState {
 
   ui: {
     dialog?: {
-      lines: string[]
+      lines: DialogLine[]
       index: number
     }
     choice?: ChoiceEvent

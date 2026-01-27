@@ -80,25 +80,96 @@ export default function Page() {
 
   function advanceDialog() {
     if (!dialogState || !game) return
-
+  
     const nextIndex = dialogState.index + 1
     if (nextIndex < dialogState.lines.length) {
       setDialogState({ ...dialogState, index: nextIndex })
       game.state.ui.dialog!.index = nextIndex
       return
     }
-
+  
     // dialog finished
     setDialogState(null)
     game.state.ui.dialog = undefined
     game.state.running = true
-
+  
     const next = game.state.eventQueue.shift()
     if (next) {
       import("@/game/events/EventRunner").then(({ runEvent }) => {
         runEvent(next, game.state)
       })
     }
+  }
+  
+  let dialogUI = null
+
+  if (game.state.ui.dialog) {
+    const currentLine =
+      game.state.ui.dialog.lines[game.state.ui.dialog.index]
+
+    const imageSize = 128
+    const boxHeight = 96
+    const side = currentLine.side ?? "left"
+
+    dialogUI = (
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          pointerEvents: "none",
+        }}
+      >
+        {/* Character portrait */}
+        {currentLine.image && (
+          <img
+            src={currentLine.image}
+            alt={currentLine.name}
+            style={{
+              position: "absolute",
+              bottom: boxHeight - 16,
+              [side]: 0,
+              height: imageSize,
+              width: "auto",
+              zIndex: 0,
+            }}
+          />
+        )}
+
+        {/* Dialog box */}
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: boxHeight,
+            background: "rgba(0,0,0,0.85)",
+            color: "white",
+            padding: 12,
+            zIndex: 10,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "space-between",
+          }}
+        >
+          <div style={{ fontWeight: "bold" }}>
+            {currentLine.name}
+          </div>
+
+          <div>{currentLine.message}</div>
+
+          <div
+            style={{
+              alignSelf: "flex-end",
+              opacity: 0.6,
+              fontSize: 12,
+            }}
+          >
+            ⏎
+          </div>
+        </div>
+      </div>
+    )
   }
 
   return (
@@ -135,35 +206,9 @@ export default function Page() {
         {renderEntities([...currentMap.entities, player])}
       </div>
 
-      {/* UI LAYER */}
-      {dialogState && (
-        <div
-          style={{
-            position: "absolute",
-            left: 0,
-            right: 0,
-            bottom: 0,
-            height: 96,
-            background: "rgba(0,0,0,0.85)",
-            color: "white",
-            padding: 12,
-            zIndex: 1000,
-          }}
-        >
-          <div>{dialogState.lines[dialogState.index]}</div>
-          <div
-            style={{
-              position: "absolute",
-              bottom: 8,
-              right: 12,
-              opacity: 0.6,
-              fontSize: 12,
-            }}
-          >
-            ⏎
-          </div>
-        </div>
-      )}
+      {/* ================= UI LAYER ================= */}
+      {dialogUI}
+
     </div>
   )
 }

@@ -228,6 +228,37 @@ export const Tiles: Record<number, Tile> = {
         walkable: false,
         image: "/assets/tiles/walls/stonebrickwall7.png",
     },
+    // Forest walls
+    511: {
+        id: 511,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/forest1.png",
+    },
+    512: {
+        id: 512,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/forest2.png",
+    },
+    513: {
+        id: 513,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/forest3.png",
+    },
+    514: {
+        id: 514,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/forest4.png",
+    },
+    515: {
+        id: 515,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/forest5.png",
+    },
 
     //
     // Warp Tiles

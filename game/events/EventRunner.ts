@@ -1,16 +1,27 @@
 import { GameEvent } from "./Event"
 import { GameState } from "../core/GameState"
 import { loadMap } from "../data/maps/mapLoader"
+import { loadDialog } from "../data/dialogs/dialogLoader"
+import { DialogLine } from "../data/dialogs/DialogLine"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
     case "dialog":
       state.running = false
-      state.ui.dialog = {
-        lines: Array.isArray(event.text) ? event.text : [event.text],
-        index: 0,
-      };
-      (state as any)._game?.notifyUI()
+
+      let lines: DialogLine[] = []
+
+      if ("dialogId" in event) {
+        lines = loadDialog(event.dialogId)
+      } else if ("lines" in event) {
+        lines = event.lines
+      } else if ("text" in event) {
+        // fallback for old single-line dialogs
+        lines = [{ name: "???", message: Array.isArray(event.text) ? event.text.join("\n") : event.text }]
+      }
+
+      state.ui.dialog = { lines, index: 0 }
+      ;(state as any)._game?.notifyUI()
       break
 
     case "choice":
