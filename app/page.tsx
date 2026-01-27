@@ -1,65 +1,167 @@
-import Image from "next/image";
+"use client"
 
-export default function Home() {
+import { useEffect, useState } from "react"
+import { Game, bindKeyboard, createPlayer, loadMap } from "@/game"
+import { Tiles } from "@/game/data/tiles/tileSet"
+import { Entity } from "@/game/entities/Entity"
+import Image from "next/image"
+
+export default function Page() {
+  // Game state reference
+  const [game, setGame] = useState<Game | null>(null)
+  const [_, forceUpdate] = useState(0) // for simple re-render
+
+  useEffect(() => {
+    // Load map and player
+    const map = loadMap("heroHouse")
+    const player = createPlayer(2, 2,"/assets/entities/players/player.png")
+
+    const newGame = new Game({
+      currentMap: map,
+      player,
+      running: true,
+    })
+
+    bindKeyboard(newGame)
+
+    // force React to re-render every frame
+    function loop() {
+      forceUpdate((v) => v + 1)
+      requestAnimationFrame(loop)
+    }
+    loop()
+
+    newGame.start()
+    setGame(newGame)
+  }, [])
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (game?.state.ui.dialog && (e.key === "Enter" || e.key === " ")) {
+        e.preventDefault()
+        advanceDialog()
+      }
+    }
+  
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [game])
+
+  if (!game) return <div>Loading...</div>
+
+  const { currentMap, player } = game.state
+
+  // helper to render entities
+  const renderEntities = (entities: Entity[]) => {
+    return entities.map((e) => (
+      <img
+        key={e.id}
+        src={e.image || "/assets/entities/player.png"}
+        style={{
+          position: "absolute",
+          width: 32,
+          height: 32,
+          left: e.x * 32,
+          top: e.y * 32,
+        }}
+      />
+    ))
+  }
+
+  // helper to render dialog
+  function advanceDialog() {
+    const ui = game.state.ui
+    if (!ui.dialog) return
+  
+    ui.dialog.index++
+  
+    if (ui.dialog.index >= ui.dialog.lines.length) {
+      ui.dialog = undefined
+  
+      // run queued events (sequence support)
+      const next = game.state.eventQueue.shift()
+      if (next) {
+        import("@/game/events/EventRunner").then(({ runEvent }) => {
+          runEvent(next, game.state)
+        })
+      }
+    }
+  }
+  
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+    <div
+      style={{
+        position: "relative",
+        width: currentMap.width * 32,
+        height: currentMap.height * 32,
+      }}
+    >
+      {/* ================= WORLD LAYER ================= */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          border: "2px solid black",
+        }}
+      >
+        {/* Tiles */}
+        {currentMap.tiles.map((row, y) =>
+          row.map((tileId, x) => {
+            const tile = Tiles[tileId]
+            return (
+              <Image
+                key={`${x}-${y}`}
+                src={tile.image || "/assets/tiles/placeholder.png"}
+                alt={tile.name}
+                width={32}
+                height={32}
+                style={{
+                  position: "absolute",
+                  left: x * 32,
+                  top: y * 32,
+                }}
+              />
+            )
+          })
+        )}
+  
+        {/* Entities */}
+        {renderEntities([...currentMap.entities, player])}
+      </div>
+  
+      {/* ================= UI LAYER ================= */}
+      {game.state.ui.dialog && (
+        <div
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 96,
+            background: "rgba(0,0,0,0.85)",
+            color: "white",
+            padding: 12,
+            zIndex: 1000, // now GUARANTEED
+          }}
+        >
+          <div>
+            {game.state.ui.dialog.lines[game.state.ui.dialog.index]}
+          </div>
+  
+          <div
+            style={{
+              position: "absolute",
+              bottom: 8,
+              right: 12,
+              opacity: 0.6,
+              fontSize: 12,
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+            ⏎
+          </div>
         </div>
-      </main>
+      )}
     </div>
-  );
+  )
 }
