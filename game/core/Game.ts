@@ -6,6 +6,7 @@ import { createInitialGameState } from "./GameState"
 
 export class Game {
   state: GameState
+  onUIChange?: () => void
 
   constructor({
     currentMap,
@@ -18,6 +19,10 @@ export class Game {
   }) {
     this.state = createInitialGameState(currentMap, player)
     this.state.running = running
+  }
+
+  notifyUI() {
+    this.onUIChange?.()
   }
 
   start() {

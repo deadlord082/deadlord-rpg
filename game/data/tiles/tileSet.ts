@@ -72,6 +72,110 @@ export const Tiles: Record<number, Tile> = {
         walkable: true,
         image: "/assets/tiles/floors/tilegrass5.png",
     },
+    // StoneGround Tiles
+    11: {
+        id: 11,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground1.png",
+    },
+    12: {
+        id: 12,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground2.png",
+    },
+    13: {
+        id: 13,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground3.png",
+    },
+    14: {
+        id: 14,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground4.png",
+    },
+    15: {
+        id: 15,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground5.png",
+    },
+    16: {
+        id: 16,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground6.png",
+    },
+    17: {
+        id: 17,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground7.png",
+    },
+    18: {
+        id: 18,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground8.png",
+    },
+    19: {
+        id: 19,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground9.png",
+    },
+    20: {
+        id: 20,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground10.png",
+    },
+    21: {
+        id: 21,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground11.png",
+    },
+    22: {
+        id: 22,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground12.png",
+    },
+    23: {
+        id: 23,
+        name: "StoneGround",
+        walkable: true,
+        image: "/assets/tiles/floors/stoneground13.png",
+    },
+    // Stone Stairs Tiles  
+    31: {
+        id: 31,
+        name: "Stone Stairs",
+        walkable: true,
+        image: "/assets/tiles/floors/stonestairs1.png",
+    },
+    32: {
+        id: 32,
+        name: "Stone Stairs",
+        walkable: true,
+        image: "/assets/tiles/floors/stonestairs2.png",
+    },
+    33: {
+        id: 33,
+        name: "Stone Stairs",
+        walkable: true,
+        image: "/assets/tiles/floors/stonestairs3.png",
+    },
+    34: {
+        id: 34,
+        name: "Stone Stairs",
+        walkable: true,
+        image: "/assets/tiles/floors/stonestairs4.png",
+    },
 
     //
     // Wall Tiles
@@ -80,7 +184,7 @@ export const Tiles: Record<number, Tile> = {
         id: 500,
         name: "Wall",
         walkable: false,
-        image: "/assets/tiles/walls/wall.png",
+        image: "/assets/tiles/walls/void.png",
     },
     501: {
         id: 501,
@@ -112,6 +216,18 @@ export const Tiles: Record<number, Tile> = {
         walkable: false,
         image: "/assets/tiles/walls/stonebrickwall5.png",
     },
+    506: {
+        id: 506,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/stonebrickwall6.png",
+    },
+    507: {
+        id: 507,
+        name: "Wall",
+        walkable: false,
+        image: "/assets/tiles/walls/stonebrickwall7.png",
+    },
 
     //
     // Warp Tiles
@@ -120,11 +236,11 @@ export const Tiles: Record<number, Tile> = {
         id: 1000,
         name: "Door",
         walkable: true,
-        image: "/assets/tiles/warps/door.png",
+        image: "/assets/tiles/warps/wooddoorinstonebick.png",
         onEnter: {
         type: "warp",
         targetMap: "frontYardHeroHouse",
-        x: 2,  // where the player will appear in the new map
+        x: 3,  // where the player will appear in the new map
         y: 1,
         },
     },
@@ -132,12 +248,12 @@ export const Tiles: Record<number, Tile> = {
         id: 1001,
         name: "Door",
         walkable: true,
-        image: "/assets/tiles/warps/door.png",
+        image: "/assets/tiles/warps/wooddoorinstonebick.png",
         onEnter: {
         type: "warp",
         targetMap: "heroHouse",
-        x: 2,
-        y: 3,
+        x: 3,
+        y: 6,
         },
     },
 }

@@ -5,11 +5,12 @@ import { loadMap } from "../data/maps/mapLoader"
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
     case "dialog":
-      console.log("DIALOG EVENT FIRED")
+      state.running = false
       state.ui.dialog = {
         lines: Array.isArray(event.text) ? event.text : [event.text],
         index: 0,
-      }
+      };
+      (state as any)._game?.notifyUI()
       break
 
     case "choice":

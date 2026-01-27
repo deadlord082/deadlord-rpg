@@ -7,7 +7,7 @@ import { PickupSystem } from "../systems/PickupSystem"
 export function bindKeyboard(game: Game) {
   window.addEventListener("keydown", (e) => {
     if (!game.state.running) return
-    if (game.state.ui.dialog) return
+    // if (game.state.ui.dialog) return
 
     switch (e.key) {
       case "ArrowUp":
@@ -41,7 +41,7 @@ export function bindKeyboard(game: Game) {
       case " ":
       case "Enter":
         InteractionSystem.interact(game.state)
-        PickupSystem.pickupFacing(game.state)
+        // PickupSystem.pickupFacing(game.state)
         break
     }    
   })

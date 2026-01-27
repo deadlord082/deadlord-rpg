@@ -7,14 +7,16 @@ import { Entity } from "@/game/entities/Entity"
 import Image from "next/image"
 
 export default function Page() {
-  // Game state reference
   const [game, setGame] = useState<Game | null>(null)
-  const [_, forceUpdate] = useState(0) // for simple re-render
+  const [, forceUpdate] = useState(0) // world re-render
+  const [dialogState, setDialogState] = useState<{
+    lines: string[]
+    index: number
+  } | null>(null)
 
   useEffect(() => {
-    // Load map and player
     const map = loadMap("heroHouse")
-    const player = createPlayer(2, 2,"/assets/entities/players/player.png")
+    const player = createPlayer(2, 2, "/assets/entities/players/player.png")
 
     const newGame = new Game({
       currentMap: map,
@@ -22,14 +24,22 @@ export default function Page() {
       running: true,
     })
 
+    ;(newGame.state as any)._game = newGame
+
+    // callback from engine to React when dialog opens
+    newGame.onUIChange = () => {
+      const dialog = newGame.state.ui.dialog
+      if (dialog) setDialogState({ ...dialog })
+    }
+
     bindKeyboard(newGame)
 
-    // force React to re-render every frame
-    function loop() {
+    // world render loop
+    const loop = () => {
       forceUpdate((v) => v + 1)
       requestAnimationFrame(loop)
     }
-    loop()
+    requestAnimationFrame(loop)
 
     newGame.start()
     setGame(newGame)
@@ -37,21 +47,21 @@ export default function Page() {
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (game?.state.ui.dialog && (e.key === "Enter" || e.key === " ")) {
+      if (!dialogState) return
+      if (e.key === "Enter" || e.key === " ") {
         e.preventDefault()
         advanceDialog()
       }
     }
-  
+
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [game])
+  }, [dialogState])
 
   if (!game) return <div>Loading...</div>
 
   const { currentMap, player } = game.state
 
-  // helper to render entities
   const renderEntities = (entities: Entity[]) => {
     return entities.map((e) => (
       <img
@@ -68,26 +78,28 @@ export default function Page() {
     ))
   }
 
-  // helper to render dialog
   function advanceDialog() {
-    const ui = game.state.ui
-    if (!ui.dialog) return
-  
-    ui.dialog.index++
-  
-    if (ui.dialog.index >= ui.dialog.lines.length) {
-      ui.dialog = undefined
-  
-      // run queued events (sequence support)
-      const next = game.state.eventQueue.shift()
-      if (next) {
-        import("@/game/events/EventRunner").then(({ runEvent }) => {
-          runEvent(next, game.state)
-        })
-      }
+    if (!dialogState || !game) return
+
+    const nextIndex = dialogState.index + 1
+    if (nextIndex < dialogState.lines.length) {
+      setDialogState({ ...dialogState, index: nextIndex })
+      game.state.ui.dialog!.index = nextIndex
+      return
+    }
+
+    // dialog finished
+    setDialogState(null)
+    game.state.ui.dialog = undefined
+    game.state.running = true
+
+    const next = game.state.eventQueue.shift()
+    if (next) {
+      import("@/game/events/EventRunner").then(({ runEvent }) => {
+        runEvent(next, game.state)
+      })
     }
   }
-  
 
   return (
     <div
@@ -97,7 +109,7 @@ export default function Page() {
         height: currentMap.height * 32,
       }}
     >
-      {/* ================= WORLD LAYER ================= */}
+      {/* WORLD LAYER */}
       <div
         style={{
           position: "absolute",
@@ -105,7 +117,6 @@ export default function Page() {
           border: "2px solid black",
         }}
       >
-        {/* Tiles */}
         {currentMap.tiles.map((row, y) =>
           row.map((tileId, x) => {
             const tile = Tiles[tileId]
@@ -116,22 +127,16 @@ export default function Page() {
                 alt={tile.name}
                 width={32}
                 height={32}
-                style={{
-                  position: "absolute",
-                  left: x * 32,
-                  top: y * 32,
-                }}
+                style={{ position: "absolute", left: x * 32, top: y * 32 }}
               />
             )
           })
         )}
-  
-        {/* Entities */}
         {renderEntities([...currentMap.entities, player])}
       </div>
-  
-      {/* ================= UI LAYER ================= */}
-      {game.state.ui.dialog && (
+
+      {/* UI LAYER */}
+      {dialogState && (
         <div
           style={{
             position: "absolute",
@@ -142,13 +147,10 @@ export default function Page() {
             background: "rgba(0,0,0,0.85)",
             color: "white",
             padding: 12,
-            zIndex: 1000, // now GUARANTEED
+            zIndex: 1000,
           }}
         >
-          <div>
-            {game.state.ui.dialog.lines[game.state.ui.dialog.index]}
-          </div>
-  
+          <div>{dialogState.lines[dialogState.index]}</div>
           <div
             style={{
               position: "absolute",
