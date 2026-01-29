@@ -5,7 +5,7 @@ import { Game, bindKeyboard, createPlayer, loadMap } from "@/game"
 import { GameViewport } from "./components/GameViewport"
 import { DialogUI } from "./components/Dialog"
 import { useRef } from "react"
-import { GameMenu } from "./components/GameMenu"
+import { GameMenu } from "./components/GameMenu/GameMenu"
 
 const TILE_SIZE = 64
 const VIEW_TILES_X = 17
@@ -102,21 +102,17 @@ export default function Page() {
         viewHeight={VIEW_TILES_Y}
       />
 
-{game.state.ui.menuOpen && (
-  <GameMenu
-    player={game.state.player}
-    currentTab={game.state.ui.menuTab!}
-    setTab={(tab) => {
-      game.state.ui.menuTab = tab
-      ;(game.state as any)._game?.notifyUI()
-    }}
-    onClose={() => {
-      game.state.ui.menuOpen = false
-      game.state.running = true
-      ;(game.state as any)._game?.notifyUI()
-    }}
-  />
-)}
+      {game.state.ui.menuOpen && (
+        <GameMenu
+          player={game.state.player}
+          initialTab={game.state.ui.menuTab ?? null}
+          onClose={() => {
+            game.state.ui.menuOpen = false
+            game.state.running = true
+            ;(game.state as any)._game?.notifyUI()
+          }}
+        />
+      )}
 
       <DialogUI dialog={game.state.ui.dialog} />
     </div>
