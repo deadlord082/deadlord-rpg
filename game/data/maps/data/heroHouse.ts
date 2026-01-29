@@ -19,9 +19,19 @@ export const testMap: GameMap = {
   ],
 
   entities: [
-    createNPC("npc1","Bob",2,1,"/assets/entities/npcs/npc.png",
-      { type: "dialog",  dialogId: "npcGreeting" }
-    ),
+    createNPC(
+      "npc1",
+      "Bob",
+      2,
+      1,
+      {
+        down: "/assets/entities/npcs/down.png",
+        left: "/assets/entities/npcs/left.png",
+        right: "/assets/entities/npcs/right.png",
+        up: "/assets/entities/npcs/up.png",
+      },
+      { type: "dialog", dialogId: "npcGreeting" }
+    ),    
     createItemEntity("item1", "potion", 3, 2,"/assets/entities/items/potion_rouge.png", true),
     createItemEntity("item2", "crown_of_deadlord", 3, 3,"/assets/entities/items/item.png", true),
     createItemEntity("item3", "old_key", 4, 3,"/assets/entities/items/item.png", true),

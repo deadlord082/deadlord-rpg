@@ -1,6 +1,7 @@
 import { createNPC } from "@/game/entities/NPC"
 import { GameMap } from "../mapTypes"
 import { createItemEntity } from "../../../entities/ItemEntity"
+import { Direction } from "@/game/utils/direction"
 
 export const frontYardHeroHouseMap: GameMap = {
   id: "frontYardHeroHouse",
@@ -19,7 +20,13 @@ export const frontYardHeroHouseMap: GameMap = {
     [500,515,515,515,515,515,515,515,515,515,515],
   ],
   entities: [
-      createNPC("npc2","john",1,1,"/assets/entities/npcs/npc.png",
+      createNPC("npc2","john",1,1,
+        {
+          down: "/assets/entities/npcs/down.png",
+          left: "/assets/entities/npcs/left.png",
+          right: "/assets/entities/npcs/right.png",
+          up: "/assets/entities/npcs/up.png",
+        },
         {
           type: "choice",
           text: "Do you want to help me?",
@@ -36,7 +43,13 @@ export const frontYardHeroHouseMap: GameMap = {
         }
         
       ),
-      createNPC("npc3","jacob",4,1,"/assets/entities/npcs/npc.png",
+      createNPC("npc3","jacob",4,1,
+        {
+          down: "/assets/entities/npcs/down.png",
+          left: "/assets/entities/npcs/left.png",
+          right: "/assets/entities/npcs/right.png",
+          up: "/assets/entities/npcs/up.png",
+        },
         {
           type: "sequence",
           events: [
@@ -49,10 +62,16 @@ export const frontYardHeroHouseMap: GameMap = {
             },
             { type: "dialog", text: "Come again!" }
           ]
-        }
-        
+        },
+        Direction.Left        
       ),
-      createNPC("npc4","tristan",6,1,"/assets/entities/npcs/npc.png",
+      createNPC("npc4","tristan",6,1,
+        {
+          down: "/assets/entities/npcs/down.png",
+          left: "/assets/entities/npcs/left.png",
+          right: "/assets/entities/npcs/right.png",
+          up: "/assets/entities/npcs/up.png",
+        },
         {
           type: "sequence",
           events: [
@@ -60,17 +79,24 @@ export const frontYardHeroHouseMap: GameMap = {
             { type: "fight", enemyId: "goblin_leader" },
             { type: "reward", items: ["gold_coin"], gold: 50 }
           ]
-        }
+        },
+        Direction.Right
       ),
-      createNPC("npc5","pero",6,3,"/assets/entities/npcs/npc.png",
+      createNPC("npc5","pero",6,3,
+        {
+          down: "/assets/entities/npcs/down.png",
+          left: "/assets/entities/npcs/left.png",
+          right: "/assets/entities/npcs/right.png",
+          up: "/assets/entities/npcs/up.png",
+        },
         {
           type: "sequence",
           events: [
             { type: "dialog", text: "Go inside?" },
             { type: "warp", targetMap: "heroHouse", x: 2, y: 3 }
           ]
-        }
-        
+        },
+        Direction.Up        
       ),
       createItemEntity("item2", "crown_of_deadlord", 3, 3,"/assets/entities/items/item.png", true),
     ],

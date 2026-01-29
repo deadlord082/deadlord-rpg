@@ -1,6 +1,7 @@
 import { Tiles } from "@/game/data/tiles/tileSet"
 import { Entity } from "@/game/entities/Entity"
 import Image from "next/image"
+import { Direction } from "@/game/utils/direction"
 
 interface GameViewportProps {
   map: any
@@ -9,6 +10,17 @@ interface GameViewportProps {
   viewWidth: number
   viewHeight: number
 }
+
+function getEntitySprite(entity: Entity): string | undefined {
+  // Directional sprite
+  if (entity.sprites && entity.direction) {
+    return entity.sprites[entity.direction]
+  }
+
+  // Fallback for static entities (items, legacy, etc.)
+  return entity.image
+}
+
 
 export function GameViewport({
   map,
@@ -67,16 +79,20 @@ export function GameViewport({
         if (sx < 0 || sy < 0 || sx >= viewWidth || sy >= viewHeight)
           return null
 
+        const sprite = getEntitySprite(e)
+        if (!sprite) return null
+
         return (
           <img
             key={e.id}
-            src={e.image}
+            src={sprite}
             style={{
               position: "absolute",
               width: tileSize,
               height: tileSize,
               left: sx * tileSize,
               top: sy * tileSize,
+              imageRendering: "pixelated",
             }}
           />
         )

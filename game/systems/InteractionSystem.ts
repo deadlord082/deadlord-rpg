@@ -1,5 +1,5 @@
 import { GameState } from "../core/GameState"
-import { directionToDelta } from "../utils/direction"
+import { directionToDelta, oppositeDirection } from "../utils/direction"
 import { runEvent } from "../events/EventRunner"
 import { getTileAt } from "../utils/grid"
 
@@ -17,6 +17,9 @@ export const InteractionSystem = {
     )
 
     if (entity && "onInteract" in entity) {
+      if ("direction" in entity) {
+        entity.direction = oppositeDirection(player.direction)
+      }
       runEvent((entity as any).onInteract, state)
       return
     }

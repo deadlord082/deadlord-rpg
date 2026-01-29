@@ -1,5 +1,6 @@
 import { Entity } from "./Entity"
 import { GameEvent } from "../events/Event"
+import { Direction } from "../utils/direction"
 
 export interface NPC extends Entity {
   name: string
@@ -7,22 +8,23 @@ export interface NPC extends Entity {
 }
 
 export function createNPC(
-    id: string,
-    name: string,
-    x: number,
-    y: number,
-    image: string,
-    event: GameEvent
-  ) {
-    return {
-      id,
-      name,
-      x,
-      y,
-      image,
-      blocking: true,
-      onInteract: event, // only the data
-    }
+  id: string,
+  name: string,
+  x: number,
+  y: number,
+  sprites: Partial<Record<Direction, string>>,
+  event: GameEvent,
+  direction: Direction = Direction.Down
+) {
+  return {
+    id,
+    name,
+    x,
+    y,
+    direction,
+    sprites,
+    blocking: true,
+    onInteract: event,
   }
-  
+}  
   

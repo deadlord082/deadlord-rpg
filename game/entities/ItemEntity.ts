@@ -1,3 +1,4 @@
+import { Direction } from "../utils/direction"
 import { Entity } from "./Entity"
 
 export interface ItemEntity extends Entity {
@@ -18,7 +19,10 @@ export function createItemEntity(
       itemId,
       x,
       y,
-      image,
+      sprites: {
+        [Direction.Down]: image,
+      },
+      direction: Direction.Down,
       blocking: false,
       pickupOnTouch,
     }

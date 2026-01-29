@@ -1,10 +1,9 @@
 import { Entity } from "./Entity"
-import { Direction } from "../utils/direction"
 import { Item } from "../data/items/itemTypes"
 import { Stats } from "./Stats"
+import { Direction } from "../utils/direction"
 
 export interface Player extends Entity {
-  direction: Direction
   inventory: Item[]
 
   // progression
@@ -26,15 +25,20 @@ export interface Player extends Entity {
 export function createPlayer(
   x: number,
   y: number,
-  image: string
 ): Player {
   return {
     id: "player",
     x,
     y,
-    image,
     blocking: true,
     direction: Direction.Down,
+    
+    sprites: {
+      [Direction.Up]: "/assets/entities/players/up.png",
+      [Direction.Down]: "/assets/entities/players/down.png",
+      [Direction.Left]: "/assets/entities/players/left.png",
+      [Direction.Right]: "/assets/entities/players/right.png",
+    },
 
     inventory: [],
 

@@ -18,7 +18,7 @@ export default function Page() {
 
   useEffect(() => {
     const map = loadMap("heroHouse")
-    const player = createPlayer(2, 2, "/assets/entities/players/player.png")
+    const player = createPlayer(2, 2)
 
     const g = new Game({ currentMap: map, player, running: true })
     ;(g.state as any)._game = g

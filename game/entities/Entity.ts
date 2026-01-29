@@ -1,8 +1,14 @@
+import { Direction } from "../utils/direction"
+
 export interface Entity {
   id: string
   x: number
   y: number
-  image?: string
+
+  direction: Direction
+
+  sprites?: Partial<Record<Direction, string>>
+
   blocking: boolean
   interact?: () => void
 }
