@@ -10,3 +10,5 @@ export const MOVE_KEYS = {
   Left: "ArrowLeft",
   Right: "ArrowRight",
 }
+
+export const GROUND_ITEM_SPRITE = "/assets/entities/items/item2.png"

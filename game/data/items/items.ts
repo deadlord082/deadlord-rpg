@@ -34,6 +34,7 @@ export const Items: Record<string, Omit<Item, "quantity">> = {
     id: "test",
     name: "test",
     description: "test",
+    // image: "/assets/entities/items/item.png",
     rarity: "legendary",
   },
 
@@ -41,6 +42,7 @@ export const Items: Record<string, Omit<Item, "quantity">> = {
     id: "crown_of_deadlord",
     name: "Crown of Deadlord",
     description: "Whispers forgotten names.",
+    // image: "/assets/entities/items/item.png",
     rarity: "deadlordary",
   }
   
