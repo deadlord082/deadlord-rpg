@@ -1,5 +1,6 @@
 import { createNPC } from "@/game/entities/NPC"
 import { GameMap } from "../mapTypes"
+import { createItemEntity } from "../../../entities/ItemEntity"
 
 export const frontYardHeroHouseMap: GameMap = {
   id: "frontYardHeroHouse",
@@ -71,5 +72,6 @@ export const frontYardHeroHouseMap: GameMap = {
         }
         
       ),
+      createItemEntity("item2", "crown_of_deadlord", 3, 3,"/assets/entities/items/item.png", true),
     ],
 }

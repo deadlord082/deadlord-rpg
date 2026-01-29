@@ -22,6 +22,11 @@ export const testMap: GameMap = {
     createNPC("npc1","Bob",2,1,"/assets/entities/npcs/npc.png",
       { type: "dialog",  dialogId: "npcGreeting" }
     ),
-    createItemEntity("item1", "potion", 3, 2,"/assets/entities/items/item.png", true),
+    createItemEntity("item1", "potion", 3, 2,"/assets/entities/items/potion_rouge.png", true),
+    createItemEntity("item2", "crown_of_deadlord", 3, 3,"/assets/entities/items/item.png", true),
+    createItemEntity("item3", "old_key", 4, 3,"/assets/entities/items/item.png", true),
+    createItemEntity("item4", "great_potion", 4, 3,"/assets/entities/items/item.png", true),
+    createItemEntity("item5", "ultima_potion", 4, 3,"/assets/entities/items/item.png", true),
+    createItemEntity("item6", "test", 4, 3,"/assets/entities/items/item.png", true),
   ],
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Player } from "@/game/entities/Player"
 import { Item } from "@/game/data/items/itemTypes"
+import { RARITY_STYLES } from "@/game/data/items/rarityColors"
 
 interface GameMenuProps {
   player: Player
@@ -13,6 +14,7 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
   const [activeTab, setActiveTab] = useState<"status" | "inventory" | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0) // for inventory grid
   const [hoveredItem, setHoveredItem] = useState<Item | null>(null)
+  const [itemDetailsIndex, setItemDetailsIndex] = useState<number | null>(null)
 
   const columns = 5
   const rows = 4
@@ -22,9 +24,9 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
       if (activeTab === null) {
-        // navigating menu
         if (e.key === "ArrowRight") setMenuIndex((menuIndex + 1) % menuOptions.length)
         if (e.key === "ArrowLeft") setMenuIndex((menuIndex - 1 + menuOptions.length) % menuOptions.length)
+      
         if (e.key === "Enter") {
           const selectedTab = menuOptions[menuIndex]
           if (selectedTab === "close") {
@@ -33,7 +35,13 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
             setActiveTab(selectedTab)
           }
         }
-        if (e.key === "Escape") onClose()
+      
+        if (e.key === "Escape") {
+          onClose()
+        }
+      
+        e.preventDefault()
+        return
       } else {
         // inside a tab
         if (activeTab === "inventory") {
@@ -43,13 +51,21 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
           if (e.key === "ArrowDown") newIndex = (selectedIndex + columns) % totalSlots
           if (e.key === "ArrowUp") newIndex = (selectedIndex - columns + totalSlots) % totalSlots
           if (newIndex !== selectedIndex) setSelectedIndex(newIndex)
-          if (e.key === "Enter") {
-            const item = player.inventory[selectedIndex]
-            if (item) alert(`You selected: ${item.name}`) // placeholder
-          }
+            if (e.key === "Enter") {
+              const item = player.inventory[selectedIndex]
+              if (item) {
+                setItemDetailsIndex(selectedIndex)
+              }
+            }            
         }
-        if (e.key === "Escape") {
-          setActiveTab(null) // go back to menu selection
+        if (activeTab !== null) {
+          if (itemDetailsIndex !== null) {
+            if (e.key === "Escape") {
+              setItemDetailsIndex(null)
+              e.preventDefault()
+              return
+            }
+          }          
         }
       }
       e.preventDefault()
@@ -58,6 +74,73 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
   }, [activeTab, menuIndex, selectedIndex, player])
+
+  const renderItemDetails = () => {
+    if (itemDetailsIndex === null) return null
+  
+    const item = player.inventory[itemDetailsIndex]
+    if (!item) return null
+    const rarity = RARITY_STYLES[item.rarity]
+  
+    return (
+      <div
+        style={{
+          position: "absolute",
+          inset: "20% 30%",
+          border: `2px solid ${rarity.border}`,
+          background: rarity.bg,
+          boxShadow: `0 0 12px ${rarity.border}`,
+          padding: 16,
+          borderRadius: 8,
+          zIndex: 2000,
+          display: "flex",
+          flexDirection: "column",
+          gap: 12,
+        }}
+      >
+        <h3 style={{ color: rarity.text }}>
+          {item.name}
+        </h3>
+
+        <small style={{ opacity: 0.8 }}>
+          {item.rarity.toUpperCase()}
+        </small>
+  
+        {item.image && (
+          <img src={item.image} style={{ width: 64, alignSelf: "center" }} />
+        )}
+  
+        <p>{item.description}</p>
+  
+        <p><strong>Quantity:</strong> {item.quantity}</p>
+  
+        <div style={{ display: "flex", gap: 8, justifyContent: "flex-end" }}>
+          {/* Use button (only if usable later) */}
+          <button
+            onClick={() => {
+              alert("Use item (TODO)")
+            }}
+          >
+            Use
+          </button>
+  
+          <button
+            onClick={() => {
+              player.inventory.splice(itemDetailsIndex, 1)
+              setItemDetailsIndex(null)
+            }}
+          >
+            Discard
+          </button>
+        </div>
+  
+        <small style={{ opacity: 0.6 }}>
+          Press ESC to return
+        </small>
+      </div>
+    )
+  }
+  
 
   const renderContent = () => {
     if (!activeTab) return null
@@ -127,16 +210,16 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
       </p>
       <h4>Stats</h4>
 
-<p>💪 Strength: {player.stats.strength}</p>
-<p>🛡️ Defense: {player.stats.defense}</p>
-<p>⚡ Speed: {player.stats.speed}</p>
-<p>🍀 Luck: {player.stats.luck}</p>
-<p>🗣️ Charisma: {player.stats.charisma}</p>
+      <p>💪 Strength: {player.stats.strength}</p>
+      <p>🛡️ Defense: {player.stats.defense}</p>
+      <p>⚡ Speed: {player.stats.speed}</p>
+      <p>🍀 Luck: {player.stats.luck}</p>
+      <p>🗣️ Charisma: {player.stats.charisma}</p>
 
-<hr />
+      <hr />
 
-<p>🎯 Crit Chance: {player.stats.critChance}%</p>
-<p>💥 Crit Damage: x{player.stats.critDamage}</p>
+      <p>🎯 Crit Chance: {player.stats.critChance}%</p>
+      <p>💥 Crit Damage: x{player.stats.critDamage}</p>
     </div>
   )
 
@@ -147,14 +230,24 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
               {Array.from({ length: totalSlots }).map((_, i) => {
                 const item = player.inventory[i]
                 const isSelected = i === selectedIndex
+                const rarityStyle = item ? RARITY_STYLES[item.rarity] : null
                 return (
                   <div
                     key={i}
                     style={{
                       width: 64,
                       height: 64,
-                      border: `2px solid ${isSelected ? "#fff" : "#888"}`,
-                      background: "#222",
+                      border: `2px solid ${
+                        isSelected ? "#fff" : rarityStyle?.border ?? "#444"
+                      }`,
+                      background: rarityStyle?.bg ?? "#222",
+                      boxShadow: item
+                        ? `0 0 6px ${rarityStyle?.border}`
+                        : "none",
+                      filter:
+                        item?.rarity === "legendary" || item?.rarity === "deadlordary"
+                          ? "drop-shadow(0 0 6px rgba(255,200,0,0.6))"
+                          : "none",
                       display: "flex",
                       justifyContent: "center",
                       alignItems: "center",
@@ -168,8 +261,8 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
                     onMouseLeave={() => setHoveredItem(null)}
                     onClick={() => {
                       setSelectedIndex(i)
-                      if (item) alert(`You selected: ${item.name}`)
-                    }}
+                      if (item) setItemDetailsIndex(i)
+                    }}                    
                   >
                     {item && (
                       <>
@@ -192,7 +285,14 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
                   minWidth: 160,
                 }}
               >
-                <p><strong>{hoveredItem.name}</strong></p>
+                <p
+                  style={{
+                    color: RARITY_STYLES[hoveredItem.rarity].text,
+                  }}
+                >
+                  <strong>{hoveredItem.name}</strong>
+                  <small>{hoveredItem.rarity.toUpperCase()}</small>
+                </p>
                 <p>{hoveredItem.description}</p>
               </div>
             )}
@@ -243,6 +343,8 @@ export function GameMenu({ player, onClose }: GameMenuProps) {
 
       {/* Tab Content */}
       {renderContent()}
+      {renderItemDetails()}
+
     </div>
   )
 }
