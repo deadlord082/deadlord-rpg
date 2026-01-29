@@ -18,6 +18,8 @@ export interface GameState {
     choice?: ChoiceEvent
     merchant?: MerchantEvent
     fight?: FightEvent
+    menuOpen?: boolean
+    menuTab?: "status" | "inventory" | "close"
   }
 
   eventQueue: GameEvent[]

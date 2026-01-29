@@ -6,6 +6,20 @@ import { PickupSystem } from "../systems/PickupSystem"
 
 export function bindKeyboard(game: Game) {
   window.addEventListener("keydown", (e) => {
+    // Menu toggle
+    if (e.key === "Escape") {
+      game.state.ui.menuOpen = !game.state.ui.menuOpen
+      if (game.state.ui.menuOpen) {
+        game.state.ui.menuTab = "status" // default tab
+        game.state.running = false
+      } else {
+        game.state.running = true
+      }
+      ;(game.state as any)._game?.notifyUI()
+      e.preventDefault()
+      return
+    }
+    
     if (!game.state.running) return
     // if (game.state.ui.dialog) return
 

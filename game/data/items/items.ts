@@ -1,6 +1,6 @@
 import { Item } from "./itemTypes"
 
-export const Items: Record<string, Item> = {
+export const Items: Record<string, Omit<Item, "quantity">> = {
   potion: {
     id: "potion",
     name: "Potion",

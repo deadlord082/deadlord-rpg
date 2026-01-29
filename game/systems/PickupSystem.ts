@@ -1,6 +1,7 @@
 import { GameState } from "../core/GameState"
 import { ItemEntity } from "../entities/ItemEntity"
-import { Direction, directionToDelta } from "../utils/direction"
+import { directionToDelta } from "../utils/direction"
+import { InventorySystem } from "./InventorySystem"
 
 export const PickupSystem = {
   checkPickup(state: GameState) {
@@ -17,9 +18,10 @@ export const PickupSystem = {
 
     if (!item) return
 
-    player.inventory.push(item.itemId)
+    InventorySystem.addItem(player, item.itemId)
 
     map.entities = map.entities.filter(e => e.id !== item.id)
+    ;(state as any)._game?.notifyUI()
   },
 
   pickupFacing(state: GameState) {
@@ -35,8 +37,11 @@ export const PickupSystem = {
 
     if (!item) return
 
-    player.inventory.push(item.itemId)
+    InventorySystem.addItem(player, item.itemId)
+
     state.currentMap.entities =
       state.currentMap.entities.filter(e => e.id !== item.id)
-  }
+
+    ;(state as any)._game?.notifyUI()
+  },
 }
