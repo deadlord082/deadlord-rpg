@@ -1,6 +1,5 @@
 import { Player } from "../entities/Player"
 import { Items } from "../data/items/items"
-import { Item } from "../data/items/itemTypes"
 
 export const InventorySystem = {
   addItem(player: Player, itemId: string, quantity = 1) {

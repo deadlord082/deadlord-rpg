@@ -68,8 +68,8 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "You dare challenge me?" },
-        { type: "fight", enemyId: "goblin_leader" },
+        { type: "dialog", text: "You killed the goblin" },
+        // { type: "fight", enemyId: "goblin_leader" },
         { type: "reward", items: ["gold_coin"], gold: 50 }
       ]
     },

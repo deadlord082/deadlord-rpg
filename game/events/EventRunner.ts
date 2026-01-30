@@ -3,6 +3,7 @@ import { GameState } from "../core/GameState"
 import { loadMap } from "../data/maps/mapLoader"
 import { loadDialog } from "../data/dialogs/dialogLoader"
 import { DialogLine } from "../data/dialogs/DialogLine"
+import { InventorySystem } from "../systems/InventorySystem"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -33,8 +34,7 @@ export function runEvent(event: GameEvent, state: GameState) {
       break
 
     case "reward":
-      // event.items?.forEach(i => state.player.inventory.push(i))
-      // if (event.gold) state.player.gold += event.gold
+      handleRewardEvent(event, state)
       break
 
     case "fight":
@@ -77,5 +77,24 @@ function handleWarp(
 
   // clear UI just in case
   state.ui = {}
+}
+
+function handleRewardEvent(event: { items?: string[]; gold?: number }, state: GameState) {
+  const player = state.player
+
+  // Give gold
+  if (event.gold) {
+    player.gold = (player.gold ?? 0) + event.gold
+  }
+
+  // Give items
+  if (event.items) {
+    for (const itemId of event.items) {
+      InventorySystem.addItem(player, itemId)
+    }
+  }
+
+  // Notify UI of changes (inventory, gold, etc.)
+  ;(state as any)._game?.notifyUI()
 }
 

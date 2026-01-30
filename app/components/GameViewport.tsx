@@ -11,16 +11,22 @@ interface GameViewportProps {
   viewHeight: number
 }
 
-function getEntitySprite(entity: Entity): string | undefined {
-  // Directional sprite
+function getEntitySprite(entity: any): string | undefined {
+  // Chest (state-based sprite)
+  if (entity.type === "chest" && entity.sprites) {
+    return entity.opened
+      ? entity.sprites.opened
+      : entity.sprites.closed
+  }
+
+  // Directional entity (player, NPCs)
   if (entity.sprites && entity.direction) {
     return entity.sprites[entity.direction]
   }
 
-  // Fallback for static entities (items, legacy, etc.)
+  // Static entities (items, etc.)
   return entity.image
 }
-
 
 export function GameViewport({
   map,

@@ -2,6 +2,7 @@ import { GameState } from "../core/GameState"
 import { directionToDelta, oppositeDirection } from "../utils/direction"
 import { runEvent } from "../events/EventRunner"
 import { getTileAt } from "../utils/grid"
+import { ChestSystem } from "./ChestSystem"
 
 export const InteractionSystem = {
   interact(state: GameState) {
@@ -21,6 +22,10 @@ export const InteractionSystem = {
         entity.direction = oppositeDirection(player.direction)
       }
       runEvent((entity as any).onInteract, state)
+      return
+    }
+
+    if (ChestSystem.interact(state)) {
       return
     }
 

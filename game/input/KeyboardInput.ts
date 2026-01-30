@@ -3,6 +3,7 @@ import { Direction } from "../utils/direction"
 import { MovementSystem } from "../systems/MovementSystem"
 import { InteractionSystem } from "../systems/InteractionSystem"
 import { PickupSystem } from "../systems/PickupSystem"
+import { ChestSystem } from "../systems/ChestSystem"
 
 export function bindKeyboard(game: Game) {
   window.addEventListener("keydown", (e) => {
@@ -45,6 +46,7 @@ export function bindKeyboard(game: Game) {
       case " ":
       case "Enter":
         InteractionSystem.interact(game.state)
+        ChestSystem.interact(game.state)
         break
     }
   })
