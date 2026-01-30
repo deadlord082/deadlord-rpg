@@ -1,7 +1,7 @@
 import { GameEvent } from "../../events/Event"
 
 export interface Tile {
-    id: number
+    id: string
     name: string
     walkable: boolean
     image?: string

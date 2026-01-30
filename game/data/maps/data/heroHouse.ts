@@ -9,14 +9,14 @@ export const testMap: GameMap = {
   height: 8,
 
   tiles: [
-    [507,501,501,501,502],
-    [506,11,12,13,503],
-    [506,14,15,16,508,501,501,502],
-    [506,14,15,22,12,12,13,503],
-    [506,14,15,15,15,15,16,503],
-    [506,14,15,15,15,15,16,503],
-    [506,14,15,15,15,15,16,503],
-    [505,501,501,1000,501,501,501,504],
+    ["wall_stone_7","wall_stone_1","wall_stone_1","wall_stone_1","wall_stone_2"],
+    ["wall_stone_6","stone_ground_1","stone_ground_2","stone_ground_3","wall_stone_3"],
+    ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_6","wall_stone_8","wall_stone_1","wall_stone_1","wall_stone_2"],
+    ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_12","stone_ground_2","stone_ground_2","stone_ground_3","wall_stone_3"],
+    ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
+    ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
+    ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
+    ["wall_stone_5","wall_stone_1","wall_stone_1","door_wood_stone_in","wall_stone_1","wall_stone_1","wall_stone_1","wall_stone_4"],
   ],
 
   entities: [
