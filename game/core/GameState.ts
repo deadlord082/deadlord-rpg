@@ -5,6 +5,7 @@ import { FightEvent } from "../events/FightEvent"
 import { MerchantEvent } from "../events/MerchantEvent"
 import { GameEvent } from "../events/Event"
 import { DialogLine } from "../data/dialogs/DialogLine"
+import { Toast } from "../data/toasts/toast"
 
 export interface GameState {
   currentMap: GameMap
@@ -22,6 +23,7 @@ export interface GameState {
     menuTab?: "status" | "inventory" | "close" | null
   }
 
+  toasts: Toast[]
   eventQueue: GameEvent[]
   running: boolean
 }
@@ -36,6 +38,7 @@ export function createInitialGameState(
     ui: {},
     eventQueue: [],
     running: true,
+    toasts: [],
   }
 }
 

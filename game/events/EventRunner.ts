@@ -4,6 +4,7 @@ import { loadMap } from "../data/maps/mapLoader"
 import { loadDialog } from "../data/dialogs/dialogLoader"
 import { DialogLine } from "../data/dialogs/DialogLine"
 import { InventorySystem } from "../systems/InventorySystem"
+import { ToastSystem } from "../systems/ToastSystem"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -82,19 +83,18 @@ function handleWarp(
 function handleRewardEvent(event: { items?: string[]; gold?: number }, state: GameState) {
   const player = state.player
 
-  // Give gold
   if (event.gold) {
-    player.gold = (player.gold ?? 0) + event.gold
+    player.gold += event.gold
+    ToastSystem.addGoldToast(state, event.gold)
   }
 
-  // Give items
   if (event.items) {
     for (const itemId of event.items) {
       InventorySystem.addItem(player, itemId)
+      ToastSystem.addItemToast(state, itemId)
     }
   }
 
-  // Notify UI of changes (inventory, gold, etc.)
   ;(state as any)._game?.notifyUI()
 }
 

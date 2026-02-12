@@ -2,6 +2,7 @@ import { GameState } from "../core/GameState"
 import { ItemEntity } from "../entities/ItemEntity"
 import { directionToDelta } from "../utils/direction"
 import { InventorySystem } from "./InventorySystem"
+import { ToastSystem } from "./ToastSystem"
 
 export const PickupSystem = {
   checkPickup(state: GameState) {
@@ -19,6 +20,7 @@ export const PickupSystem = {
     if (!item) return
 
     InventorySystem.addItem(player, item.itemId)
+    ToastSystem.addItemToast(state, item.itemId)
 
     map.entities = map.entities.filter(e => e.id !== item.id)
     ;(state as any)._game?.notifyUI()
@@ -38,6 +40,7 @@ export const PickupSystem = {
     if (!item) return
 
     InventorySystem.addItem(player, item.itemId)
+    ToastSystem.addItemToast(state, item.itemId)
 
     state.currentMap.entities =
       state.currentMap.entities.filter(e => e.id !== item.id)

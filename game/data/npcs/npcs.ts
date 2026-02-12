@@ -70,7 +70,7 @@ export const NPCS = {
       events: [
         { type: "dialog", text: "You killed the goblin" },
         // { type: "fight", enemyId: "goblin_leader" },
-        { type: "reward", items: ["gold_coin"], gold: 50 }
+        { type: "reward", items: ["potion"], gold: 50 }
       ]
     },
     Direction.Right

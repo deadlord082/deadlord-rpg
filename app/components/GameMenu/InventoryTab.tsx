@@ -7,8 +7,6 @@ interface InventoryTabProps {
   selectedIndex: number
   setSelectedIndex: (v: number) => void
   setItemDetailsIndex: (v: number) => void
-  hoveredItem: Item | null
-  setHoveredItem: (v: Item | null) => void
 }
 
 export function InventoryTab({
@@ -16,8 +14,6 @@ export function InventoryTab({
   selectedIndex,
   setSelectedIndex,
   setItemDetailsIndex,
-  hoveredItem,
-  setHoveredItem,
 }: InventoryTabProps) {
   const columns = 5
   const rows = 4
@@ -47,8 +43,6 @@ export function InventoryTab({
                 fontSize: 12,
                 cursor: "pointer",
               }}
-              onMouseEnter={() => setHoveredItem(item || null)}
-              onMouseLeave={() => setHoveredItem(null)}
               onClick={() => {
                 setSelectedIndex(i)
                 if (item) setItemDetailsIndex(i)
@@ -65,23 +59,6 @@ export function InventoryTab({
           )
         })}
       </div>
-
-      {hoveredItem && (
-        <div
-          style={{
-            marginLeft: 12,
-            padding: 8,
-            background: "rgba(0,0,0,0.85)",
-            border: "1px solid white",
-            minWidth: 160,
-          }}
-        >
-          <p style={{ color: RARITY_STYLES[hoveredItem.rarity].text }}>
-            <strong>{hoveredItem.name}</strong>
-          </p>
-          <p>{hoveredItem.description}</p>
-        </div>
-      )}
     </div>
   )
 }

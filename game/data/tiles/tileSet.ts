@@ -287,6 +287,16 @@ export const Tiles: Record<string, Tile> = {
     image: "/assets/tiles/walls/forest5.png",
   },
 
+  // 
+  // Walls - Rocky
+  // 
+  wall_rocky_1: {
+    id: "wall_rocky_1",
+    name: "Wall",
+    walkable: false,
+    image: "/assets/tiles/walls/rocky_wall.png",
+  },
+
   //
   // Warp Tiles
   //

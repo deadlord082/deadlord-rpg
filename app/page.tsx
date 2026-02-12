@@ -6,6 +6,8 @@ import { GameViewport } from "./components/GameViewport"
 import { DialogUI } from "./components/Dialog"
 import { useRef } from "react"
 import { GameMenu } from "./components/GameMenu/GameMenu"
+import { ToastUI } from "./components/ToastUI"
+import { ToastSystem } from "@/game/systems/ToastSystem"
 
 const TILE_SIZE = 64
 const VIEW_TILES_X = 17
@@ -32,6 +34,7 @@ export default function Page() {
     }
 
     const loop = () => {
+      ToastSystem.update(g.state)
       forceUpdate((v) => v + 1)
       requestAnimationFrame(loop)
     }
@@ -115,6 +118,7 @@ export default function Page() {
       )}
 
       <DialogUI dialog={game.state.ui.dialog} />
+      <ToastUI toasts={game.state.toasts} />
     </div>
   )
 }

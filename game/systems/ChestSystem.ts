@@ -18,7 +18,6 @@ export const ChestSystem = {
     if (!chest || chest.opened) return false
 
     chest.opened = true
-    chest.blocking = false
 
     runEvent(chest.reward, state)
 
