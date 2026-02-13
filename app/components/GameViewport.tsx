@@ -98,7 +98,6 @@ export function GameViewport({
               height: tileSize,
               left: sx * tileSize,
               top: sy * tileSize,
-              imageRendering: "pixelated",
             }}
           />
         )

@@ -31,7 +31,9 @@ export function runEvent(event: GameEvent, state: GameState) {
       break
 
     case "merchant":
+      state.running = false
       state.ui.merchant = event
+      ;(state as any)._game?.notifyUI()
       break
 
     case "reward":

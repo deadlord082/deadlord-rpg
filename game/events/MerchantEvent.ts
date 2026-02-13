@@ -1,10 +1,8 @@
 export interface MerchantEvent {
-    type: "merchant"
-    beforeDialog?: string
-    afterDialog?: string
-    inventory: {
-      itemId: string
-      price: number
-    }[]
-  }
-  
+  type: "merchant"
+  inventory: {
+    itemId: string
+    price: number
+    stock?: number | null
+  }[]
+}

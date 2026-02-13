@@ -7,7 +7,14 @@ import { ChestSystem } from "../systems/ChestSystem"
 
 export function bindKeyboard(game: Game) {
   window.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && !game.state.ui.menuOpen) {
+    const isAnyUIOpen =
+      game.state.ui.menuOpen ||
+      game.state.ui.merchant ||
+      game.state.ui.dialog ||
+      game.state.ui.choice ||
+      game.state.ui.fight
+
+    if (e.key === "Escape" && !isAnyUIOpen) {
       game.state.ui.menuOpen = true
       game.state.running = false
       game.state.ui.menuTab = null // default tab

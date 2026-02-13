@@ -51,7 +51,10 @@ export const NPCS = {
         {
           type: "merchant",
           inventory: [
-            { itemId: "potion", price: 10 }
+            { itemId: "potion", price: 10, stock: null },
+            { itemId: "great_potion", price: 25, stock: 5 },
+            { itemId: "ultima_potion", price: 100, stock: 1 },
+            { itemId: "old_key", price: 50, stock: 1 },
           ]
         },
         { type: "dialog", text: "Come again!" }

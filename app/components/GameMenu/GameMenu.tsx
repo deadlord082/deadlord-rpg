@@ -1,6 +1,5 @@
 import { useState } from "react"
 import { Player } from "@/game/entities/Player"
-import { Item } from "@/game/data/items/itemTypes"
 
 import { menuKeyboard } from "@/game/input/MenuKeyboard"
 
@@ -33,7 +32,6 @@ export function GameMenu({
 
   // inventory-related state
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const [hoveredItem, setHoveredItem] = useState<Item | null>(null)
   const [itemDetailsIndex, setItemDetailsIndex] = useState<number | null>(null)
 
   // keyboard handling (externalized 👍)
@@ -89,8 +87,6 @@ export function GameMenu({
           selectedIndex={selectedIndex}
           setSelectedIndex={setSelectedIndex}
           setItemDetailsIndex={setItemDetailsIndex}
-          hoveredItem={hoveredItem}
-          setHoveredItem={setHoveredItem}
         />
       )}
 

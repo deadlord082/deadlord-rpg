@@ -19,7 +19,6 @@ const renderStat = (
         style={{
           width: 80,
           height: 80,
-          imageRendering: "pixelated",
         }}
       />
       <span>
@@ -32,14 +31,6 @@ const renderStat = (
 }
 
 export function StatusTab({ player }: { player: Player }) {
-  const statConfig = [
-    { key: "strength", value: player.stats.strength },
-    { key: "defense", value: player.stats.defense },
-    { key: "speed", value: player.stats.speed },
-    { key: "luck", value: player.stats.luck },
-    { key: "charisma", value: player.stats.charisma },
-  ]
-
   return (
     <div
       style={{
@@ -73,7 +64,6 @@ export function StatusTab({ player }: { player: Player }) {
           style={{
             width: 28,
             height: 28,
-            imageRendering: "pixelated",
           }}
         />
       </div>

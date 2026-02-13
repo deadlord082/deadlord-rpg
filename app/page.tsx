@@ -8,6 +8,7 @@ import { useRef } from "react"
 import { GameMenu } from "./components/GameMenu/GameMenu"
 import { ToastUI } from "./components/ToastUI"
 import { ToastSystem } from "@/game/systems/ToastSystem"
+import { ShopUI } from "./components/ShopUi"
 
 const TILE_SIZE = 64
 const VIEW_TILES_X = 17
@@ -111,6 +112,18 @@ export default function Page() {
           initialTab={game.state.ui.menuTab ?? null}
           onClose={() => {
             game.state.ui.menuOpen = false
+            game.state.running = true
+            ;(game.state as any)._game?.notifyUI()
+          }}
+        />
+      )}
+
+      {game.state.ui.merchant && (
+        <ShopUI
+          state={game.state}
+          event={game.state.ui.merchant}
+          onClose={() => {
+            game.state.ui.merchant = undefined
             game.state.running = true
             ;(game.state as any)._game?.notifyUI()
           }}

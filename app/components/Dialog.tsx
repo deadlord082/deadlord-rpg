@@ -30,12 +30,11 @@ export function DialogUI({ dialog }: DialogUIProps) {
           alt={line.name}
           style={{
             position: "absolute",
-            bottom: DIALOG_HEIGHT - 40, // overlap dialog box
+            bottom: DIALOG_HEIGHT - 40,
             [side]: 24,
             height: PORTRAIT_HEIGHT,
             width: "auto",
             zIndex: 5,
-            imageRendering: "pixelated",
           }}
         />
       )}
