@@ -5,6 +5,7 @@ import { loadDialog } from "../data/dialogs/dialogLoader"
 import { DialogLine } from "../data/dialogs/DialogLine"
 import { InventorySystem } from "../systems/InventorySystem"
 import { ToastSystem } from "../systems/ToastSystem"
+import { LevelSystem } from "../systems/LevelSystem"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -82,12 +83,28 @@ function handleWarp(
   state.ui = {}
 }
 
-function handleRewardEvent(event: { items?: string[]; gold?: number }, state: GameState) {
+function handleRewardEvent(event: { items?: string[]; gold?: number; xp?: number }, state: GameState) {
   const player = state.player
 
   if (event.gold) {
     player.gold += event.gold
     ToastSystem.addGoldToast(state, event.gold)
+  }
+
+  if (event.xp) {
+    const levelUps = LevelSystem.gainXP(player, event.xp)
+  
+    ToastSystem.addXpToast(state, event.xp)
+  
+    if (levelUps.length > 0) {
+      const first = levelUps[0]
+  
+      state.running = false
+      state.ui.levelUp = {
+        newLevel: first.level,
+        statGains: first.gains,
+      }
+    }
   }
 
   if (event.items) {

@@ -9,6 +9,7 @@ import { GameMenu } from "./components/GameMenu/GameMenu"
 import { ToastUI } from "./components/ToastUI"
 import { ToastSystem } from "@/game/systems/ToastSystem"
 import { ShopUI } from "./components/ShopUi"
+import { LevelUpUI } from "./components/LevelUpUi"
 
 const TILE_SIZE = 64
 const VIEW_TILES_X = 17
@@ -132,6 +133,10 @@ export default function Page() {
 
       <DialogUI dialog={game.state.ui.dialog} />
       <ToastUI toasts={game.state.toasts} />
+
+      {game.state.ui.levelUp && (
+        <LevelUpUI state={game.state} />
+      )}
     </div>
   )
 }

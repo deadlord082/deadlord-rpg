@@ -19,7 +19,6 @@ type MenuState = "menu" | "status" | "inventory"
 export function GameMenu({
   player,
   onClose,
-  initialTab = null,
 }: GameMenuProps) {
   const menuOptions: ("status" | "inventory" | "close")[] = [
     "status",

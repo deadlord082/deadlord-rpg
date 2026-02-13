@@ -28,6 +28,26 @@ export const ToastSystem = {
         })
     },
 
+    addXpToast(state: GameState, amount: number) {
+        state.toasts.push({
+          id: `${Date.now()}-${Math.random()}`,
+          type: "xp",
+          message: `Obtained ${amount} XP`,
+          icon: "/assets/ui/xp.png",
+          createdAt: Date.now(),
+          duration: 3000,
+        })
+    },
+
+    addLevelUpToast(state: GameState, level: number) {
+        state.ui.toasts.push({
+          type: "levelup",
+          message: `Level Up! You are now level ${level}!`,
+          duration: 3000,
+          icon: "/assets/ui/levelup.png"
+        })
+    },
+
     update(state: GameState) {
         const now = Date.now()
         state.toasts = state.toasts.filter(

@@ -23,6 +23,17 @@ export function bindKeyboard(game: Game) {
       return
     }
 
+    if (game.state.ui.levelUp) {
+      if (e.key === "Enter" || e.key === " ") {
+        game.state.ui.levelUp = undefined
+        game.state.running = true
+        ;(game.state as any)._game?.notifyUI()
+      }
+    
+      e.preventDefault()
+      return
+    }
+
     if (!game.state.running) return
 
     switch (e.key) {

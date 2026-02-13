@@ -21,6 +21,10 @@ export interface GameState {
     fight?: FightEvent
     menuOpen?: boolean
     menuTab?: "status" | "inventory" | "close" | null
+    levelUp?: {
+      newLevel: number
+      statGains: Record<string, number>
+    }
   }
 
   toasts: Toast[]

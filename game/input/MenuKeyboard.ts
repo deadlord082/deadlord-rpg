@@ -56,10 +56,10 @@ export function menuKeyboard({
 
       // MENU navigation
       if (activeTab === "menu") {
-        if (e.key === "ArrowRight") {
+        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
           setMenuIndex((menuIndex + 1) % menuOptions.length)
         }
-        if (e.key === "ArrowLeft") {
+        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") {
           setMenuIndex((menuIndex - 1 + menuOptions.length) % menuOptions.length)
         }
 
