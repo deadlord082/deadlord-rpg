@@ -102,7 +102,8 @@ function handleRewardEvent(event: { items?: string[]; gold?: number; xp?: number
       state.running = false
       state.ui.levelUp = {
         newLevel: first.level,
-        statGains: first.gains,
+        previousStats: first.previousStats,
+        statGains: first.statGains,
       }
     }
   }

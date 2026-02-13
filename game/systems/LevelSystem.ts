@@ -4,15 +4,16 @@ export const LevelSystem = {
   gainXP(player: Player, amount: number) {
     player.xp += amount
   
-    const levelUps: { level: number; gains: Record<string, number> }[] = []
+    const levelUps: any[] = []
   
     while (player.xp >= player.xpToNextLevel) {
       player.xp -= player.xpToNextLevel
-      const gains = this.levelUp(player)
+  
+      const result = this.levelUp(player)
   
       levelUps.push({
         level: player.level,
-        gains,
+        ...result,
       })
     }
   
@@ -20,12 +21,21 @@ export const LevelSystem = {
   },
 
   levelUp(player: Player) {
+    const previousStats = {
+      maxHp: player.maxHp,
+      strength: player.stats.strength,
+      defense: player.stats.defense,
+      speed: player.stats.speed,
+      luck: player.stats.luck,
+      charisma: player.stats.charisma,
+    }
+  
     const statGains = {
       maxHp: 5,
       strength: 1,
       defense: 1,
       speed: 1,
-      luck: 1,
+      luck: 0.5,
       charisma: 1,
     }
   
@@ -46,6 +56,9 @@ export const LevelSystem = {
       critDamage: player.stats.critDamage,
     }
   
-    return statGains
+    return {
+      previousStats,
+      statGains,
+    }
   }
 }

@@ -21,6 +21,7 @@ export const testMap: GameMap = {
 
   entities: [
     NPCS.bob,
+    NPCS.dev,
     createChest(
       "chest1",
       1,

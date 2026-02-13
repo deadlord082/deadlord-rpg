@@ -11,13 +11,25 @@ const NPC_SPRITES = {
 
 // NPC definitions
 export const NPCS = {
-    bob: createNPC(
-        "npc1",
-        "Bob",
-        2, 1,
-        NPC_SPRITES,
-        { type: "dialog", dialogId: "npcGreeting" }
-      ),
+  dev: createNPC(
+    "npc0",
+    "DEV",
+    6, 6,
+    NPC_SPRITES,
+    {
+      type: "reward", gold: 500, xp: 200
+    },
+    Direction.Right
+  ),
+
+  bob: createNPC(
+    "npc1",
+    "Bob",
+    2, 1,
+    NPC_SPRITES,
+    { type: "dialog", dialogId: "npcGreeting" }
+  ),
+    
   john: createNPC(
     "npc2",
     "John",

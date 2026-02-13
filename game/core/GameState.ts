@@ -23,6 +23,7 @@ export interface GameState {
     menuTab?: "status" | "inventory" | "close" | null
     levelUp?: {
       newLevel: number
+      previousStats: Record<string, number>
       statGains: Record<string, number>
     }
   }
