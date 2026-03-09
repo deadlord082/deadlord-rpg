@@ -18,7 +18,7 @@ export function bindKeyboard(game: Game) {
       game.state.ui.menuOpen = true
       game.state.running = false
       game.state.ui.menuTab = null // default tab
-      ;(game.state as any)._game?.notifyUI()
+      game.state._eventBus?.emit("uiUpdate")
       e.preventDefault()
       return
     }
@@ -27,7 +27,7 @@ export function bindKeyboard(game: Game) {
       if (e.key === "Enter" || e.key === " ") {
         game.state.ui.levelUp = undefined
         game.state.running = true
-        ;(game.state as any)._game?.notifyUI()
+        game.state._eventBus?.emit("uiUpdate")
       }
     
       e.preventDefault()

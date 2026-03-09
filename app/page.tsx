@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react"
 import { Game, bindKeyboard, createPlayer, loadMap } from "@/game"
+import { animationScheduler } from "@/game/core/AnimationScheduler"
 import { GameViewport } from "./components/GameViewport"
 import { DialogUI } from "./components/Dialog"
 import { useRef } from "react"
@@ -10,6 +11,9 @@ import { ToastUI } from "./components/ToastUI"
 import { ToastSystem } from "@/game/systems/ToastSystem"
 import { ShopUI } from "./components/ShopUi"
 import { LevelUpUI } from "./components/LevelUpUi"
+import { CombatUI } from "./components/CombatUi"
+import { CombatSystem } from "@/game/systems/CombatSystem"
+import { runEvent } from "@/game/events/EventRunner"
 
 const TILE_SIZE = 64
 const VIEW_TILES_X = 17
@@ -29,14 +33,36 @@ export default function Page() {
 
     bindKeyboard(g)
 
-    g.onUIChange = () => {
-      if (g.state.ui.dialog) {
-        dialogLockRef.current = true
-      }
-    }
+    // keep dialogLock in sync when UI updates via event bus
+    const unsub = g.state._eventBus?.on("uiUpdate", () => {
+      if (g.state.ui.dialog) dialogLockRef.current = true
+    })
 
-    const loop = () => {
+    // fixed timestep simulation + animation scheduler
+    let last = performance.now()
+    const timestep = 1000 / 60 // 60Hz
+    let accumulator = 0
+
+    const loop = (now: number) => {
+      const frameDelta = now - last
+      last = now
+      accumulator += frameDelta
+
+      // update toast and animations per frame
       ToastSystem.update(g.state)
+      // update animation scheduler (delta in seconds)
+      const frameDeltaSeconds = frameDelta / 1000
+      animationScheduler.update(frameDeltaSeconds)
+
+      // run fixed timesteps for game simulation
+      while (accumulator >= timestep) {
+        const dt = timestep / 1000
+        if (g.state.combat) {
+          CombatSystem.update(g.state.combat, g.state, dt)
+        }
+        accumulator -= timestep
+      }
+
       forceUpdate((v) => v + 1)
       requestAnimationFrame(loop)
     }
@@ -44,6 +70,9 @@ export default function Page() {
 
     g.start()
     setGame(g)
+    return () => {
+      if (unsub) unsub()
+    }
   }, [])
 
   useEffect(() => {
@@ -74,9 +103,7 @@ export default function Page() {
   
           const next = game.state.eventQueue.shift()
           if (next) {
-            import("@/game/events/EventRunner").then(({ runEvent }) => {
-              runEvent(next, game.state)
-            })
+            runEvent(next, game.state)
           }
         }
       }
@@ -114,7 +141,32 @@ export default function Page() {
           onClose={() => {
             game.state.ui.menuOpen = false
             game.state.running = true
-            ;(game.state as any)._game?.notifyUI()
+            game.state._eventBus?.emit("uiUpdate")
+          }}
+        />
+      )}
+
+      {game.state.combat && (
+        <CombatUI
+          state={game.state}
+          onAction={(action) => {
+            if (!game.state.combat) return
+            const combat = game.state.combat
+            switch (action) {
+              case "attack":
+                CombatSystem.playerAttack(combat, 0)
+                break
+              case "guard":
+                CombatSystem.playerGuard(combat)
+                break
+              case "skill":
+                combat.log.push("Skill not implemented yet.")
+                combat.awaitingPlayerInput = false
+                break
+              case "flee":
+                CombatSystem.attemptFlee(combat, game.state)
+                break
+            }
           }}
         />
       )}
@@ -126,7 +178,7 @@ export default function Page() {
           onClose={() => {
             game.state.ui.merchant = undefined
             game.state.running = true
-            ;(game.state as any)._game?.notifyUI()
+            game.state._eventBus?.emit("uiUpdate")
           }}
         />
       )}

@@ -23,7 +23,7 @@ export const PickupSystem = {
     ToastSystem.addItemToast(state, item.itemId)
 
     map.entities = map.entities.filter(e => e.id !== item.id)
-    ;(state as any)._game?.notifyUI()
+    state._eventBus?.emit("uiUpdate")
   },
 
   pickupFacing(state: GameState) {
@@ -45,6 +45,6 @@ export const PickupSystem = {
     state.currentMap.entities =
       state.currentMap.entities.filter(e => e.id !== item.id)
 
-    ;(state as any)._game?.notifyUI()
+    state._eventBus?.emit("uiUpdate")
   },
 }

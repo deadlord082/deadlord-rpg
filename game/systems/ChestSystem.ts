@@ -21,7 +21,7 @@ export const ChestSystem = {
 
     runEvent(chest.reward, state)
 
-    ;(state as any)._game?.notifyUI()
+    state._eventBus?.emit("uiUpdate")
     return true
   }
 }

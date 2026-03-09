@@ -45,7 +45,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
     setModalOpen(false)
     setQuantity(1)
   
-    ;(state as any)._game?.notifyUI()
+    ;(state as any)._eventBus?.emit("uiUpdate")
   }
 
   useEffect(() => {
@@ -126,6 +126,17 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
     return () => window.removeEventListener("keydown", handleKey)
   }, [selectedIndex, modalOpen, quantity, event.inventory, player.gold])
 
+  // scroll selected item into view
+  const itemRefs: React.MutableRefObject<HTMLDivElement | null>[] = []
+  // we'll attach refs dynamically in the render below via callback ref
+
+  useEffect(() => {
+    try {
+      const el = document.querySelectorAll(".shop-item")[selectedIndex] as HTMLElement | undefined
+      if (el) el.scrollIntoView({ block: "nearest" })
+    } catch (e) {}
+  }, [selectedIndex])
+
   return (
     <div
       style={{
@@ -190,6 +201,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
           return (
             <div
               key={itemId}
+              className="shop-item"
               style={{
                 display: "flex",
                 alignItems: "center",
@@ -280,7 +292,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
 
       {/* Close */}
       <button
-        onClick={() => {
+          onClick={() => {
           state.ui.merchant = undefined
           state.running = true
 
@@ -291,6 +303,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
             })
           }
 
+          ;(state as any)._eventBus?.emit("uiUpdate")
           onClose()
         }}
       >

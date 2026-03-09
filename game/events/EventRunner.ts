@@ -6,6 +6,7 @@ import { DialogLine } from "../data/dialogs/DialogLine"
 import { InventorySystem } from "../systems/InventorySystem"
 import { ToastSystem } from "../systems/ToastSystem"
 import { LevelSystem } from "../systems/LevelSystem"
+import { createEnemyFromId } from "../entities/createEnemyFromId"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -20,11 +21,11 @@ export function runEvent(event: GameEvent, state: GameState) {
         lines = event.lines
       } else if ("text" in event) {
         // fallback for old single-line dialogs
-        lines = [{ name: "???", message: Array.isArray(event.text) ? event.text.join("\n") : event.text }]
+        lines = [{ name: "", message: Array.isArray(event.text) ? event.text.join("\n") : event.text }]
       }
 
       state.ui.dialog = { lines, index: 0 }
-      ;(state as any)._game?.notifyUI()
+      state._eventBus?.emit("uiUpdate")
       break
 
     case "choice":
@@ -34,16 +35,42 @@ export function runEvent(event: GameEvent, state: GameState) {
     case "merchant":
       state.running = false
       state.ui.merchant = event
-      ;(state as any)._game?.notifyUI()
+      state._eventBus?.emit("uiUpdate")
       break
 
     case "reward":
       handleRewardEvent(event, state)
       break
 
-    case "fight":
+    case "fight": {
+      const ids = event.enemyIds ?? (event.enemyId ? [event.enemyId] : [])
+
+      state.running = false
+      // expose the fight event in the UI state so global input is blocked
       state.ui.fight = event
+
+      const enemies = ids.map(id => createEnemyFromId(id))
+
+      state.combat = {
+        player: state.player,
+        enemies,
+        enemyGauges: enemies.map(() => 0),
+
+        playerGauge: 0,
+        threshold: 100,
+
+        actionTimer: 0,
+        pendingAction: undefined,
+        pendingEnemyIndex: undefined,
+
+        awaitingPlayerInput: false,
+        log: [],
+        resolved: false,
+      }
+
+      state._eventBus?.emit("uiUpdate")
       break
+    }
 
     case "cutscene":
       console.log("Trigger cutscene:", event.id)
@@ -115,6 +142,6 @@ function handleRewardEvent(event: { items?: string[]; gold?: number; xp?: number
     }
   }
 
-  ;(state as any)._game?.notifyUI()
+  state._eventBus?.emit("uiUpdate")
 }
 

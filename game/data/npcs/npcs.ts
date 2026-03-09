@@ -27,7 +27,15 @@ export const NPCS = {
     "Bob",
     2, 1,
     NPC_SPRITES,
-    { type: "dialog", dialogId: "npcGreeting" }
+    { type: "dialog", dialogId: "npcBob" }
+  ),
+
+  jason: createNPC(
+    "jason",
+    "Jason",
+    1, 5,
+    NPC_SPRITES,
+    { type: "dialog", dialogId: "npcJason" }
   ),
     
   john: createNPC(
@@ -67,6 +75,18 @@ export const NPCS = {
             { itemId: "great_potion", price: 25, stock: 5 },
             { itemId: "ultima_potion", price: 100, stock: 1 },
             { itemId: "old_key", price: 50, stock: 1 },
+            { itemId: "iron_sword", price: 50, stock: 1 },
+            { itemId: "iron_shield", price: 50, stock: 1 },
+            { itemId: "iron_mace", price: 50, stock: 1 },
+            { itemId: "iron_chest_plate", price: 50, stock: 1 },
+            { itemId: "iron_helmet", price: 50, stock: 1 },
+            { itemId: "iron_ring", price: 50, stock: 1 },
+            { itemId: "stone_sword", price: 20, stock: 1 },
+            { itemId: "wooden_shield", price: 20, stock: 1 },
+            { itemId: "stone_mace", price: 20, stock: 1 },
+            { itemId: "leather_chest_plate", price: 20, stock: 1 },
+            { itemId: "leather_helmet", price: 20, stock: 1 },
+            { itemId: "gold_ring", price: 100, stock: 1 },
           ]
         },
         { type: "dialog", text: "Come again!" }
@@ -75,21 +95,34 @@ export const NPCS = {
     Direction.Left
   ),
 
-  tristan: createNPC(
+  goblin_leader: createNPC(
     "npc4",
-    "Tristan",
+    "Goblin Leader",
     6, 1,
     NPC_SPRITES,
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "You killed the goblin" },
-        // { type: "fight", enemyId: "goblin_leader" },
-        // { type: "reward", items: ["potion"], gold: 50 }
-        { type: "reward", gold: 50, xp: 20 }
+        { type: "fight", enemyId: "goblin_leader" },
+        { type: "dialog", text: "You defeated the goblin Leader !" }
       ]
     },
     Direction.Right
+  ),
+
+  goblin_pair: createNPC(
+    "npc6",
+    "Goblin Pair",
+    5, 1,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "fight", enemyIds: ["goblin_leader", "slime"] },
+        { type: "dialog", text: "You defeated both goblins!" }
+      ]
+    },
+    Direction.Left
   ),
 
   pero: createNPC(

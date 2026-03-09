@@ -14,7 +14,7 @@ export function LevelUpUI({ state }: LevelUpUIProps) {
   function close() {
     state.ui.levelUp = undefined
     state.running = true
-    ;(state as any)._game?.notifyUI()
+    ;(state as any)._eventBus?.emit("uiUpdate")
   }
 
   const statOrder = [

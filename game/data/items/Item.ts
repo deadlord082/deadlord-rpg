@@ -1,4 +1,4 @@
-import { ItemRarity } from "./itemRarity"
+import { ItemRarity } from "./ItemRarity"
 
 export interface Item {
   id: string

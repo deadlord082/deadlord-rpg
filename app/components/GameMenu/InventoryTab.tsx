@@ -1,4 +1,4 @@
-import { Item } from "@/game/data/items/itemTypes"
+import { Item } from "@/game/data/items/Item"
 import { Player } from "@/game/entities/Player"
 import { RARITY_STYLES } from "@/game/data/items/rarityColors"
 

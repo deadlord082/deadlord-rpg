@@ -6,6 +6,8 @@ import { MerchantEvent } from "../events/MerchantEvent"
 import { GameEvent } from "../events/Event"
 import { DialogLine } from "../data/dialogs/DialogLine"
 import { Toast } from "../data/toasts/toast"
+import { CombatState } from "./CombatState"
+import { EventBus } from "./EventBus"
 
 export interface GameState {
   currentMap: GameMap
@@ -28,9 +30,12 @@ export interface GameState {
     }
   }
 
+  combat?: CombatState
   toasts: Toast[]
   eventQueue: GameEvent[]
   running: boolean
+  // Optional event bus injected by the Game instance for engine->UI events
+  _eventBus?: EventBus
 }
 
 export function createInitialGameState(

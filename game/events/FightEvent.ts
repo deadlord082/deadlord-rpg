@@ -1,5 +1,7 @@
 export interface FightEvent {
-    type: "fight"
-    enemyId: string
-  }
+  type: "fight"
+  // single enemy id or multiple enemy ids
+  enemyId?: string
+  enemyIds?: string[]
+}
   

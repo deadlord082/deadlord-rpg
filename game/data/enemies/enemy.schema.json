@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Enemy",
+  "type": "object",
+  "required": ["id", "name", "maxHp", "stats", "xpReward", "goldReward"],
+  "properties": {
+    "id": { "type": "string" },
+    "name": { "type": "string" },
+    "image": { "type": "string" },
+    "maxHp": { "type": "number" },
+    "stats": { "type": "object" },
+    "xpReward": { "type": "number" },
+    "goldReward": { "type": "number" }
+  }
+}

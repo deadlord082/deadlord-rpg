@@ -21,7 +21,8 @@ export const frontYardHeroHouseMap: GameMap = {
   entities: [
       NPCS.john,
       NPCS.jacob,
-      NPCS.tristan,
+      NPCS.goblin_leader,
+      NPCS.goblin_pair,
       NPCS.pero,
       createItemEntity("item2", "crown_of_deadlord", 3, 3, true),
     ],

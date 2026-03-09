@@ -1,9 +1,11 @@
 // game/data/dialogs/dialogLoader.ts
-import npcGreeting from "./data/npcGreeting.json"
-import { DialogLine } from "@/game/events/DialogTypes"
+import npcBob from "./data/npcBob.json"
+import npcJason from "./data/npcJason.json"
+import { DialogLine } from "./DialogLine"
 
 const dialogs: Record<string, DialogLine[]> = {
-    npcGreeting,
+  npcBob,
+  npcJason,
 }
 
 export function loadDialog(id: string): DialogLine[] {

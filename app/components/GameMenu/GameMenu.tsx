@@ -7,22 +7,24 @@ import { MenuTabs } from "./MenuTabs"
 import { StatusTab } from "./StatusTab"
 import { InventoryTab } from "./InventoryTab"
 import { ItemDetailsModal } from "./ItemDetailsModal"
+import { EquipmentTab } from "./EquipmentTab"
 
 interface GameMenuProps {
   player: Player
   onClose: () => void
-  initialTab?: "status" | "inventory" | null
+  initialTab?: "status" | "inventory" |  "equipment" | null
 }
 
-type MenuState = "menu" | "status" | "inventory"
+type MenuState = "menu" | "status" | "inventory" | "equipment"
 
 export function GameMenu({
   player,
   onClose,
 }: GameMenuProps) {
-  const menuOptions: ("status" | "inventory" | "close")[] = [
+  const menuOptions: ("status" | "inventory" |  "equipment" | "close")[] = [
     "status",
     "inventory",
+    "equipment",
     "close",
   ]
 
@@ -32,6 +34,11 @@ export function GameMenu({
   // inventory-related state
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [itemDetailsIndex, setItemDetailsIndex] = useState<number | null>(null)
+  // Equipment-related state
+  const [selectedEquipSlot, setSelectedEquipSlot] = useState(0)
+  const [equipmentModalSlot, setEquipmentModalSlot] = useState<string | null>(null)
+  const [selectedEquipItemIndex, setSelectedEquipItemIndex] = useState(0)
+  
 
   // keyboard handling (externalized 👍)
   menuKeyboard({
@@ -44,6 +51,12 @@ export function GameMenu({
     setSelectedIndex,
     itemDetailsIndex,
     setItemDetailsIndex,
+    selectedEquipSlot,
+    setSelectedEquipSlot,
+    equipmentModalSlot,
+    setEquipmentModalSlot,
+    selectedEquipItemIndex,
+    setSelectedEquipItemIndex,
     player,
     onClose,
   })
@@ -95,6 +108,28 @@ export function GameMenu({
           player={player}
           index={itemDetailsIndex}
           onClose={() => setItemDetailsIndex(null)}
+        />
+      )}
+
+      {activeTab === "equipment" && (
+        <EquipmentTab
+          player={player}
+          selectedSlotIndex={selectedEquipSlot}
+          setSelectedSlotIndex={setSelectedEquipSlot}
+          modalSlot={equipmentModalSlot}
+          setModalSlot={setEquipmentModalSlot}
+          selectedItemIndex={selectedEquipItemIndex}
+          setSelectedItemIndex={setSelectedEquipItemIndex}
+            onEquipItem={(slot, item) => {
+            // unequip old
+            for (const s of Array.isArray(item.slot) ? item.slot : [item.slot]) {
+              if (player.equipment[s]?.id === item.id) player.equipment[s] = undefined
+            }
+            player.equipment[slot] = item
+            // remove from inventory
+              player.inventory = player.inventory.filter((i) => i.id !== item.id)
+              (player as any)._eventBus?.emit("uiUpdate")
+          }}
         />
       )}
     </div>

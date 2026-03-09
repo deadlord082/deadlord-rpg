@@ -33,7 +33,7 @@ export const LevelSystem = {
     const statGains = {
       maxHp: 5,
       strength: 1,
-      defense: 1,
+      defense: 0,
       speed: 1,
       luck: 0.5,
       charisma: 1,

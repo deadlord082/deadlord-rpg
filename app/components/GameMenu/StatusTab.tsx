@@ -2,7 +2,8 @@ import { Player } from "@/game/entities/Player"
 
 const renderStat = (
   name: string,
-  value: string | number,
+  baseValue: string | number,
+  totalValue: string | number,
   isPercent?: boolean
 ) => {
   return (
@@ -21,16 +22,33 @@ const renderStat = (
           height: 80,
         }}
       />
+
       <span>
-        <strong style={{ textTransform: "capitalize" }}>{name}:</strong>{" "}
-        {value}
-        {isPercent ? "%" : ""}
+        <strong style={{ textTransform: "capitalize" }}>
+          {name}:
+        </strong>{" "}
+        {baseValue}
+        {isPercent ? "%" : ""}{" "}
+        <span
+          style={{
+            color:
+              totalValue > baseValue
+                ? "#4caf50"
+                : totalValue < baseValue
+                ? "#f44336"
+                : "#aaa"
+          }}
+        >
+          ({totalValue}
+          {isPercent ? "%" : ""})
+        </span>
       </span>
     </div>
   )
 }
 
 export function StatusTab({ player }: { player: Player }) {
+  const totalStats = player.getTotalStats()
   return (
     <div
       style={{
@@ -119,17 +137,26 @@ export function StatusTab({ player }: { player: Player }) {
   
       {/* Left Column — 4 Stats */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {renderStat("strength", player.stats.strength)}
-        {renderStat("defense", player.stats.defense)}
-        {renderStat("speed", player.stats.speed)}
-        {renderStat("luck", player.stats.luck)}
+        {renderStat("strength", player.stats.strength, totalStats.strength)}
+        {renderStat("defense", player.stats.defense, totalStats.defense)}
+        {renderStat("speed", player.stats.speed, totalStats.speed)}
+        {renderStat("luck", player.stats.luck, totalStats.luck)}
       </div>
   
       {/* Right Column — 3 Stats */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-        {renderStat("charisma", player.stats.charisma)}
-        {renderStat("crit chance", player.stats.critChance, true)}
-        {renderStat("crit damage", `x${player.stats.critDamage}`)}
+        {renderStat("charisma", player.stats.charisma, totalStats.charisma)}
+        {renderStat(
+          "crit chance",
+          player.stats.critChance,
+          totalStats.critChance,
+          true
+        )}
+        {renderStat(
+          "crit damage",
+          `x${player.stats.critDamage}`,
+          `x${totalStats.critDamage}`
+        )}
       </div>
     </div>
   )
