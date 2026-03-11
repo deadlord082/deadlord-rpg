@@ -4,13 +4,6 @@ Below are the concrete fixes to apply, short rationale, and where to change code
 
 
 ---
-FUTURE UPGRADE
- - Add per-weapon attack animations using `AnimationScheduler` and sprite strips / frame sets; map animation to weapon id.
- - Implement save slots & persistence: localStorage-based save with defeated-enemies list and world flags; export/import via JSON file.
- - Add settings menu for keybindings and audio/graphics toggles.
- - Add a death screen UX for defeat with options: main menu / load save.
-
----
 
 UPGRADES :
 These are concrete, scoped upgrades we can implement next. Each item is small enough to complete in a short PR.
@@ -33,6 +26,15 @@ These are concrete, scoped upgrades we can implement next. Each item is small en
 - add an event that when trigger load a cinematic. with moving npc + text + moment without text
 - add sound + music trigger for the game
   
+--------
+
+FUTURE UPGRADE
+ - Add per-weapon attack animations using `AnimationScheduler` and sprite strips / frame sets; map animation to weapon id.
+ - Implement save slots & persistence: localStorage-based save with defeated-enemies list and world flags; export/import via JSON file.
+ - Add settings menu for keybindings and audio/graphics toggles.
+ - Add a death screen UX for defeat with options: main menu / load save.
+
+---
 
 
 If many entities, consider an ECS or data-oriented approach for systems that need to iterate many entities (movement, collision).

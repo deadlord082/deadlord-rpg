@@ -159,6 +159,9 @@ export default function Page() {
               case "guard":
                 CombatSystem.playerGuard(combat)
                 break
+              case "item":
+                // handled in CombatUI (items open their own picker)
+                break
               case "skill":
                 combat.log.push("Skill not implemented yet.")
                 combat.awaitingPlayerInput = false

@@ -98,20 +98,8 @@ export function menuKeyboard({
 
       // INVENTORY navigation
       if (activeTab === "inventory") {
-        // If item modal is open, handle modal-specific keys and block inventory navigation
+        // If item modal is open, let the modal handle keys (do not intercept)
         if (itemDetailsIndex !== null) {
-          // Modal: Enter closes modal (placeholder), 'd' discards
-          if (e.key === "Enter") {
-            setItemDetailsIndex(null)
-          }
-
-          if (e.key === "d" || e.key === "D" || e.key === "Delete" || e.key === "Backspace") {
-            // discard selected item
-            player.inventory.splice(itemDetailsIndex, 1)
-            setItemDetailsIndex(null)
-          }
-
-          e.preventDefault()
           return
         }
 

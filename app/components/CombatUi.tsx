@@ -6,10 +6,13 @@ import { GameState } from "@/game/core/GameState"
 import { CombatState } from "@/game/core/CombatState"
 import { Player } from "@/game/entities/Player"
 import { Enemy } from "@/game/entities/Enemy"
+import { InventorySystem } from "@/game/systems/InventorySystem"
+import { Items } from "@/game/data/items/items"
+import { CombatSystem } from "@/game/systems/CombatSystem"
 
 interface CombatUIProps {
   state: GameState
-  onAction: (action: "attack" | "guard" | "skill" | "flee", targetIndex?: number) => void
+  onAction: (action: "attack" | "guard" | "item" | "flee", targetIndex?: number) => void
 }
 
 export function CombatUI({ state, onAction }: CombatUIProps) {
@@ -20,9 +23,12 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
   const enemies: Enemy[] = (combat as any).enemies ?? []
 
   const [selectedAction, setSelectedAction] = useState<0 | 1 | 2 | 3>(0)
-  const [skillOpen, setSkillOpen] = useState(false)
+  const [itemOpen, setItemOpen] = useState(false)
   const [targetOpen, setTargetOpen] = useState(false)
   const [selectedTarget, setSelectedTarget] = useState(0)
+  const [selectedItemIndex, setSelectedItemIndex] = useState(0)
+  const [itemTargeting, setItemTargeting] = useState(false)
+  const [itemTargetIndex, setItemTargetIndex] = useState(0)
 
   const playerStats = player.getTotalStats()
   const enemyStats = enemies[0]?.getTotalStats()
@@ -34,7 +40,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
       const handleKey = (e: KeyboardEvent) => {
       if (!combat.awaitingPlayerInput) return
 
-      if (!skillOpen) {
+      if (!itemOpen) {
         // navigate main actions
         if (!targetOpen) {
           if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedAction((v) => ((v + 1) % 4) as 0 | 1 | 2 | 3)
@@ -48,9 +54,12 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
         }
 
         if (e.key === "Enter") {
-          const action = ["attack", "guard", "skill", "flee"][selectedAction] as "attack" | "guard" | "skill" | "flee"
-          if (action === "skill") {
-            setSkillOpen(true)
+          const action = ["attack", "guard", "item", "flee"][selectedAction] as "attack" | "guard" | "item" | "flee"
+          if (action === "item") {
+            setItemOpen(true)
+            // set selected to first consumable
+            const consumables = player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0)
+            setSelectedItemIndex(consumables.length ? 0 : -1)
             return
           }
 
@@ -73,17 +82,80 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
           onAction(action)
         }
       } else {
-        // skill selection placeholder
-        if (e.key === "Escape") setSkillOpen(false)
+        // item selection
+        if (e.key === "Escape") {
+          setItemOpen(false)
+          setItemTargeting(false)
+        }
+
+        // navigate items with up/down
+        const consumables = player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0)
+        if (!itemTargeting) {
+          if (e.key === "ArrowDown") setSelectedItemIndex((v) => Math.min(consumables.length - 1, v + 1))
+          if (e.key === "ArrowUp") setSelectedItemIndex((v) => Math.max(0, v - 1))
+        } else {
+          // selecting a target for the item
+          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setItemTargetIndex((v) => (v + 1) % enemies.length)
+          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setItemTargetIndex((v) => (v - 1 + enemies.length) % enemies.length)
+        }
+
         if (e.key === "Enter") {
-          onAction("skill")
-          setSkillOpen(false)
+          const item = consumables[selectedItemIndex]
+          if (!item) return
+
+          // inspect effects to determine whether we need a target
+          const base = Items[item.id]
+          const needsTarget = base.effects?.some(e => e.target === "enemy")
+
+          if (needsTarget && !itemTargeting) {
+            // start targeting mode
+            const firstAlive = enemies.findIndex(e => e.hp > 0)
+            setItemTargetIndex(firstAlive >= 0 ? firstAlive : 0)
+            setItemTargeting(true)
+            return
+          }
+
+          if (needsTarget && itemTargeting) {
+            const res = InventorySystem.useItem(player, item.id, { combat: combat as any, targetIndex: itemTargetIndex })
+            if (Array.isArray(res)) {
+              res.forEach(r => {
+                if (r.type === "damage") combat.log.push(`You used ${item.name} and dealt ${r.amount} damage.`)
+                if (r.type === "debuff") combat.log.push(`You used ${item.name} on ${enemies[r.targetIndex].name}.`)
+              })
+            }
+            // after applying damage/debuffs, check victory
+            const allDead = (combat as any).enemies.every((e: any) => e.hp <= 0)
+            if (allDead) {
+              CombatSystem.handleVictory(state)
+            }
+            combat.awaitingPlayerInput = false
+            setItemOpen(false)
+            setItemTargeting(false)
+            return
+          }
+
+          // non-targeted use (self or all)
+          const res = InventorySystem.useItem(player, item.id, { combat: combat as any })
+          if (Array.isArray(res)) {
+            res.forEach(r => {
+              if (r.type === "heal") combat.log.push(`You used ${item.name} and recovered ${r.amount} HP.`)
+              if (r.type === "buff") combat.log.push(`You used ${item.name}.`)
+              if (r.type === "damage") combat.log.push(`You used ${item.name} and dealt ${r.amount} damage.`)
+            })
+          }
+          // check victory for AoE or other damage
+          const allDead2 = (combat as any).enemies.every((e: any) => e.hp <= 0)
+          if (allDead2) {
+            CombatSystem.handleVictory(state)
+          }
+          combat.awaitingPlayerInput = false
+          setItemOpen(false)
         }
       }
     }
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
-  }, [combat.awaitingPlayerInput, selectedAction, skillOpen, targetOpen, selectedTarget, enemies.length, onAction])
+  }, [combat.awaitingPlayerInput, selectedAction, itemOpen, targetOpen, selectedTarget, enemies.length, onAction])
 
   // gauge bars animation
   const playerGaugePercent = Math.min((combat.playerGauge / 100) * 100, 100)
@@ -141,6 +213,13 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
                   {selectedTarget === idx ? <div style={{ color: "#ff0" }}>◀ Target</div> : null}
                 </div>
               )}
+
+              {/* item targeting highlight */}
+              {itemTargeting && (
+                <div style={{ marginLeft: 8 }}>
+                  {itemTargetIndex === idx ? <div style={{ color: "#0ff" }}>◀ Target</div> : null}
+                </div>
+              )}
             </div>
           )
         })}
@@ -183,30 +262,38 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
       </div>
 
       {/* Action selection */}
-      {combat.awaitingPlayerInput && !skillOpen && (
-        <div style={{ display: "flex", gap: 16 }}>
-          {["ATTACK", "GUARD", "SKILL", "FLEE"].map((a, i) => (
-            <div
-              key={a}
-              style={{
-                padding: "8px 16px",
-                backgroundColor: selectedAction === i ? "#444" : "#222",
-                border: "1px solid white",
-                borderRadius: 4,
-                cursor: "pointer",
-              }}
-            >
-              {a}
+          {combat.awaitingPlayerInput && !itemOpen && (
+            <div style={{ display: "flex", gap: 16 }}>
+              {["ATTACK", "GUARD", "ITEM", "FLEE"].map((a, i) => (
+                <div
+                  key={a}
+                  style={{
+                    padding: "8px 16px",
+                    backgroundColor: selectedAction === i ? "#444" : "#222",
+                    border: "1px solid white",
+                    borderRadius: 4,
+                    cursor: "pointer",
+                  }}
+                >
+                  {a}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      )}
+          )}
 
-      {/* Skill description */}
-      {skillOpen && (
+      {/* Item picker */}
+      {itemOpen && (
         <div style={{ marginTop: 8, padding: 8, backgroundColor: "#111", border: "1px solid white", borderRadius: 4 }}>
-          <strong>Skill:</strong> Not implemented yet
-          <div>Press Enter to use, Escape to cancel</div>
+          <strong>Item:</strong>
+          <div style={{ marginTop: 8 }}>
+            {player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0).length === 0 && <div>No consumables.</div>}
+            {player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0).map((it, idx) => (
+              <div key={it.id} style={{ padding: 4, backgroundColor: idx === selectedItemIndex ? "#333" : "transparent" }}>
+                {it.name} x{it.quantity}
+              </div>
+            ))}
+            <div style={{ marginTop: 6 }}>Enter to use, Escape to cancel, Up/Down to navigate{itemTargeting ? ", Left/Right to pick target" : ""}</div>
+          </div>
         </div>
       )}
     </div>
