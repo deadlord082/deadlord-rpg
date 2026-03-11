@@ -3,44 +3,72 @@ import { EquipmentItem } from "./EquipmentItem"
 
 // Items record supports either regular Item or EquipmentItem
 export const Items: Record<string, Omit<Item, "quantity"> | Omit<EquipmentItem, "quantity">> = {
+  // -----------
+  // Healing Items
+  // -----------
   potion: {
     id: "potion",
     name: "Potion",
     description: "Restores a little HP.",
     image: "/assets/entities/items/potion_rouge.png",
-    rarity: "uncommon",
+    rarity: "common",
     effects: [
       { type: "heal", amount: 25, target: "self" }
     ],
   },
-
   great_potion: {
     id: "great_potion",
     name: "Great Potion",
     description: "Restores a lot of HP.",
-    rarity: "rare",
+    rarity: "uncommon",
     effects: [
       { type: "heal", amount: 75, target: "self" }
     ],
   },
-
   ultima_potion: {
     id: "ultima_potion",
     name: "Ultima Potion",
     description: "Restores all HP.",
-    rarity: "epic",
+    rarity: "rare",
     effects: [
       { type: "heal", percent: true, amount: 100, target: "self" }
     ],
   },
 
+  // -----------
+  // Offensive/Utility items
+  // -----------
+  bomb: {
+    id: "bomb",
+    name: "Bomb",
+    description: "Deals damage to a single enemy.",
+    rarity: "common",
+    effects: [ { type: "damage", amount: 30, target: "enemy" } ],
+  },
+  smoke_bomb: {
+    id: "smoke_bomb",
+    name: "Smoke Bomb",
+    description: "Lowers enemy defense for a few turns.",
+    rarity: "common",
+    effects: [ { type: "debuff", duration: 3, stats: [ { stat: "defense", value: -5, type: "flat" } ], target: "enemy" } ],
+  },
+  tonic: {
+    id: "tonic",
+    name: "Tonic",
+    description: "Increases player's strength for a few turns.",
+    rarity: "common",
+    effects: [ { type: "buff", duration: 3, stats: [ { stat: "strength", value: 5, type: "flat" } ], target: "self" } ],
+  },
+  
+  // -----------
+  // Normal items
+  // -----------
   old_key: {
     id: "old_key",
     name: "Old Key",
     description: "Opens a locked door.",
     rarity: "common",
   },
-
   test: {
     id: "test",
     name: "test",
@@ -48,30 +76,9 @@ export const Items: Record<string, Omit<Item, "quantity"> | Omit<EquipmentItem, 
     rarity: "legendary",
   },
 
-  bomb: {
-    id: "bomb",
-    name: "Bomb",
-    description: "Deals damage to a single enemy.",
-    rarity: "uncommon",
-    effects: [ { type: "damage", amount: 40, target: "enemy" } ],
-  },
-
-  smoke_bomb: {
-    id: "smoke_bomb",
-    name: "Smoke Bomb",
-    description: "Lowers enemy defense for a few turns.",
-    rarity: "rare",
-    effects: [ { type: "debuff", duration: 3, stats: [ { stat: "defense", value: -2, type: "flat" } ], target: "enemy" } ],
-  },
-
-  tonic: {
-    id: "tonic",
-    name: "Tonic",
-    description: "Increases player's strength for a few turns.",
-    rarity: "uncommon",
-    effects: [ { type: "buff", duration: 3, stats: [ { stat: "strength", value: 3, type: "flat" } ], target: "self" } ],
-  },
-
+  // -----------------
+  // Equipment items
+  // -----------------
   crown_of_deadlord: {
     id: "crown_of_deadlord",
     name: "Crown of Deadlord",
@@ -81,11 +88,6 @@ export const Items: Record<string, Omit<Item, "quantity"> | Omit<EquipmentItem, 
     slot: "head",
     stats: { strength: 5, defense: 10, charisma: 20 },
   },
-
-  // 
-  // Equipment items
-  // 
-
   iron_sword: {
     id: "iron_sword",
     name: "Iron Sword",
@@ -152,7 +154,7 @@ export const Items: Record<string, Omit<Item, "quantity"> | Omit<EquipmentItem, 
     description: "Boosts strength",
     rarity: "epic",
     slot: ["accessory1", "accessory2"],
-    stats: { strength: 5 },
+    stats: { strength: 5, charisma: 5 },
   },
 
   stone_sword: {

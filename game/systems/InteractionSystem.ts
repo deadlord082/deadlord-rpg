@@ -31,8 +31,10 @@ export const InteractionSystem = {
 
     // tile interaction
     const tile = getTileAt(state.currentMap, tx, ty)
-    if (tile?.onInteract) {
-      runEvent(tile.onInteract, state)
+    if (tile) {
+      // prefer explicit onInteract, but allow onEnter (warp) to be triggered by pressing Enter
+      if (tile.onInteract) runEvent(tile.onInteract, state)
+      else if (tile.onEnter) runEvent(tile.onEnter, state)
     }
   }
 }

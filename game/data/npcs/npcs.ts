@@ -22,6 +22,9 @@ export const NPCS = {
     Direction.Right
   ),
 
+  // ------------
+  // Villagers
+  // ------------
   bob: createNPC(
     "bob",
     "Bob",
@@ -44,18 +47,64 @@ export const NPCS = {
     1, 1,
     NPC_SPRITES,
     {
-      type: "choice",
-      text: "Do you want to help me?",
-      choices: [
+      type: "sequence",
+      events: [
+        { type: "dialog", text: "Do you want to help me ?" },
         {
-          label: "Yes",
-          event: { type: "dialog", text: "Thank you!" }
-        },
-        {
-          label: "No",
-          event: { type: "dialog", text: "Oh… okay." }
+          type: "choice",
+          text: "help john ?",
+          choices: [
+            {
+              label: "Yes",
+              event: { 
+                type: "sequence",
+                events: [
+                  { type: "dialog", text: "Thanks ! Here, take this potion as a reward." },
+                  { type: "reward", items: ["potion"] },
+                  { type: "removeEntity", entityId: "john"}
+                ]
+              }
+            },
+            {
+              label: "No",
+              event: { 
+                type: "sequence",
+                events: [
+                  { type: "dialog", text: "Oh… okay."},
+                  { type: "removeEntity", entityId: "john"}
+                ]
+              }
+            }
+          ]
         }
       ]
+    }
+  ),
+  john2: createNPC(
+    "john2",
+    "John2",
+    1, 2,
+    NPC_SPRITES,
+    {
+      type: "requireItem",
+      itemId: "potion",
+      consume: true,
+      prompt: "Give John a potion ?",
+      success: { type: "dialog", text: "Thanks for the potion!" },
+      fail: { type: "dialog", text: "You don't have a potion." }
+    }
+  ),
+  john3: createNPC(
+    "john3",
+    "John3",
+    1, 3,
+    NPC_SPRITES,
+    {
+      type: "giveItem",
+      itemId: "potion",
+      consume: true,
+      success: { type: "dialog", text: "Thanks for the potion!" },
+      fail: { type: "dialog", text: "You don't have a potion." }
     }
   ),
 
@@ -94,50 +143,6 @@ export const NPCS = {
     },
     Direction.Left
   ),
-  slime: createNPC(
-    "slime",
-    "Slime",
-    2, 3,
-    NPC_SPRITES,
-    {
-      type: "sequence",
-      events: [
-        { type: "fight", enemyId: "slime" },
-        { type: "dialog", text: "You defeated the slime!" }
-      ]
-    },
-    Direction.Up
-  ),
-
-  goblin_leader: createNPC(
-    "goblin_leader",
-    "Goblin Leader",
-    6, 1,
-    NPC_SPRITES,
-    {
-      type: "sequence",
-      events: [
-        { type: "fight", enemyId: "goblin_leader" },
-        { type: "dialog", text: "You defeated the goblin Leader !" }
-      ]
-    },
-    Direction.Right
-  ),
-
-  goblin_pair: createNPC(
-    "goblin_pair",
-    "Goblin Pair",
-    5, 1,
-    NPC_SPRITES,
-    {
-      type: "sequence",
-      events: [
-        { type: "fight", enemyIds: ["goblin_leader", "slime"] },
-        { type: "dialog", text: "You defeated both goblins!" }
-      ]
-    },
-    Direction.Left
-  ),
 
   pero: createNPC(
     "pero",
@@ -152,5 +157,57 @@ export const NPCS = {
       ]
     },
     Direction.Up
+  ),
+
+  // ------------
+  // Enemies
+  // ------------
+  
+  slime: createNPC(
+    "slime",
+    "Slime",
+    2, 6,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "fight", enemyId: "slime" },
+        { type: "dialog", text: "You defeated the slime!" },
+        { type: "removeEntity", entityId: "slime"}
+      ]
+    },
+    Direction.Up
+  ),
+
+  goblin_leader: createNPC(
+    "goblin_leader",
+    "Goblin Leader",
+    6, 1,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "fight", enemyId: "goblin_leader" },
+        { type: "dialog", text: "You defeated the goblin Leader !" },
+        { type: "removeEntity", entityId: "goblin_leader"}
+      ]
+    },
+    Direction.Right
+  ),
+
+  double_monster: createNPC(
+    "double_monster",
+    "Double Monster",
+    5, 1,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "fight", enemyIds: ["goblin_leader", "slime"] },
+        { type: "dialog", text: "You defeated all the monsters!" },
+        { type: "removeEntity", entityId: "double_monster"}
+      ]
+    },
+    Direction.Left
   ),
 }

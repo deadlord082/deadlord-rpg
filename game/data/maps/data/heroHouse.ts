@@ -33,7 +33,7 @@ export const testMap: GameMap = {
       },
       {
         type: "reward",
-        items: ["potion", "gold_coin","bomb","smoke_bomb","tonic"],
+        items: ["potion", "gold_coin","bomb","smoke_bomb","tonic","ring_of_power"],
         gold: 25,
       }
     ),    

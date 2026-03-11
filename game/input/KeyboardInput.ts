@@ -34,7 +34,8 @@ export function bindKeyboard(game: Game) {
       return
     }
 
-    if (!game.state.running) return
+    // Block movement when the engine is not running or a choice UI is open
+    if (!game.state.running || game.state.ui.choice) return
 
     switch (e.key) {
       case "ArrowUp":

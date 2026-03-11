@@ -6,6 +6,9 @@ import { CutsceneEvent } from "./CutsceneEvent"
 import { RewardEvent } from "./RewardEvent"
 import { FightEvent } from "./FightEvent"
 import { SequenceEvent } from "./SequenceEvent"
+import { GiveItemEvent } from "./GiveItemEvent"
+import { RequireItemEvent } from "./RequireItemEvent"
+import { RemoveEntityEvent } from "./RemoveEntityEvent"
 
 export type GameEvent =
   | WarpEvent
@@ -16,3 +19,6 @@ export type GameEvent =
   | RewardEvent
   | FightEvent
   | SequenceEvent
+  | GiveItemEvent
+  | RequireItemEvent
+  | RemoveEntityEvent

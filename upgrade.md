@@ -7,7 +7,10 @@ Below are the concrete fixes to apply, short rationale, and where to change code
 
 UPGRADES :
 These are concrete, scoped upgrades we can implement next. Each item is small enough to complete in a short PR.
-- add another way to interract with warp when the player is facing one and pressing enter.
+- add another way to interract with warp/door when the player is facing one and pressing enter.
+- make an event that make npc disapear on a map
+- add a choice event that let you make decision inside dialog. 
+- add a way to make lock door,entry guard,rock on the road,etc... or a type of npc with an event that need a certain item to proggress forward(key,pass,ticket,bomb, ect...).
 - In Combat, add a fade to black when the battle finished, either by winning,losing, or fleeing. then go back to the game.
 - In combat, add a way to load an image file that has a frame by frame animation loop based on the weapon used for the attack actions, guard action, skill used for the skill action.
 - add a way to save if an enemy has been defeated or not. the majority of the enemies can respawn.

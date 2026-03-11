@@ -4,6 +4,7 @@ import { loadMap } from "../data/maps/mapLoader"
 import { loadDialog } from "../data/dialogs/dialogLoader"
 import { DialogLine } from "../data/dialogs/DialogLine"
 import { InventorySystem } from "../systems/InventorySystem"
+import { GiveItemEvent } from "./GiveItemEvent"
 import { ToastSystem } from "../systems/ToastSystem"
 import { LevelSystem } from "../systems/LevelSystem"
 import { createEnemyFromId } from "../entities/createEnemyFromId"
@@ -29,7 +30,9 @@ export function runEvent(event: GameEvent, state: GameState) {
       break
 
     case "choice":
+      state.running = false
       state.ui.choice = event
+      state._eventBus?.emit("uiUpdate")
       break
 
     case "merchant":
@@ -79,6 +82,52 @@ export function runEvent(event: GameEvent, state: GameState) {
     case "warp":
       handleWarp(event, state)
       break
+ 
+    case "requireItem": {
+      // present a choice to confirm giving the item
+      const e = event as any
+      const text = e.prompt ?? `Give ${e.itemId}?`
+      const choiceEvent: any = {
+        type: "choice",
+        text,
+        choices: [
+          { label: "Yes", event: { type: "giveItem", itemId: e.itemId, consume: e.consume ?? true, success: e.success, fail: e.fail } },
+          { label: "No", event: { type: "dialog", text: "You keep your item." } },
+        ],
+      }
+
+      state.running = false
+      state.ui.choice = choiceEvent
+      state._eventBus?.emit("uiUpdate")
+      break
+    }
+
+    case "giveItem": {
+      const e = event as GiveItemEvent
+      const player = state.player
+      const ok = InventorySystem.removeItem(player, e.itemId, 1)
+      if (ok) {
+        if (e.success) runEvent(e.success, state)
+      } else {
+        if (e.fail) runEvent(e.fail, state)
+      }
+      break
+    }
+
+    case "removeEntity": {
+      const e = event as any
+      const map = state.currentMap
+      if (!map || !map.entities) break
+
+      if (e.entityId) {
+        map.entities = map.entities.filter(ent => ent.id !== e.entityId)
+      } else if (typeof e.x === "number" && typeof e.y === "number") {
+        map.entities = map.entities.filter(ent => !(ent.x === e.x && ent.y === e.y))
+      }
+
+      state._eventBus?.emit("uiUpdate")
+      break
+    }
 
     case "sequence":
       runSequence(event.events, state)

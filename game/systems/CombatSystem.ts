@@ -172,11 +172,17 @@ export class CombatSystem {
     combat.log.push("Victory!")
 
     // End combat
+    const fightEvent = gameState.ui.fight as any
     gameState.combat = undefined
     // clear fight UI
     gameState.ui.fight = undefined
     gameState.running = true
-  
+
+    // If the fight had a success callback, run it
+    if (fightEvent && fightEvent.success) {
+      runEvent(fightEvent.success, gameState)
+    }
+
     // Continue queued sequence
     if (gameState.eventQueue.length > 0) {
       const next = gameState.eventQueue.shift()
@@ -188,22 +194,29 @@ export class CombatSystem {
     gameState._eventBus?.emit("uiUpdate")
   }
 
-  static qhandlePlayerDefeat(gameState: GameState) {
+  static handlePlayerDefeat(gameState: GameState) {
     const combat = gameState.combat
     if (!combat || combat.resolved) return
-  
+
     combat.resolved = true
-  
+
     combat.log.push("You were defeated...")
-  
+
     // For now: simple reset
     gameState.player.hp = gameState.player.maxHp
     gameState.player.x = 0
     gameState.player.y = 0
-  
+
+    const fightEvent = gameState.ui.fight as any
+
     gameState.combat = undefined
     gameState.ui.fight = undefined
     gameState.running = true
+
+    // If the fight had a fail callback, run it
+    if (fightEvent && fightEvent.fail) {
+      runEvent(fightEvent.fail, gameState)
+    }
 
     gameState._eventBus?.emit("uiUpdate")
   }

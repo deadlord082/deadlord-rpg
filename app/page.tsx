@@ -5,6 +5,7 @@ import { Game, bindKeyboard, createPlayer, loadMap } from "@/game"
 import { animationScheduler } from "@/game/core/AnimationScheduler"
 import { GameViewport } from "./components/GameViewport"
 import { DialogUI } from "./components/Dialog"
+import { ChoiceUI } from "./components/ChoiceUI"
 import { useRef } from "react"
 import { GameMenu } from "./components/GameMenu/GameMenu"
 import { ToastUI } from "./components/ToastUI"
@@ -187,6 +188,7 @@ export default function Page() {
       )}
 
       <DialogUI dialog={game.state.ui.dialog} />
+      <ChoiceUI choice={game.state.ui.choice} state={game.state} />
       <ToastUI toasts={game.state.toasts} />
 
       {game.state.ui.levelUp && (
