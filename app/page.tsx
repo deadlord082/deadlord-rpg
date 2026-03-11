@@ -149,12 +149,12 @@ export default function Page() {
       {game.state.combat && (
         <CombatUI
           state={game.state}
-          onAction={(action) => {
+          onAction={(action, targetIndex) => {
             if (!game.state.combat) return
             const combat = game.state.combat
             switch (action) {
               case "attack":
-                CombatSystem.playerAttack(combat, 0)
+                CombatSystem.playerAttack(combat, targetIndex ?? 0)
                 break
               case "guard":
                 CombatSystem.playerGuard(combat)

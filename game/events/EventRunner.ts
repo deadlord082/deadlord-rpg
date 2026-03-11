@@ -94,6 +94,8 @@ function runSequence(events: GameEvent[], state: GameState) {
 
   // queue remaining events
   state.eventQueue = rest
+  // notify UI that event queue changed (so follow-up dialogs show)
+  state._eventBus?.emit("uiUpdate")
 }
 
 function handleWarp(

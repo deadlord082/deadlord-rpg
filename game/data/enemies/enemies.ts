@@ -5,21 +5,21 @@ export const ENEMIES: Record<string, Enemy> = {
     id: "slime",
     name: "Slime",
     image: "/assets/entities/enemies/slime.png",
-    maxHp: 50,
+    maxHp: 30,
     fleeChance: 0.9, // 90% success
 
     stats: {
       strength: 5,
       defense: 1,
-      speed: 2,
+      speed: 4,
       luck: 1,
       charisma: 0,
       critChance: 5,
       critDamage: 1.5,
     },
 
-    goldReward: 4,
-    xpReward: 5,
+    goldReward: 8,
+    xpReward: 15,
   },
   goblin_leader: {
     id: "goblin_leader",
@@ -29,17 +29,17 @@ export const ENEMIES: Record<string, Enemy> = {
     fleeChance: 0.25, // 25% success
 
     stats: {
-      strength: 14,
-      defense: 6,
-      speed: 6,
+      strength: 12,
+      defense: 5,
+      speed: 8,
       luck: 2,
       charisma: 0,
       critChance: 5,
       critDamage: 1.5,
     },
 
-    goldReward: 22,
-    xpReward: 17,
+    goldReward: 32,
+    xpReward: 45,
   },
 }
 

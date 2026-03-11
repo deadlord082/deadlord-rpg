@@ -9,7 +9,7 @@ import { Enemy } from "@/game/entities/Enemy"
 
 interface CombatUIProps {
   state: GameState
-  onAction: (action: "attack" | "guard" | "skill" | "flee") => void
+  onAction: (action: "attack" | "guard" | "skill" | "flee", targetIndex?: number) => void
 }
 
 export function CombatUI({ state, onAction }: CombatUIProps) {
@@ -21,6 +21,8 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
 
   const [selectedAction, setSelectedAction] = useState<0 | 1 | 2 | 3>(0)
   const [skillOpen, setSkillOpen] = useState(false)
+  const [targetOpen, setTargetOpen] = useState(false)
+  const [selectedTarget, setSelectedTarget] = useState(0)
 
   const playerStats = player.getTotalStats()
   const enemyStats = enemies[0]?.getTotalStats()
@@ -34,14 +36,41 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
 
       if (!skillOpen) {
         // navigate main actions
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedAction((v) => ((v + 1) % 4) as 0 | 1 | 2 | 3)
-        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setSelectedAction((v) => ((v - 1 + 4) % 4) as 0 | 1 | 2 | 3)
-        if (e.key === "z" || e.key === "Z") setSelectedAction(0)
-        if (e.key === "s" || e.key === "S") setSelectedAction(1)
+        if (!targetOpen) {
+          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedAction((v) => ((v + 1) % 4) as 0 | 1 | 2 | 3)
+          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setSelectedAction((v) => ((v - 1 + 4) % 4) as 0 | 1 | 2 | 3)
+          if (e.key === "z" || e.key === "Z") setSelectedAction(0)
+          if (e.key === "s" || e.key === "S") setSelectedAction(1)
+        } else {
+          // target selection mode: left/right to change target
+          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedTarget((v) => (v + 1) % enemies.length)
+          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setSelectedTarget((v) => (v - 1 + enemies.length) % enemies.length)
+        }
+
         if (e.key === "Enter") {
           const action = ["attack", "guard", "skill", "flee"][selectedAction] as "attack" | "guard" | "skill" | "flee"
-          if (action === "skill") setSkillOpen(true)
-          else onAction(action)
+          if (action === "skill") {
+            setSkillOpen(true)
+            return
+          }
+
+          if (action === "attack") {
+            // open target selection when not already open
+            if (!targetOpen) {
+              const firstAlive = enemies.findIndex(e => e.hp > 0)
+              setSelectedTarget(firstAlive >= 0 ? firstAlive : 0)
+              setTargetOpen(true)
+              return
+            }
+
+            // confirm attack on selected target
+            setTargetOpen(false)
+            onAction("attack", selectedTarget)
+            return
+          }
+
+          // other actions
+          onAction(action)
         }
       } else {
         // skill selection placeholder
@@ -54,7 +83,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
     }
     window.addEventListener("keydown", handleKey)
     return () => window.removeEventListener("keydown", handleKey)
-  }, [combat.awaitingPlayerInput, selectedAction, skillOpen])
+  }, [combat.awaitingPlayerInput, selectedAction, skillOpen, targetOpen, selectedTarget, enemies.length, onAction])
 
   // gauge bars animation
   const playerGaugePercent = Math.min((combat.playerGauge / 100) * 100, 100)
@@ -106,6 +135,12 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
                   />
                 </div>
               </div>
+              {/* target highlight */}
+              {targetOpen && (
+                <div style={{ marginLeft: 8 }}>
+                  {selectedTarget === idx ? <div style={{ color: "#ff0" }}>◀ Target</div> : null}
+                </div>
+              )}
             </div>
           )
         })}

@@ -22,8 +22,8 @@ export interface Player extends CombatEntity {
 export function createPlayer(x: number, y: number): Player {
 
   const baseStats: Stats = {
-    strength: 10,
-    defense: 5,
+    strength: 8,
+    defense: 1,
     speed: 5,
     luck: 3,
     charisma: 2,

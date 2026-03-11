@@ -12,7 +12,7 @@ const NPC_SPRITES = {
 // NPC definitions
 export const NPCS = {
   dev: createNPC(
-    "npc0",
+    "dev",
     "DEV",
     6, 6,
     NPC_SPRITES,
@@ -23,7 +23,7 @@ export const NPCS = {
   ),
 
   bob: createNPC(
-    "npc1",
+    "bob",
     "Bob",
     2, 1,
     NPC_SPRITES,
@@ -39,7 +39,7 @@ export const NPCS = {
   ),
     
   john: createNPC(
-    "npc2",
+    "john",
     "John",
     1, 1,
     NPC_SPRITES,
@@ -60,7 +60,7 @@ export const NPCS = {
   ),
 
   jacob: createNPC(
-    "npc3",
+    "jacob",
     "Jacob",
     4, 1,
     NPC_SPRITES,
@@ -94,9 +94,23 @@ export const NPCS = {
     },
     Direction.Left
   ),
+  slime: createNPC(
+    "slime",
+    "Slime",
+    2, 3,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "fight", enemyId: "slime" },
+        { type: "dialog", text: "You defeated the slime!" }
+      ]
+    },
+    Direction.Up
+  ),
 
   goblin_leader: createNPC(
-    "npc4",
+    "goblin_leader",
     "Goblin Leader",
     6, 1,
     NPC_SPRITES,
@@ -111,7 +125,7 @@ export const NPCS = {
   ),
 
   goblin_pair: createNPC(
-    "npc6",
+    "goblin_pair",
     "Goblin Pair",
     5, 1,
     NPC_SPRITES,
@@ -126,7 +140,7 @@ export const NPCS = {
   ),
 
   pero: createNPC(
-    "npc5",
+    "pero",
     "Pero",
     6, 3,
     NPC_SPRITES,
