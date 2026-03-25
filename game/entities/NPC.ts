@@ -14,7 +14,8 @@ export function createNPC(
   y: number,
   sprites: Partial<Record<Direction, string>>,
   event: GameEvent,
-  direction: Direction = Direction.Down
+  direction: Direction = Direction.Down,
+  options?: { blocking?: boolean; enterOnStep?: boolean }
 ) {
   return {
     id,
@@ -23,8 +24,10 @@ export function createNPC(
     y,
     direction,
     sprites,
-    blocking: true,
+    blocking: options?.blocking ?? true,
     onInteract: event,
+    // optionally also trigger the provided event when the player steps onto this entity's tile
+    ...(options?.enterOnStep ? { onEnter: event } : {}),
   }
 }  
   

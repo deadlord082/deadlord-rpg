@@ -6,6 +6,8 @@ import { DialogLine } from "../data/dialogs/DialogLine"
 import { InventorySystem } from "../systems/InventorySystem"
 import { GiveItemEvent } from "./GiveItemEvent"
 import { ToastSystem } from "../systems/ToastSystem"
+import { ModifyPlayerHpEvent } from "./ModifyPlayerHpEvent"
+import { SetEntityBlockingEvent } from "./SetEntityBlockingEvent"
 import { LevelSystem } from "../systems/LevelSystem"
 import { createEnemyFromId } from "../entities/createEnemyFromId"
 
@@ -126,6 +128,55 @@ export function runEvent(event: GameEvent, state: GameState) {
       }
 
       state._eventBus?.emit("uiUpdate")
+      break
+    }
+
+    case "modifyPlayerHp": {
+      const e = event as ModifyPlayerHpEvent
+      const player = state.player
+
+      if (e.full) {
+        player.hp = player.maxHp
+        // show dialog for full heal (bed)
+        state.running = false
+        state.ui.dialog = { lines: [{ name: "", message: e.message ?? "You rest and feel fully healed." }], index: 0 }
+      } else if (typeof e.amount === "number") {
+        player.hp = Math.max(0, Math.min(player.maxHp, player.hp + e.amount))
+        if (e.amount > 0) {
+          state.toasts.push({ id: `${Date.now()}-${Math.random()}`, type: "info", message: e.message ?? `Healed ${e.amount} HP.`, createdAt: Date.now(), duration: 3000 })
+        } else if (e.amount < 0) {
+          state.toasts.push({ id: `${Date.now()}-${Math.random()}`, type: "danger", message: e.message ?? `Took ${-e.amount} damage.`, createdAt: Date.now(), duration: 3000 })
+        }
+      }
+
+      state._eventBus?.emit("uiUpdate")
+      break
+    }
+
+    case "setEntityBlocking": {
+      const e = event as SetEntityBlockingEvent
+      const map = state.currentMap
+      if (!map || !map.entities) break
+
+      let found = false
+      if (e.entityId) {
+        for (const ent of map.entities) {
+          if (ent.id === e.entityId) {
+            ent.blocking = e.blocking
+            found = true
+            break
+          }
+        }
+      } else if (typeof e.x === "number" && typeof e.y === "number") {
+        for (const ent of map.entities) {
+          if (ent.x === e.x && ent.y === e.y) {
+            ent.blocking = e.blocking
+            found = true
+          }
+        }
+      }
+
+      if (found) state._eventBus?.emit("uiUpdate")
       break
     }
 

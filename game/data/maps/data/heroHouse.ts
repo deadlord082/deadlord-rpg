@@ -23,6 +23,8 @@ export const testMap: GameMap = {
     NPCS.bob,
     NPCS.jason,
     NPCS.dev,
+    NPCS.bed,
+    NPCS.lava,
     createChest(
       "chest1",
       1,

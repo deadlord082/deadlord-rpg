@@ -18,8 +18,15 @@ export const MovementSystem = {
     player.x = nx
     player.y = ny
 
+    // If there's a non-blocking entity at the destination that has an onEnter handler,
+    // run that first (useful for lava-like entities that damage on step).
+    const entity = state.currentMap.entities.find(e => e.x === nx && e.y === ny && (e as any).onEnter)
+    if (entity && (entity as any).onEnter) {
+      runEvent((entity as any).onEnter, state)
+    }
+
     const tile = getTileAt(state.currentMap, nx, ny)
-    tile?.onEnter && runEvent(tile.onEnter, state)
+    if (tile?.onEnter) runEvent(tile.onEnter, state)
   },
 
   // optional placeholder for future NPC updates

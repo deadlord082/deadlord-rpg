@@ -22,6 +22,57 @@ export const NPCS = {
     Direction.Right
   ),
 
+  bed: createNPC(
+    "bed",
+    "Bed",
+    4, 6,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        {
+          type: "choice",
+          text: "Do you want to rest on the bed ?",
+          choices: [
+            {
+              label: "Yes",
+              event: { 
+                type: "modifyPlayerHp", full: true
+              }
+            },
+            {
+              label: "No",
+              event: {}
+            }
+          ]
+        }
+      ]
+    },
+    Direction.Right
+  ),
+
+  lava: createNPC(
+    "lava",
+    "Lava",
+    5, 6,
+    {
+      down: "/assets/tiles/floors/lava.png",
+      left: "/assets/tiles/floors/lava.png",
+      right: "/assets/tiles/floors/lava.png",
+      up: "/assets/tiles/floors/lava.png",
+    },
+    {
+      type: "sequence",
+      events: [ 
+        {
+          type: "modifyPlayerHp", amount: -10, message: "The lava burns you for 10 damage!"
+        }    
+      ]
+    },
+    Direction.Right,
+    {blocking: false, enterOnStep: true}
+  ),
+
   // ------------
   // Villagers
   // ------------

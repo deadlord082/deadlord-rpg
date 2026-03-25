@@ -9,6 +9,8 @@ import { SequenceEvent } from "./SequenceEvent"
 import { GiveItemEvent } from "./GiveItemEvent"
 import { RequireItemEvent } from "./RequireItemEvent"
 import { RemoveEntityEvent } from "./RemoveEntityEvent"
+import { ModifyPlayerHpEvent } from "./ModifyPlayerHpEvent"
+import { SetEntityBlockingEvent } from "./SetEntityBlockingEvent"
 
 export type GameEvent =
   | WarpEvent
@@ -22,3 +24,5 @@ export type GameEvent =
   | GiveItemEvent
   | RequireItemEvent
   | RemoveEntityEvent
+  | ModifyPlayerHpEvent
+  | SetEntityBlockingEvent

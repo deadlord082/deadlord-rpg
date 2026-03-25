@@ -27,6 +27,5 @@ export const frontYardHeroHouseMap: GameMap = {
       NPCS.slime,
       NPCS.double_monster,
       NPCS.pero,
-      createItemEntity("item2", "crown_of_deadlord", 3, 3, true),
     ],
 }
