@@ -33,6 +33,9 @@ export interface GameState {
   combat?: CombatState
   toasts: Toast[]
   eventQueue: GameEvent[]
+  // Persistent world state: entities removed or modified per map id
+  removedEntityIdsByMap?: Record<string, string[]>
+  modifiedEntitiesByMap?: Record<string, Record<string, any>>
   running: boolean
   // Optional event bus injected by the Game instance for engine->UI events
   _eventBus?: EventBus
@@ -47,6 +50,8 @@ export function createInitialGameState(
     player,
     ui: {},
     eventQueue: [],
+    removedEntityIdsByMap: {},
+    modifiedEntitiesByMap: {},
     running: true,
     toasts: [],
   }

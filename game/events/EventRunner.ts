@@ -121,10 +121,28 @@ export function runEvent(event: GameEvent, state: GameState) {
       const map = state.currentMap
       if (!map || !map.entities) break
 
+      let removedId: string | undefined
+
       if (e.entityId) {
+        removedId = e.entityId
         map.entities = map.entities.filter(ent => ent.id !== e.entityId)
       } else if (typeof e.x === "number" && typeof e.y === "number") {
-        map.entities = map.entities.filter(ent => !(ent.x === e.x && ent.y === e.y))
+        const found = map.entities.find(ent => ent.x === e.x && ent.y === e.y)
+        if (found) {
+          removedId = found.id
+          map.entities = map.entities.filter(ent => ent.id !== found.id)
+        }
+      }
+
+      // record persistent removal
+      if (removedId) {
+        const mapId = state.currentMap.id
+        if (!state.removedEntityIdsByMap) state.removedEntityIdsByMap = {}
+        const arr = state.removedEntityIdsByMap[mapId] ?? []
+        if (!arr.includes(removedId)) {
+          arr.push(removedId)
+          state.removedEntityIdsByMap[mapId] = arr
+        }
       }
 
       state._eventBus?.emit("uiUpdate")
@@ -207,6 +225,21 @@ function handleWarp(
   state.currentMap = newMap
   state.player.x = event.x
   state.player.y = event.y
+
+  // Apply persistent removals and modifications for this map
+  const mapId = newMap.id
+  const removed = state.removedEntityIdsByMap?.[mapId] ?? []
+  if (removed.length > 0) {
+    state.currentMap.entities = state.currentMap.entities.filter(e => !removed.includes(e.id))
+  }
+
+  const mods = state.modifiedEntitiesByMap?.[mapId]
+  if (mods) {
+    for (const ent of state.currentMap.entities) {
+      const m = mods[ent.id]
+      if (m) Object.assign(ent as any, m)
+    }
+  }
 
   // clear UI just in case
   state.ui = {}

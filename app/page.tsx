@@ -138,6 +138,7 @@ export default function Page() {
       {game.state.ui.menuOpen && (
         <GameMenu
           player={game.state.player}
+          state={game.state}
           initialTab={game.state.ui.menuTab ?? null}
           onClose={() => {
             game.state.ui.menuOpen = false

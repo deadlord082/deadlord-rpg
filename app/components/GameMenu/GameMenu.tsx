@@ -8,23 +8,28 @@ import { StatusTab } from "./StatusTab"
 import { InventoryTab } from "./InventoryTab"
 import { ItemDetailsModal } from "./ItemDetailsModal"
 import { EquipmentTab } from "./EquipmentTab"
+import { SaveTab } from "./SaveTab"
+import { GameState } from "@/game/core/GameState"
 
 interface GameMenuProps {
   player: Player
   onClose: () => void
-  initialTab?: "status" | "inventory" |  "equipment" | null
+  initialTab?: "status" | "inventory" |  "equipment" | "save" | null
 }
 
-type MenuState = "menu" | "status" | "inventory" | "equipment"
+type MenuState = "menu" | "status" | "inventory" | "equipment" | "save"
 
 export function GameMenu({
   player,
   onClose,
-}: GameMenuProps) {
-  const menuOptions: ("status" | "inventory" |  "equipment" | "close")[] = [
+  initialTab,
+  state,
+}: GameMenuProps & { state?: GameState }) {
+  const menuOptions: ("status" | "inventory" |  "equipment" | "save" | "close")[] = [
     "status",
     "inventory",
     "equipment",
+    "save",
     "close",
   ]
 
@@ -131,6 +136,10 @@ export function GameMenu({
               (player as any)._eventBus?.emit("uiUpdate")
           }}
         />
+      )}
+
+      {activeTab === "save" && state && (
+        <SaveTab state={state} />
       )}
     </div>
   )

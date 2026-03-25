@@ -15,7 +15,6 @@ These are concrete, scoped upgrades we can implement next. Each item is small en
 - add a save tabs in the game menu, when opened you can choose between 3 save slots and see if you already have a save in each slot. this list of saves should be stored inside the local storage. the save should contain all the information of the player, the enemies that have been defeated that should not respawn, the location of the player,... 
 - add inside the settings tabs an export saves button which let's you export the save inside a json file. then add an import saves buttons which let's you imports this type of file.
 - In combat, when you lose,you should see a death screen with 2 options that you can choose from, main menu which make you go back to the main menu, load game which open the load tab
-- add a npc(statue,bed,hotsprings,...) that trigger an event for full heal.
 - add a way to gain skill through level up via an event to be able to reuse it for other way of gaining skill.
 - add a way to use consumable item in the inventory. consumable item can be used for regenerating/decreasing health of the player(potion,food,...) but can also be used to gain gold(lost purse, Scratch Ticket, ...), to gain other item(loot box,...), to gain a skill (skill book,...).
 - In combat, add an item section to use consumable item during combat.

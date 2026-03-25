@@ -19,6 +19,12 @@ export const ChestSystem = {
 
     chest.opened = true
 
+    // persist chest opened state so it remains opened when returning to map
+    if (!state.modifiedEntitiesByMap) state.modifiedEntitiesByMap = {}
+    const mods = state.modifiedEntitiesByMap[state.currentMap.id] ?? {}
+    mods[chest.id] = { opened: true }
+    state.modifiedEntitiesByMap[state.currentMap.id] = mods
+
     runEvent(chest.reward, state)
 
     state._eventBus?.emit("uiUpdate")
