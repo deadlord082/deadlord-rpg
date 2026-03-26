@@ -9,6 +9,7 @@ import { InventoryTab } from "./InventoryTab"
 import { ItemDetailsModal } from "./ItemDetailsModal"
 import { EquipmentTab } from "./EquipmentTab"
 import { SaveTab } from "./SaveTab"
+import { ConfirmModal } from "../ConfirmModal"
 import { GameState } from "@/game/core/GameState"
 
 interface GameMenuProps {
@@ -25,16 +26,18 @@ export function GameMenu({
   initialTab,
   state,
 }: GameMenuProps & { state?: GameState }) {
-  const menuOptions: ("status" | "inventory" |  "equipment" | "save" | "close")[] = [
+  const menuOptions: ("status" | "inventory" |  "equipment" | "save" | "quit" | "close")[] = [
     "status",
     "inventory",
     "equipment",
     "save",
+    "quit",
     "close",
   ]
 
   const [activeTab, setActiveTab] = useState<MenuState>("menu")
   const [menuIndex, setMenuIndex] = useState(0)
+  const [confirmQuit, setConfirmQuit] = useState(false)
 
   // inventory-related state
   const [selectedIndex, setSelectedIndex] = useState(0)
@@ -64,6 +67,11 @@ export function GameMenu({
     setSelectedEquipItemIndex,
     player,
     onClose,
+    onSelect: (tab) => {
+      if (tab === "close") onClose()
+      else if (tab === "quit") setConfirmQuit(true)
+      else setActiveTab(tab as any)
+    },
   })
 
   return (
@@ -89,7 +97,9 @@ export function GameMenu({
           setMenuIndex={setMenuIndex}
           onSelect={(tab) => {
             if (tab === "close") onClose()
-            else setActiveTab(tab)
+            else if (tab === "quit") {
+              setConfirmQuit(true)
+            } else setActiveTab(tab)
           }}
         />
       )}
@@ -140,6 +150,22 @@ export function GameMenu({
 
       {activeTab === "save" && state && (
         <SaveTab state={state} />
+      )}
+      {confirmQuit && (
+        <ConfirmModal
+          message="Return to title screen? Unsaved progress will be lost."
+          onCancel={() => setConfirmQuit(false)}
+            onConfirm={() => {
+              setConfirmQuit(false)
+              onClose()
+              if (state) {
+                ;(state as any)._game = undefined
+                ;(state as any)._eventBus?.emit("quitToTitle")
+              }
+              // also dispatch a window event so the app-level listener can handle quitting
+              window.dispatchEvent(new Event("quitToTitle"))
+            }}
+        />
       )}
     </div>
   )

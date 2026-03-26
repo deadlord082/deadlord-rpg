@@ -3,6 +3,7 @@ import { RARITY_STYLES } from "@/game/data/items/rarityColors"
 import { InventorySystem } from "@/game/systems/InventorySystem"
 import { Items } from "@/game/data/items/items"
 import { useEffect, useState } from "react"
+import { ConfirmModal } from "../ConfirmModal"
 
 export function ItemDetailsModal({
   player,
@@ -22,6 +23,7 @@ export function ItemDetailsModal({
   const [discardMode, setDiscardMode] = useState(false)
   const [discardCount, setDiscardCount] = useState(1)
   const [optionIndex, setOptionIndex] = useState(0)
+  const [modalMsg, setModalMsg] = useState<string | null>(null)
 
   const options = [] as string[]
   if (base?.effects && base.effects.length > 0) options.push("use")
@@ -87,21 +89,21 @@ export function ItemDetailsModal({
 
   function handleUse() {
     if (!base?.effects || base.effects.length === 0) {
-      alert("This item cannot be used.")
+      setModalMsg("This item cannot be used.")
       return
     }
 
     // If item targets enemies, disallow using from inventory outside combat
     const needsEnemy = base.effects.some(e => e.target === "enemy" || e.target === "allEnemies")
     if (needsEnemy) {
-      alert("This item must be used in combat (targets enemies).")
+      setModalMsg("This item must be used in combat (targets enemies).")
       return
     }
 
     const res = InventorySystem.useItem(player, item.id)
     if (res) {
       // simple feedback
-      alert(`${item.name} used.`)
+      setModalMsg(`${item.name} used.`)
     }
     onClose()
   }
@@ -160,6 +162,9 @@ export function ItemDetailsModal({
           <small style={{ opacity: 0.6 }}>Up/Down or +/- to change, Enter to confirm, ESC to cancel</small>
         </div>
       </div>
+    )}
+    {modalMsg && (
+      <ConfirmModal message={modalMsg} onCancel={() => setModalMsg(null)} onConfirm={() => setModalMsg(null)} confirmLabel="OK" />
     )}
     </>
   )

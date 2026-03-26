@@ -2,7 +2,7 @@ import { useEffect } from "react"
 import { Player } from "@/game/entities/Player"
 import { EquipmentSlot } from "../data/items/EquipmentItem"
 
-export type MenuState = "menu" | "status" | "inventory" | "equipment"
+export type MenuState = "menu" | "status" | "inventory" | "equipment" | "save"
 
 interface MenuKeyboardProps {
   activeTab: MenuState
@@ -10,7 +10,8 @@ interface MenuKeyboardProps {
 
   menuIndex: number
   setMenuIndex: (v: number) => void
-  menuOptions: ("status" | "inventory" | "equipment" | "close")[]
+  menuOptions: ("status" | "inventory" | "equipment" | "save" | "quit" | "close")[]
+  onSelect?: (tab: "status" | "inventory" | "equipment" | "save" | "quit" | "close") => void
 
   selectedIndex: number
   setSelectedIndex: (v: number) => void
@@ -36,6 +37,7 @@ export function menuKeyboard({
   menuIndex,
   setMenuIndex,
   menuOptions,
+  onSelect,
   selectedIndex,
   setSelectedIndex,
   itemDetailsIndex,
@@ -89,7 +91,13 @@ export function menuKeyboard({
         if (e.key === "Enter") {
           const selected = menuOptions[menuIndex]
           if (selected === "close") onClose()
-          else setActiveTab(selected)
+          else if (typeof (arguments[0] as any) === "undefined" && false) {}
+          else if (typeof onSelect === "function") {
+            onSelect(selected)
+          } else {
+            // fallback for older callers
+            setActiveTab(selected as MenuState)
+          }
         }
 
         e.preventDefault()
@@ -221,5 +229,7 @@ export function menuKeyboard({
     selectedEquipItemIndex,
     player,
     onClose,
+    onSelect,
+    menuOptions,
   ])
 }

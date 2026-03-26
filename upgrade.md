@@ -12,7 +12,6 @@ These are concrete, scoped upgrades we can implement next. Each item is small en
 - add a way to save if an enemy has been defeated or not. the majority of the enemies can respawn.
 - add a settings tabs in the game menu. it will contains for now just the key configuration (default : z,q,s,d/up arrow,left arrow, down arrow, right arrow , enter , esc)
 - add a main menu at the start of the game with the basics option (new game, load game, settings). an image for the background, an image for the title menu, and the version(for now V0.7.4) on the bottom corner
-- add a save tabs in the game menu, when opened you can choose between 3 save slots and see if you already have a save in each slot. this list of saves should be stored inside the local storage. the save should contain all the information of the player, the enemies that have been defeated that should not respawn, the location of the player,... 
 - add inside the settings tabs an export saves button which let's you export the save inside a json file. then add an import saves buttons which let's you imports this type of file.
 - In combat, when you lose,you should see a death screen with 2 options that you can choose from, main menu which make you go back to the main menu, load game which open the load tab
 - add a way to gain skill through level up via an event to be able to reuse it for other way of gaining skill.

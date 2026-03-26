@@ -20,6 +20,7 @@ export const ENEMIES: Record<string, Enemy> = {
 
     goldReward: 8,
     xpReward: 15,
+    respawn: true,
   },
   goblin_leader: {
     id: "goblin_leader",

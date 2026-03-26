@@ -10,6 +10,7 @@ import { ModifyPlayerHpEvent } from "./ModifyPlayerHpEvent"
 import { SetEntityBlockingEvent } from "./SetEntityBlockingEvent"
 import { LevelSystem } from "../systems/LevelSystem"
 import { createEnemyFromId } from "../entities/createEnemyFromId"
+import { ENEMIES } from "../data/enemies/enemies"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -134,14 +135,19 @@ export function runEvent(event: GameEvent, state: GameState) {
         }
       }
 
-      // record persistent removal
+      // record persistent removal (skip for enemies marked `respawn: true`)
       if (removedId) {
-        const mapId = state.currentMap.id
-        if (!state.removedEntityIdsByMap) state.removedEntityIdsByMap = {}
-        const arr = state.removedEntityIdsByMap[mapId] ?? []
-        if (!arr.includes(removedId)) {
-          arr.push(removedId)
-          state.removedEntityIdsByMap[mapId] = arr
+        // if this removed entity corresponds to an enemy that should respawn,
+        // do not record it in persistent removals.
+        const shouldRespawn = ENEMIES[removedId]?.respawn === true
+        if (!shouldRespawn) {
+          const mapId = state.currentMap.id
+          if (!state.removedEntityIdsByMap) state.removedEntityIdsByMap = {}
+          const arr = state.removedEntityIdsByMap[mapId] ?? []
+          if (!arr.includes(removedId)) {
+            arr.push(removedId)
+            state.removedEntityIdsByMap[mapId] = arr
+          }
         }
       }
 

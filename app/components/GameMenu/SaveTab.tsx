@@ -3,6 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import { GameState } from "@/game/core/GameState"
 import { applySavedState, serializeGameState } from "@/game/core/saveLoad"
+import { ConfirmModal } from "../ConfirmModal"
 
 const STORAGE_KEY = "deadlord_saves_v1"
 
@@ -15,6 +16,8 @@ export function SaveTab({ state }: { state: GameState }) {
   const [slots, setSlots] = useState<SaveSlot[]>([{ timestamp: null, data: null }, { timestamp: null, data: null }, { timestamp: null, data: null }])
   const [selected, setSelected] = useState(0)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const [pendingAction, setPendingAction] = useState<{ type: "save" | "load" | "delete" | "import"; index: number; data?: string } | null>(null)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const raw = localStorage.getItem(STORAGE_KEY)
@@ -39,37 +42,47 @@ export function SaveTab({ state }: { state: GameState }) {
     setSlots(list)
   }
 
-  function handleSave(i: number) {
-    const overwritten = !!slots[i]?.data
-    if (overwritten) {
-      const ok = window.confirm(`Overwrite save in slot ${i + 1}?`)
-      if (!ok) return
-    }
+  function doSave(i: number) {
     const data = serializeGameState(state)
     const s = [...slots]
     s[i] = { timestamp: Date.now(), data }
     persist(s)
   }
 
-  function handleLoad(i: number) {
+  function doLoad(i: number) {
     const s = slots[i]
     if (!s || !s.data) return
-    const ok = window.confirm(`Load save from slot ${i + 1}? Unsaved progress will be lost.`)
-    if (!ok) return
-    // apply saved state into runtime
     applySavedState(s.data, state)
   }
 
-  function handleDelete(i: number) {
+  function doDelete(i: number) {
     const s = [...slots]
-    if (!s[i]?.data) return
-    const ok = window.confirm(`Delete save in slot ${i + 1}?`)
-    if (!ok) return
     s[i] = { timestamp: null, data: null }
     persist(s)
   }
 
-  function handleExport(i: number) {
+  function doImport(i: number, text: string) {
+    const s = [...slots]
+    s[i] = { timestamp: Date.now(), data: text }
+    persist(s)
+  }
+
+  function requestSave(i: number) {
+    if (slots[i]?.data) setPendingAction({ type: "save", index: i })
+    else doSave(i)
+  }
+
+  function requestLoad(i: number) {
+    if (!slots[i]?.data) return
+    setPendingAction({ type: "load", index: i })
+  }
+
+  function requestDelete(i: number) {
+    if (!slots[i]?.data) return
+    setPendingAction({ type: "delete", index: i })
+  }
+
+  function requestExport(i: number) {
     const s = slots[i]
     if (!s?.data) return
     const blob = new Blob([s.data], { type: "application/json" })
@@ -81,7 +94,7 @@ export function SaveTab({ state }: { state: GameState }) {
     URL.revokeObjectURL(url)
   }
 
-  function handleImport(i: number) {
+  function requestImport(i: number) {
     if (!fileInputRef.current) return
     fileInputRef.current.click()
     fileInputRef.current.onchange = async (ev: any) => {
@@ -91,14 +104,10 @@ export function SaveTab({ state }: { state: GameState }) {
       try {
         JSON.parse(text)
       } catch (e) {
-        alert("Invalid save file")
+        setError("Invalid save file")
         return
       }
-      const ok = window.confirm(`Import this file into slot ${i + 1}? It will overwrite existing save.`)
-      if (!ok) return
-      const s = [...slots]
-      s[i] = { timestamp: Date.now(), data: text }
-      persist(s)
+      setPendingAction({ type: "import", index: i, data: text })
     }
   }
 
@@ -107,11 +116,11 @@ export function SaveTab({ state }: { state: GameState }) {
     function onKey(e: KeyboardEvent) {
       if (e.key === "ArrowLeft") setSelected(s => Math.max(0, s - 1))
       if (e.key === "ArrowRight") setSelected(s => Math.min(2, s + 1))
-      if (e.key === "Enter") handleLoad(selected)
-      if (e.key === "s" || e.key === "S") handleSave(selected)
-      if (e.key === "d" || e.key === "D") handleDelete(selected)
-      if (e.key === "e" || e.key === "E") handleExport(selected)
-      if (e.key === "i" || e.key === "I") handleImport(selected)
+      if (e.key === "Enter") requestLoad(selected)
+      if (e.key === "s" || e.key === "S") requestSave(selected)
+      if (e.key === "d" || e.key === "D") requestDelete(selected)
+      if (e.key === "e" || e.key === "E") requestExport(selected)
+      if (e.key === "i" || e.key === "I") requestImport(selected)
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
@@ -126,17 +135,37 @@ export function SaveTab({ state }: { state: GameState }) {
             <div style={{ fontWeight: 600 }}>Slot {i + 1}</div>
             <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : "Empty"}</div>
             <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-              <button onClick={() => handleSave(i)}>Save</button>
-              <button onClick={() => handleLoad(i)} disabled={!slot.data}>Load</button>
-              <button onClick={() => handleDelete(i)} disabled={!slot.data}>Delete</button>
-              <button onClick={() => handleExport(i)} disabled={!slot.data}>Export</button>
-              <button onClick={() => handleImport(i)}>Import</button>
+              <button onClick={() => requestSave(i)}>Save</button>
+              <button onClick={() => requestLoad(i)} disabled={!slot.data}>Load</button>
+              <button onClick={() => requestDelete(i)} disabled={!slot.data}>Delete</button>
+              <button onClick={() => requestExport(i)} disabled={!slot.data}>Export</button>
+              <button onClick={() => requestImport(i)}>Import</button>
             </div>
           </div>
         ))}
       </div>
       <input ref={fileInputRef} type="file" accept="application/json" style={{ display: "none" }} />
       <div style={{ marginTop: 8, opacity: 0.8 }}>Saves are stored in your browser localStorage.</div>
+
+      {pendingAction && (
+        <ConfirmModal
+          message={pendingAction.type === "save" ? `Overwrite save in slot ${pendingAction.index + 1}?` : pendingAction.type === "load" ? `Load save from slot ${pendingAction.index + 1}? Unsaved progress will be lost.` : pendingAction.type === "delete" ? `Delete save in slot ${pendingAction.index + 1}?` : `Import file into slot ${pendingAction.index + 1}?`}
+          onCancel={() => setPendingAction(null)}
+          onConfirm={() => {
+            const a = pendingAction
+            if (!a) return
+            if (a.type === "save") doSave(a.index)
+            if (a.type === "load") doLoad(a.index)
+            if (a.type === "delete") doDelete(a.index)
+            if (a.type === "import" && a.data) doImport(a.index, a.data)
+            setPendingAction(null)
+          }}
+        />
+      )}
+
+      {error && (
+        <ConfirmModal message={error} onCancel={() => setError(null)} onConfirm={() => setError(null)} confirmLabel="OK" />
+      )}
     </div>
   )
 }

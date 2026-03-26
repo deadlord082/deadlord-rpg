@@ -34,6 +34,13 @@ export function bindKeyboard(game: Game) {
       return
     }
 
+    // If any UI overlay is open (dialog, menu, merchant, choice, fight),
+    // block core game input so keys like Enter don't also trigger interactions.
+    if (isAnyUIOpen) {
+      e.preventDefault()
+      return
+    }
+
     // Block movement when the engine is not running or a choice UI is open
     if (!game.state.running || game.state.ui.choice) return
 
