@@ -300,8 +300,8 @@ export const Tiles: Record<string, Tile> = {
   //
   // Warp Tiles
   //
-  door_wood_stone_in: {
-    id: "door_wood_stone_in",
+  door_hero_house_out: {
+    id: "door_hero_house_out",
     name: "Door",
     walkable: true,
     image: "/assets/tiles/warps/wooddoorinstonebick.png",
@@ -312,8 +312,8 @@ export const Tiles: Record<string, Tile> = {
       y: 1,
     },
   },
-  door_wood_stone_out: {
-    id: "door_wood_stone_out",
+  door_hero_house_in: {
+    id: "door_hero_house_in",
     name: "Door",
     walkable: true,
     image: "/assets/tiles/warps/wooddoorinstonebick.png",
@@ -322,6 +322,30 @@ export const Tiles: Record<string, Tile> = {
       targetMap: "heroHouse",
       x: 3,
       y: 6,
+    },
+  },
+  death_sword_shrine_out: {
+    id: "death_sword_shrine_out",
+    name: "Warp",
+    walkable: true,
+    image: "/assets/tiles/floors/grass1.png",
+    onEnter: {
+      type: "warp",
+      targetMap: "frontYardHeroHouse",
+      x: 3,
+      y: 1,
+    },
+  },
+  death_sword_shrine_in: {
+    id: "death_sword_shrine_in",
+    name: "Warp",
+    walkable: true,
+    image: "/assets/tiles/floors/grass1.png",
+    onEnter: {
+      type: "warp",
+      targetMap: "deathSwordShrine",
+      x: 5,
+      y: 20,
     },
   },
 }

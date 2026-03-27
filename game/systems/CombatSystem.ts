@@ -201,19 +201,14 @@ export class CombatSystem {
     combat.resolved = true
 
     combat.log.push("You were defeated...")
-
-    // For now: simple reset
-    gameState.player.hp = gameState.player.maxHp
-    gameState.player.x = 0
-    gameState.player.y = 0
-
-    const fightEvent = gameState.ui.fight as any
-
+    // Show death UI instead of immediately resetting the player
     gameState.combat = undefined
     gameState.ui.fight = undefined
-    gameState.running = true
+    gameState.running = false
+    gameState.ui.death = {}
 
-    // If the fight had a fail callback, run it
+    // If the fight had a fail callback, run it (keep behavior)
+    const fightEvent = gameState.ui.fight as any
     if (fightEvent && fightEvent.fail) {
       runEvent(fightEvent.fail, gameState)
     }

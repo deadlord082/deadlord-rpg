@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { ChoiceEvent } from "@/game/events/ChoiceEvent"
 import { runEvent } from "@/game/events/EventRunner"
 import { GameState } from "@/game/core/GameState"
+import { isActionKey } from "@/game/input/keybindings"
 
 export function ChoiceUI({ choice, state }: { choice: ChoiceEvent | undefined, state: GameState }) {
   const [index, setIndex] = useState(0)
@@ -16,9 +17,9 @@ export function ChoiceUI({ choice, state }: { choice: ChoiceEvent | undefined, s
     if (!choice) return
 
     function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setIndex(i => (i + 1) % choice.choices.length)
-      if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setIndex(i => (i - 1 + choice.choices.length) % choice.choices.length)
-      if (e.key === "Enter") {
+      if (isActionKey(e, "right")) setIndex(i => (i + 1) % choice.choices.length)
+      if (isActionKey(e, "left")) setIndex(i => (i - 1 + choice.choices.length) % choice.choices.length)
+      if (isActionKey(e, "confirm")) {
         // close choice UI
         state.ui.choice = undefined
         state.running = true

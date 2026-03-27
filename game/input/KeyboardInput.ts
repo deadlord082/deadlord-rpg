@@ -4,6 +4,7 @@ import { MovementSystem } from "../systems/MovementSystem"
 import { InteractionSystem } from "../systems/InteractionSystem"
 import { PickupSystem } from "../systems/PickupSystem"
 import { ChestSystem } from "../systems/ChestSystem"
+import { isActionKey } from "./keybindings"
 
 export function bindKeyboard(game: Game) {
   window.addEventListener("keydown", (e) => {
@@ -14,7 +15,7 @@ export function bindKeyboard(game: Game) {
       game.state.ui.choice ||
       game.state.ui.fight
 
-    if (e.key === "Escape" && !isAnyUIOpen) {
+    if (isActionKey(e, "cancel") && !isAnyUIOpen) {
       game.state.ui.menuOpen = true
       game.state.running = false
       game.state.ui.menuTab = null // default tab
@@ -44,36 +45,41 @@ export function bindKeyboard(game: Game) {
     // Block movement when the engine is not running or a choice UI is open
     if (!game.state.running || game.state.ui.choice) return
 
-    switch (e.key) {
-      case "ArrowUp":
-      case "z":
-      case "Z":
-        MovementSystem.move(game.state, Direction.Up)
-        PickupSystem.checkPickup(game.state)
-        break
-      case "ArrowDown":
-      case "s":
-      case "S":
-        MovementSystem.move(game.state, Direction.Down)
-        PickupSystem.checkPickup(game.state)
-        break
-      case "ArrowLeft":
-      case "q":
-      case "Q":
-        MovementSystem.move(game.state, Direction.Left)
-        PickupSystem.checkPickup(game.state)
-        break
-      case "ArrowRight":
-      case "d":
-      case "D":
-        MovementSystem.move(game.state, Direction.Right)
-        PickupSystem.checkPickup(game.state)
-        break
-      case " ":
-      case "Enter":
-        InteractionSystem.interact(game.state)
-        ChestSystem.interact(game.state)
-        break
+    // Movement
+    if (isActionKey(e, "up")) {
+      MovementSystem.move(game.state, Direction.Up)
+      PickupSystem.checkPickup(game.state)
+      e.preventDefault()
+      return
+    }
+
+    if (isActionKey(e, "down")) {
+      MovementSystem.move(game.state, Direction.Down)
+      PickupSystem.checkPickup(game.state)
+      e.preventDefault()
+      return
+    }
+
+    if (isActionKey(e, "left")) {
+      MovementSystem.move(game.state, Direction.Left)
+      PickupSystem.checkPickup(game.state)
+      e.preventDefault()
+      return
+    }
+
+    if (isActionKey(e, "right")) {
+      MovementSystem.move(game.state, Direction.Right)
+      PickupSystem.checkPickup(game.state)
+      e.preventDefault()
+      return
+    }
+
+    // Interact / confirm
+    if (isActionKey(e, "confirm")) {
+      InteractionSystem.interact(game.state)
+      ChestSystem.interact(game.state)
+      e.preventDefault()
+      return
     }
   })
 }

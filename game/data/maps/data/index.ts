@@ -1,4 +1,5 @@
-import { testMap } from "./heroHouse"
+import { heroHouse } from "./heroHouse"
 import { frontYardHeroHouseMap } from "./frontYardHeroHouse"
+import { deathSwordShrine } from "./deathSwordShrine"
 
-export const AllMaps = [testMap, frontYardHeroHouseMap]
+export const AllMaps = [heroHouse, frontYardHeroHouseMap, deathSwordShrine]

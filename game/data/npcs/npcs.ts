@@ -218,7 +218,12 @@ export const NPCS = {
     "slime",
     "Slime",
     2, 6,
-    NPC_SPRITES,
+    {
+      down: "/assets/entities/enemies/slime.png",
+      left: "/assets/entities/enemies/slime.png",
+      right: "/assets/entities/enemies/slime.png",
+      up: "/assets/entities/enemies/slime.png",
+    },
     {
       type: "sequence",
       events: [
@@ -234,7 +239,12 @@ export const NPCS = {
     "goblin_leader",
     "Goblin Leader",
     6, 1,
-    NPC_SPRITES,
+    {
+      down: "/assets/entities/enemies/goblin_leader.png",
+      left: "/assets/entities/enemies/goblin_leader.png",
+      right: "/assets/entities/enemies/goblin_leader.png",
+      up: "/assets/entities/enemies/goblin_leader.png",
+    },
     {
       type: "sequence",
       events: [
@@ -260,5 +270,48 @@ export const NPCS = {
       ]
     },
     Direction.Left
+  ),
+
+  death_sword: createNPC(
+    "death_sword",
+    "Death Sword",
+    5, 5,
+    {
+      down: "/assets/entities/npcs/death_sword_locked.png",
+      left: "/assets/entities/npcs/death_sword_locked.png",
+      right: "/assets/entities/npcs/death_sword_locked.png",
+      up: "/assets/entities/npcs/death_sword_locked.png",
+    },
+    {
+      type: "sequence",
+      events: [
+        { type: "dialog", text: "A sword is stuck in the ground before you." },
+        { type: "dialog", text: "Ropes with ancient talismans seems to seal it." },
+        {
+          type: "choice",
+          text: "cut the ropes ?",
+          choices: [
+            {
+              label: "Yes",
+              event: { 
+                type: "sequence",
+                events: [
+                  { type: "fight", enemyId: "death_sword" },
+                  { type: "removeEntity", entityId: "death_sword"},
+                  { type: "reward", items: ["death_sword"] },
+                ]
+              }
+            },
+            {
+              label: "No",
+              event: { 
+                type: "sequence",
+                events: []
+              }
+            }
+          ]
+        }
+      ]
+    }
   ),
 }

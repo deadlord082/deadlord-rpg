@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { isActionKey } from "@/game/input/keybindings"
 
 export function ConfirmModal({
   message,
@@ -19,16 +20,16 @@ export function ConfirmModal({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft" || e.key === "ArrowRight") {
+      if (isActionKey(e, "left") || isActionKey(e, "right")) {
         setFocused((f) => 1 - f)
         e.preventDefault()
       }
-      if (e.key === "Enter") {
+      if (isActionKey(e, "confirm")) {
         e.preventDefault()
         if (focused === 0) onConfirm()
         else onCancel()
       }
-      if (e.key === "Escape") {
+      if (isActionKey(e, "cancel")) {
         e.preventDefault()
         onCancel()
       }
@@ -38,7 +39,7 @@ export function ConfirmModal({
   }, [focused, onConfirm, onCancel])
 
   return (
-    <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000 }}>
+    <div data-modal="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2000 }}>
       <div style={{ background: "rgba(0,0,0,0.95)", color: "white", padding: 20, borderRadius: 8, minWidth: 360 }}>
         <div style={{ marginBottom: 12 }}>{message}</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>

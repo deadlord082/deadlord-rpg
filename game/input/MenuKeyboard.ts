@@ -1,8 +1,9 @@
 import { useEffect } from "react"
+import { isActionKey } from "@/game/input/keybindings"
 import { Player } from "@/game/entities/Player"
 import { EquipmentSlot } from "../data/items/EquipmentItem"
 
-export type MenuState = "menu" | "status" | "inventory" | "equipment" | "save"
+export type MenuState = "menu" | "status" | "inventory" | "equipment" | "save" | "settings"
 
 interface MenuKeyboardProps {
   activeTab: MenuState
@@ -10,8 +11,8 @@ interface MenuKeyboardProps {
 
   menuIndex: number
   setMenuIndex: (v: number) => void
-  menuOptions: ("status" | "inventory" | "equipment" | "save" | "quit" | "close")[]
-  onSelect?: (tab: "status" | "inventory" | "equipment" | "save" | "quit" | "close") => void
+  menuOptions: ("status" | "inventory" | "equipment" | "save" | "settings" | "quit" | "close")[]
+  onSelect?: (tab: "status" | "inventory" | "equipment" | "save" | "settings" | "quit" | "close") => void
 
   selectedIndex: number
   setSelectedIndex: (v: number) => void
@@ -59,7 +60,7 @@ export function menuKeyboard({
     const handleKey = (e: KeyboardEvent) => {
       // ESC logic (equipment modal)
       if (activeTab === "equipment" && equipmentModalSlot) {
-        if (e.key === "Escape") {
+        if (isActionKey(e, "cancel")) {
           setEquipmentModalSlot(null)
           e.preventDefault()
           return
@@ -67,7 +68,7 @@ export function menuKeyboard({
       }
 
       // ESC logic (global)
-      if (e.key === "Escape") {
+      if (isActionKey(e, "cancel")) {
         if (itemDetailsIndex !== null) {
           setItemDetailsIndex(null)
         } else if (activeTab !== "menu") {
@@ -81,14 +82,14 @@ export function menuKeyboard({
 
       // MENU navigation
       if (activeTab === "menu") {
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        if (isActionKey(e, "right")) {
           setMenuIndex((menuIndex + 1) % menuOptions.length)
         }
-        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") {
+        if (isActionKey(e, "left")) {
           setMenuIndex((menuIndex - 1 + menuOptions.length) % menuOptions.length)
         }
 
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           const selected = menuOptions[menuIndex]
           if (selected === "close") onClose()
           else if (typeof (arguments[0] as any) === "undefined" && false) {}
@@ -113,16 +114,16 @@ export function menuKeyboard({
 
         let newIndex = selectedIndex
 
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") newIndex = (selectedIndex + 1) % totalSlots
-        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") newIndex = (selectedIndex - 1 + totalSlots) % totalSlots
-        if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") newIndex = (selectedIndex + columns) % totalSlots
-        if (e.key === "ArrowUp" || e.key === "z" || e.key === "Z") newIndex = (selectedIndex - columns + totalSlots) % totalSlots
+        if (isActionKey(e, "right")) newIndex = (selectedIndex + 1) % totalSlots
+        if (isActionKey(e, "left")) newIndex = (selectedIndex - 1 + totalSlots) % totalSlots
+        if (isActionKey(e, "down")) newIndex = (selectedIndex + columns) % totalSlots
+        if (isActionKey(e, "up")) newIndex = (selectedIndex - columns + totalSlots) % totalSlots
 
         if (newIndex !== selectedIndex) {
           setSelectedIndex(newIndex)
         }
 
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           const item = player.inventory[selectedIndex]
           if (item) setItemDetailsIndex(selectedIndex)
         }
@@ -153,18 +154,18 @@ export function menuKeyboard({
           ]
 
           if (equipableItems.length === 0) {
-            if (e.key === "Escape") setEquipmentModalSlot(null)
+            if (isActionKey(e, "cancel")) setEquipmentModalSlot(null)
             e.preventDefault()
             return
           }
 
           let newIndex = selectedEquipItemIndex
 
-          if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") {
+          if (isActionKey(e, "down")) {
             newIndex = (selectedEquipItemIndex + 1) % equipableItems.length
           }
 
-          if (e.key === "ArrowUp" || e.key === "z" || e.key === "Z") {
+          if (isActionKey(e, "up")) {
             newIndex =
               (selectedEquipItemIndex - 1 + equipableItems.length) %
               equipableItems.length
@@ -175,7 +176,7 @@ export function menuKeyboard({
           }
 
           // Equip
-          if (e.key === "Enter") {
+          if (isActionKey(e, "confirm")) {
             const item = equipableItems[selectedEquipItemIndex]
             if (!item) return
 
@@ -183,7 +184,7 @@ export function menuKeyboard({
             setEquipmentModalSlot(null)
           }
 
-          if (e.key === "Escape") {
+          if (isActionKey(e, "cancel")) {
             setEquipmentModalSlot(null)
           }
 
@@ -194,10 +195,10 @@ export function menuKeyboard({
         // 🔥 SLOT NAVIGATION (when modal closed)
         let newSlot = selectedEquipSlot
 
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D")
+        if (isActionKey(e, "right"))
           newSlot = (selectedEquipSlot + 1) % EQUIPMENT_SLOTS.length
 
-        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q")
+        if (isActionKey(e, "left"))
           newSlot =
             (selectedEquipSlot - 1 + EQUIPMENT_SLOTS.length) %
             EQUIPMENT_SLOTS.length
@@ -207,7 +208,7 @@ export function menuKeyboard({
         }
 
         // Open modal
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           setSelectedEquipItemIndex(0) // 🔥 reset selection
           setEquipmentModalSlot(currentSlot)
         }

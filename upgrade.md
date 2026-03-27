@@ -9,11 +9,6 @@ UPGRADES :
 These are concrete, scoped upgrades we can implement next. Each item is small enough to complete in a short PR.
 - In Combat, add a fade to black when the battle finished, either by winning,losing, or fleeing. then go back to the game.
 - In combat, add a way to load an image file that has a frame by frame animation loop based on the weapon used for the attack actions, guard action, skill used for the skill action.
-- add a way to save if an enemy has been defeated or not. the majority of the enemies can respawn.
-- add a settings tabs in the game menu. it will contains for now just the key configuration (default : z,q,s,d/up arrow,left arrow, down arrow, right arrow , enter , esc)
-- add a main menu at the start of the game with the basics option (new game, load game, settings). an image for the background, an image for the title menu, and the version(for now V0.7.4) on the bottom corner
-- add inside the settings tabs an export saves button which let's you export the save inside a json file. then add an import saves buttons which let's you imports this type of file.
-- In combat, when you lose,you should see a death screen with 2 options that you can choose from, main menu which make you go back to the main menu, load game which open the load tab
 - add a way to gain skill through level up via an event to be able to reuse it for other way of gaining skill.
 - add a way to use consumable item in the inventory. consumable item can be used for regenerating/decreasing health of the player(potion,food,...) but can also be used to gain gold(lost purse, Scratch Ticket, ...), to gain other item(loot box,...), to gain a skill (skill book,...).
 - In combat, add an item section to use consumable item during combat.
@@ -22,7 +17,14 @@ These are concrete, scoped upgrades we can implement next. Each item is small en
 - add a way to register a path for an npc so he can move during the game.
 - add an event that when trigger load a cinematic. with moving npc + text + moment without text
 - add sound + music trigger for the game
-  
+
+- In combat, add boss, these enemies will change sprites, say a line of dialog, change stats when certain hp treshold are passed.
+- redo the camera that show tiles on screen to really move with the player and not have any tiles that are outside the screen based on the resolution of the screen to always have a 11x11 tiles shown on screens. 
+- also make the tiles shown on the center of the screen because right now it is on the left side.
+- do the same for combat by making it take all screen instead of the corner
+- after a successful combat, not all event in the sequence are triggered(exemple : removeEnemiebyId works, but rewards doesn't)
+- make a way to have some npc only have one texture because they cannot rotate.
+- add on the title screen a new button to change language. for now let's just add french and keep english as the default language.
 --------
 
 FUTURE UPGRADE

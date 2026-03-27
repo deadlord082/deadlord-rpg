@@ -12,11 +12,14 @@ import { ToastSystem } from "@/game/systems/ToastSystem"
 import { ShopUI } from "./components/ShopUi"
 import { LevelUpUI } from "./components/LevelUpUi"
 import { CombatUI } from "./components/CombatUi"
+import { DeathScreen } from "./components/DeathScreen"
 import { CombatSystem } from "@/game/systems/CombatSystem"
 import { runEvent } from "@/game/events/EventRunner"
 import { TitleScreen } from "./components/TitleScreen"
+import { isActionKey } from "@/game/input/keybindings"
 import { ConfirmModal } from "./components/ConfirmModal"
 import { TitleLoadModal } from "./components/TitleLoadModal"
+import { SettingsTab } from "./components/GameMenu/SettingsTab"
 import { serializeGameState, applySavedState } from "@/game/core/saveLoad"
 
 const TILE_SIZE = 64
@@ -105,8 +108,31 @@ export default function Page() {
       setGame(null)
     }
     window.addEventListener("quitToTitle", onQuit as any)
-    return () => window.removeEventListener("quitToTitle", onQuit as any)
+    // Also support quit + open load modal
+    function onQuitAndLoad() {
+      gameRef.current = null
+      setGame(null)
+      setShowLoadModal(true)
+    }
+    window.addEventListener("quitToTitleAndLoad", onQuitAndLoad as any)
+    return () => {
+      window.removeEventListener("quitToTitle", onQuit as any)
+      window.removeEventListener("quitToTitleAndLoad", onQuitAndLoad as any)
+    }
   }, [])
+
+  // when settings overlay is open on title, allow ESC to close it
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      if (!showSettingsMsg) return
+      if (isActionKey(e, "cancel")) {
+        setShowSettingsMsg(false)
+      }
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [showSettingsMsg])
+
 
   function startNewGame() {
     const map = loadMap("heroHouse")
@@ -139,9 +165,19 @@ export default function Page() {
           <TitleLoadModal onClose={() => setShowLoadModal(false)} onLoad={(data) => { setShowLoadModal(false); loadFromSlotData(data) }} />
         )}
         {showSettingsMsg && (
-          <div>
-            <ConfirmModal message="Settings not implemented yet" onCancel={() => setShowSettingsMsg(false)} onConfirm={() => setShowSettingsMsg(false)} confirmLabel="OK" />
+          <div data-modal="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1000 }}>
+            <div style={{ width: "60%", background: "rgba(0,0,0,0.95)", color: "white", padding: 16, borderRadius: 8 }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                <h2 style={{ margin: 0 }}>Settings</h2>
+                <button onClick={() => setShowSettingsMsg(false)} style={{ padding: 6 }}>Close</button>
+              </div>
+              <SettingsTab />
+            </div>
           </div>
+        )}
+        {showSettingsMsg && (
+          // close settings overlay with cancel (ESC)
+          null
         )}
       </>
     )
@@ -169,6 +205,10 @@ export default function Page() {
             case "flee": CombatSystem.attemptFlee(combat, g!.state); break
           }
         }} />
+      )}
+
+      {g!.state.ui.death && (
+        <DeathScreen />
       )}
 
       {g!.state.ui.merchant && (

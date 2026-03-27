@@ -42,6 +42,26 @@ export const ENEMIES: Record<string, Enemy> = {
     goldReward: 32,
     xpReward: 45,
   },
+  death_sword: {
+    id: "death_sword",
+    name: "Death Sword",
+    image: "/assets/entities/enemies/death_sword.png",
+    maxHp: 250,
+    fleeChance: 0,
+
+    stats: {
+      strength: 25,
+      defense: 15,
+      speed: 15,
+      luck: 5,
+      charisma: 0,
+      critChance: 20,
+      critDamage: 2,
+    },
+
+    goldReward: 0,
+    xpReward: 0,
+  },
 }
 
 // Basic runtime validation of enemy definitions

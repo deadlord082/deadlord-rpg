@@ -5,6 +5,7 @@ import { RARITY_STYLES } from "@/game/data/items/rarityColors"
 import { InventorySystem } from "@/game/systems/InventorySystem"
 import { ToastSystem } from "@/game/systems/ToastSystem"
 import { GameState } from "@/game/core/GameState"
+import { isActionKey } from "@/game/input/keybindings"
 
 interface ShopUIProps {
   state: GameState
@@ -57,14 +58,11 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
         currentItem.stock === null || currentItem.stock === undefined
   
       const maxStock = isInfinite ? 99 : currentItem.stock ?? 0
-      const isUp =
-        e.key === "ArrowUp" || e.key === "z" || e.key === "Z"
-
-      const isDown =
-        e.key === "ArrowDown" || e.key === "s" || e.key === "S"
+      const isUp = isActionKey(e, "up")
+      const isDown = isActionKey(e, "down")
   
       // ESC
-      if (e.key === "Escape") {
+      if (isActionKey(e, "cancel")) {
         if (modalOpen) {
           setModalOpen(false)
           setQuantity(1)
@@ -87,7 +85,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
           setQuantity((q) => Math.max(1, q - 1))
         }
   
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           buy(currentItem.itemId, currentItem.price, selectedIndex, quantity)
         }
   
@@ -109,7 +107,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
         )
       }
   
-      if (e.key === "Enter") {
+      if (isActionKey(e, "confirm")) {
         if (
           maxStock > 0 &&
           player.gold >= currentItem.price

@@ -9,6 +9,7 @@ import { Enemy } from "@/game/entities/Enemy"
 import { InventorySystem } from "@/game/systems/InventorySystem"
 import { Items } from "@/game/data/items/items"
 import { CombatSystem } from "@/game/systems/CombatSystem"
+import { isActionKey } from "@/game/input/keybindings"
 
 interface CombatUIProps {
   state: GameState
@@ -43,17 +44,17 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
       if (!itemOpen) {
         // navigate main actions
         if (!targetOpen) {
-          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedAction((v) => ((v + 1) % 4) as 0 | 1 | 2 | 3)
-          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setSelectedAction((v) => ((v - 1 + 4) % 4) as 0 | 1 | 2 | 3)
-          if (e.key === "z" || e.key === "Z") setSelectedAction(0)
-          if (e.key === "s" || e.key === "S") setSelectedAction(1)
+          if (isActionKey(e, "right")) setSelectedAction((v) => ((v + 1) % 4) as 0 | 1 | 2 | 3)
+          if (isActionKey(e, "left")) setSelectedAction((v) => ((v - 1 + 4) % 4) as 0 | 1 | 2 | 3)
+          if (isActionKey(e, "up")) setSelectedAction(0)
+          if (isActionKey(e, "down")) setSelectedAction(1)
         } else {
           // target selection mode: left/right to change target
-          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setSelectedTarget((v) => (v + 1) % enemies.length)
-          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setSelectedTarget((v) => (v - 1 + enemies.length) % enemies.length)
+          if (isActionKey(e, "right")) setSelectedTarget((v) => (v + 1) % enemies.length)
+          if (isActionKey(e, "left")) setSelectedTarget((v) => (v - 1 + enemies.length) % enemies.length)
         }
 
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           const action = ["attack", "guard", "item", "flee"][selectedAction] as "attack" | "guard" | "item" | "flee"
           if (action === "item") {
             setItemOpen(true)
@@ -83,7 +84,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
         }
       } else {
         // item selection
-        if (e.key === "Escape") {
+        if (isActionKey(e, "cancel")) {
           setItemOpen(false)
           setItemTargeting(false)
         }
@@ -91,15 +92,15 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
         // navigate items with up/down
         const consumables = player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0)
         if (!itemTargeting) {
-          if (e.key === "ArrowDown") setSelectedItemIndex((v) => Math.min(consumables.length - 1, v + 1))
-          if (e.key === "ArrowUp") setSelectedItemIndex((v) => Math.max(0, v - 1))
+          if (isActionKey(e, "down")) setSelectedItemIndex((v) => Math.min(consumables.length - 1, v + 1))
+          if (isActionKey(e, "up")) setSelectedItemIndex((v) => Math.max(0, v - 1))
         } else {
           // selecting a target for the item
-          if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") setItemTargetIndex((v) => (v + 1) % enemies.length)
-          if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") setItemTargetIndex((v) => (v - 1 + enemies.length) % enemies.length)
+          if (isActionKey(e, "right")) setItemTargetIndex((v) => (v + 1) % enemies.length)
+          if (isActionKey(e, "left")) setItemTargetIndex((v) => (v - 1 + enemies.length) % enemies.length)
         }
 
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           const item = consumables[selectedItemIndex]
           if (!item) return
 

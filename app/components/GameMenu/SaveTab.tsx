@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import { GameState } from "@/game/core/GameState"
 import { applySavedState, serializeGameState } from "@/game/core/saveLoad"
 import { ConfirmModal } from "../ConfirmModal"
+import { isActionKey } from "@/game/input/keybindings"
 
 const STORAGE_KEY = "deadlord_saves_v1"
 
@@ -15,6 +16,9 @@ interface SaveSlot {
 export function SaveTab({ state }: { state: GameState }) {
   const [slots, setSlots] = useState<SaveSlot[]>([{ timestamp: null, data: null }, { timestamp: null, data: null }, { timestamp: null, data: null }])
   const [selected, setSelected] = useState(0)
+  const [mode, setMode] = useState<"slots" | "options">("slots")
+  const ACTIONS = ["save", "load", "export", "import", "delete"] as const
+  const [selectedAction, setSelectedAction] = useState(0)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const [pendingAction, setPendingAction] = useState<{ type: "save" | "load" | "delete" | "import"; index: number; data?: string } | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -114,17 +118,42 @@ export function SaveTab({ state }: { state: GameState }) {
   // keyboard navigation
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft") setSelected(s => Math.max(0, s - 1))
-      if (e.key === "ArrowRight") setSelected(s => Math.min(2, s + 1))
-      if (e.key === "Enter") requestLoad(selected)
-      if (e.key === "s" || e.key === "S") requestSave(selected)
-      if (e.key === "d" || e.key === "D") requestDelete(selected)
-      if (e.key === "e" || e.key === "E") requestExport(selected)
-      if (e.key === "i" || e.key === "I") requestImport(selected)
+      // when a confirm modal or error is open, do not change slots/options here
+      if (pendingAction || error) return
+
+      if (mode === "slots") {
+        if (isActionKey(e, "left")) setSelected(s => Math.max(0, s - 1))
+        if (isActionKey(e, "right")) setSelected(s => Math.min(2, s + 1))
+        if (isActionKey(e, "confirm")) {
+          // enter options selection for the focused slot
+          setMode("options")
+          setSelectedAction(0)
+          return
+        }
+      } else if (mode === "options") {
+        if (isActionKey(e, "left")) setSelectedAction(a => (a - 1 + ACTIONS.length) % ACTIONS.length)
+        if (isActionKey(e, "right")) setSelectedAction(a => (a + 1) % ACTIONS.length)
+        if (isActionKey(e, "confirm")) {
+          const act = ACTIONS[selectedAction]
+          if (act === "save") requestSave(selected)
+          if (act === "load") requestLoad(selected)
+          if (act === "delete") requestDelete(selected)
+          if (act === "export") requestExport(selected)
+          if (act === "import") requestImport(selected)
+          return
+        }
+        // ESC returns to slot selection
+        if (isActionKey(e, "cancel")) {
+          setMode("slots")
+          return
+        }
+      }
+
+      // no additional fallbacks here; actions triggered via options selection or explicit buttons
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
-  }, [selected, slots])
+  }, [selected, slots, mode, selectedAction, pendingAction, error])
 
   return (
     <div>
@@ -134,13 +163,39 @@ export function SaveTab({ state }: { state: GameState }) {
           <div key={i} style={{ padding: 8, border: i === selected ? "2px solid #fff" : "1px solid #666", borderRadius: 6, minWidth: 220 }}>
             <div style={{ fontWeight: 600 }}>Slot {i + 1}</div>
             <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : "Empty"}</div>
-            <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-              <button onClick={() => requestSave(i)}>Save</button>
-              <button onClick={() => requestLoad(i)} disabled={!slot.data}>Load</button>
-              <button onClick={() => requestDelete(i)} disabled={!slot.data}>Delete</button>
-              <button onClick={() => requestExport(i)} disabled={!slot.data}>Export</button>
-              <button onClick={() => requestImport(i)}>Import</button>
-            </div>
+            {mode === "options" && i === selected ? (
+              <div style={{ marginTop: 8, display: "flex", gap: 8, justifyContent: "center" }}>
+                {ACTIONS.map((act, idx) => {
+                  const disabled = (act === "load" || act === "delete" || act === "export") && !slot.data
+                  const label = act === "save" ? "Save" : act === "load" ? "Load" : act === "export" ? "Export" : act === "import" ? "Import" : "Delete"
+                  return (
+                    <div key={act} style={{ padding: 6, border: idx === selectedAction ? "2px solid #fff" : "1px solid #666", borderRadius: 6 }}>
+                      <button
+                        onClick={() => {
+                          setSelectedAction(idx)
+                          if (act === "save") requestSave(i)
+                          if (act === "load") requestLoad(i)
+                          if (act === "delete") requestDelete(i)
+                          if (act === "export") requestExport(i)
+                          if (act === "import") requestImport(i)
+                        }}
+                        disabled={disabled}
+                      >
+                        {label}
+                      </button>
+                    </div>
+                  )
+                })}
+              </div>
+            ) : (
+              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
+                <button onClick={() => requestSave(i)}>Save</button>
+                <button onClick={() => requestLoad(i)} disabled={!slot.data}>Load</button>
+                <button onClick={() => requestDelete(i)} disabled={!slot.data}>Delete</button>
+                <button onClick={() => requestExport(i)} disabled={!slot.data}>Export</button>
+                <button onClick={() => requestImport(i)}>Import</button>
+              </div>
+            )}
           </div>
         ))}
       </div>
@@ -155,7 +210,11 @@ export function SaveTab({ state }: { state: GameState }) {
             const a = pendingAction
             if (!a) return
             if (a.type === "save") doSave(a.index)
-            if (a.type === "load") doLoad(a.index)
+            if (a.type === "load") {
+              doLoad(a.index)
+              // notify parent menu to close after loading
+              window.dispatchEvent(new Event('saveLoadedInMenu'))
+            }
             if (a.type === "delete") doDelete(a.index)
             if (a.type === "import" && a.data) doImport(a.index, a.data)
             setPendingAction(null)

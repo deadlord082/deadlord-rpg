@@ -3,7 +3,7 @@ import { createItemEntity } from "../../../entities/ItemEntity"
 import { NPCS } from "../../npcs/npcs"
 import { createChest } from "@/game/entities/ChestEntity"
 
-export const testMap: GameMap = {
+export const heroHouse: GameMap = {
   id: "heroHouse",
   width: 8,
   height: 8,
@@ -16,7 +16,7 @@ export const testMap: GameMap = {
     ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
     ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
     ["wall_stone_6","stone_ground_4","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_5","stone_ground_6","wall_stone_3"],
-    ["wall_stone_5","wall_stone_1","wall_stone_1","door_wood_stone_in","wall_stone_1","wall_stone_1","wall_stone_1","wall_stone_4"],
+    ["wall_stone_5","wall_stone_1","wall_stone_1","door_hero_house_out","wall_stone_1","wall_stone_1","wall_stone_1","wall_stone_4"],
   ],
 
   entities: [

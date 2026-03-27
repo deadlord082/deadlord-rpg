@@ -1,8 +1,8 @@
 interface MenuTabsProps {
-    menuOptions: ("status" | "inventory" | "equipment" | "save" | "quit" | "close")[]
+    menuOptions: ("status" | "inventory" | "equipment" | "save" | "settings" | "quit" | "close")[]
     menuIndex: number
     setMenuIndex: (v: number) => void
-    onSelect: (tab: "status" | "inventory" | "equipment" | "save" | "quit" | "close") => void
+    onSelect: (tab: "status" | "inventory" | "equipment" | "save" | "settings" | "quit" | "close") => void
   }
   
   export function MenuTabs({

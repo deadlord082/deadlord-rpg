@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useEffect, useState } from "react"
+import { isActionKey } from "@/game/input/keybindings"
 
 export function TitleScreen({
   onNew,
@@ -20,9 +21,13 @@ export function TitleScreen({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "ArrowLeft" || e.key === "ArrowUp") setSelected(s => Math.max(0, s - 1))
-      if (e.key === "ArrowRight" || e.key === "ArrowDown") setSelected(s => Math.min(options.length - 1, s + 1))
-      if (e.key === "Enter") options[selected].action()
+      // if any modal is open, don't handle title menu navigation
+      if (document.querySelector('[data-modal]')) return
+      // previous: left or up
+      if (isActionKey(e, "left") || isActionKey(e, "up")) setSelected(s => Math.max(0, s - 1))
+      // next: right or down
+      if (isActionKey(e, "right") || isActionKey(e, "down")) setSelected(s => Math.min(options.length - 1, s + 1))
+      if (isActionKey(e, "confirm")) options[selected].action()
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
@@ -34,7 +39,7 @@ export function TitleScreen({
         <img src="/assets/ui/menu_title.png" alt="Title" style={{ width: 600, maxWidth: "90%" }} />
         <div style={{ display: "flex", gap: 12 }}>
           {options.map((o, i) => (
-            <button key={o.label} onClick={o.action} style={{ padding: "12px 24px", fontSize: 18, background: i === selected ? '#666' : undefined }}>{o.label}</button>
+            <button key={o.label} onClick={o.action} style={{ padding: "12px 24px", fontSize: 18, background: i === selected ? '#777' : '#444' }}>{o.label}</button>
           ))}
         </div>
       </div>

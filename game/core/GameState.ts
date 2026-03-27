@@ -18,6 +18,9 @@ export interface GameState {
       lines: DialogLine[]
       index: number
     }
+      death?: {
+        // reserved for death screen
+      }
     choice?: ChoiceEvent
     merchant?: MerchantEvent
     fight?: FightEvent

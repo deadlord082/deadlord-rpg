@@ -4,6 +4,7 @@ import { InventorySystem } from "@/game/systems/InventorySystem"
 import { Items } from "@/game/data/items/items"
 import { useEffect, useState } from "react"
 import { ConfirmModal } from "../ConfirmModal"
+import { isActionKey } from "@/game/input/keybindings"
 
 export function ItemDetailsModal({
   player,
@@ -31,7 +32,7 @@ export function ItemDetailsModal({
 
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") {
+      if (isActionKey(e, "cancel")) {
         if (discardMode) {
           setDiscardMode(false)
         } else {
@@ -40,23 +41,23 @@ export function ItemDetailsModal({
       }
 
       if (discardMode) {
-        if (e.key === "ArrowUp" || e.key === "ArrowRight") setDiscardCount(c => Math.min(item.quantity, c + 1))
-        if (e.key === "ArrowDown" || e.key === "ArrowLeft") setDiscardCount(c => Math.max(1, c - 1))
-        if (e.key === "Enter") {
+        if (isActionKey(e, "up") || isActionKey(e, "right")) setDiscardCount(c => Math.min(item.quantity, c + 1))
+        if (isActionKey(e, "down") || isActionKey(e, "left")) setDiscardCount(c => Math.max(1, c - 1))
+        if (isActionKey(e, "confirm")) {
           InventorySystem.removeItem(player, item.id, discardCount)
           setDiscardMode(false)
           onClose()
         }
       } else {
         // cycle options with left/right
-        if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") {
+        if (isActionKey(e, "right")) {
           setOptionIndex(i => (i + 1) % options.length)
         }
-        if (e.key === "ArrowLeft" || e.key === "q" || e.key === "Q") {
+        if (isActionKey(e, "left")) {
           setOptionIndex(i => (i - 1 + options.length) % options.length)
         }
 
-        if (e.key === "Enter") {
+        if (isActionKey(e, "confirm")) {
           const opt = options[optionIndex]
           if (opt === "use") handleUse()
           if (opt === "discard") {
@@ -70,16 +71,7 @@ export function ItemDetailsModal({
           }
         }
 
-        if (e.key === "d" || e.key === "D" || e.key === "Delete" || e.key === "Backspace") {
-          // shortcut to discard
-          if (item.quantity > 1) {
-            setDiscardCount(1)
-            setDiscardMode(true)
-          } else {
-            InventorySystem.removeItem(player, item.id, 1)
-            onClose()
-          }
-        }
+        // removed letter shortcut for discard; use confirm on the "Discard" option instead
       }
     }
 
@@ -143,7 +135,7 @@ export function ItemDetailsModal({
           ))}
         </div>
 
-        <small style={{ opacity: 0.6 }}>Left/Right to change, Enter to confirm, D to discard, ESC to return</small>
+        <small style={{ opacity: 0.6 }}>Left/Right to change, Enter to confirm, ESC to return</small>
     </div>
 
     {discardMode && (
