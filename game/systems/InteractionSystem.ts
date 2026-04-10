@@ -1,5 +1,5 @@
 import { GameState } from "../core/GameState"
-import { directionToDelta, oppositeDirection } from "../utils/direction"
+import { directionToDelta, oppositeDirection, Direction } from "../utils/direction"
 import { runEvent } from "../events/EventRunner"
 import { getTileAt } from "../utils/grid"
 import { ChestSystem } from "./ChestSystem"
@@ -7,7 +7,7 @@ import { ChestSystem } from "./ChestSystem"
 export const InteractionSystem = {
   interact(state: GameState) {
     const player = state.player
-    const { dx, dy } = directionToDelta(player.direction)
+    const { dx, dy } = directionToDelta(player.direction ?? Direction.Down)
 
     const tx = player.x + dx
     const ty = player.y + dy
@@ -19,7 +19,7 @@ export const InteractionSystem = {
 
     if (entity && "onInteract" in entity) {
       if ("direction" in entity) {
-        entity.direction = oppositeDirection(player.direction)
+        entity.direction = oppositeDirection(player.direction ?? Direction.Down)
       }
       runEvent((entity as any).onInteract, state)
       return

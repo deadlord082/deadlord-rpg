@@ -16,15 +16,17 @@ export function ChoiceUI({ choice, state }: { choice: ChoiceEvent | undefined, s
   useEffect(() => {
     if (!choice) return
 
+    const len = choice.choices.length
+
     function onKey(e: KeyboardEvent) {
-      if (isActionKey(e, "right")) setIndex(i => (i + 1) % choice.choices.length)
-      if (isActionKey(e, "left")) setIndex(i => (i - 1 + choice.choices.length) % choice.choices.length)
+      if (isActionKey(e, "right")) setIndex(i => (i + 1) % len)
+      if (isActionKey(e, "left")) setIndex(i => (i - 1 + len) % len)
       if (isActionKey(e, "confirm")) {
         // close choice UI
         state.ui.choice = undefined
         state.running = true
         state._eventBus?.emit("uiUpdate")
-        const selected = choice.choices[index]
+        const selected = choice!.choices[index]
         if (selected) runEvent(selected.event, state)
       }
     }

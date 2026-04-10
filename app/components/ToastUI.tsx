@@ -1,15 +1,11 @@
 import { RARITY_STYLES } from "@/game/data/items/rarityColors"
+import { Toast } from "@/game/data/toasts/toast"
 
 interface ToastUIProps {
-    toasts: {
-      id: string
-      message: string
-      type: "item" | "gold"
-      rarity?: string
-    }[]
-  }
-  
-  export function ToastUI({ toasts }: ToastUIProps) {
+    toasts: Toast[]
+}
+
+export function ToastUI({ toasts }: ToastUIProps) {
     return (
       <div
         style={{

@@ -22,8 +22,8 @@ interface MenuKeyboardProps {
 
   selectedEquipSlot: number
   setSelectedEquipSlot: (i: number) => void
-  equipmentModalSlot: string | null
-  setEquipmentModalSlot: (v: string | null) => void
+  equipmentModalSlot: EquipmentSlot | null
+  setEquipmentModalSlot: (v: EquipmentSlot | null) => void
   selectedEquipItemIndex: number
   setSelectedEquipItemIndex: (i: number) => void
 
@@ -133,18 +133,18 @@ export function menuKeyboard({
 
       // EQUIPMENT navigation
       if (activeTab === "equipment") {
-        const EQUIPMENT_SLOTS = ["head","chest","rightHand","leftHand","accessory1","accessory2"]
+        const EQUIPMENT_SLOTS: EquipmentSlot[] = ["head","chest","rightHand","leftHand","accessory1","accessory2"]
         const currentSlot = EQUIPMENT_SLOTS[selectedEquipSlot]
 
         // 🔥 IF MODAL IS OPEN
-        if (equipmentModalSlot) {
+          if (equipmentModalSlot) {
           const equippedItem = player.equipment[equipmentModalSlot]
 
-          const inventoryEquipables = player.inventory.filter((i) => {
+            const inventoryEquipables = player.inventory.filter((i) => {
             if (!("slot" in i)) return false
             const slotField = i.slot
             return Array.isArray(slotField)
-              ? slotField.includes(equipmentModalSlot)
+              ? slotField.includes(equipmentModalSlot as EquipmentSlot)
               : slotField === equipmentModalSlot
           })
           
@@ -176,11 +176,11 @@ export function menuKeyboard({
           }
 
           // Equip
-          if (isActionKey(e, "confirm")) {
+            if (isActionKey(e, "confirm")) {
             const item = equipableItems[selectedEquipItemIndex]
             if (!item) return
 
-            player.equip(equipmentModalSlot as EquipmentSlot, item)
+            player.equip(equipmentModalSlot as EquipmentSlot, item as import("../data/items/EquipmentItem").EquipmentItem)
             setEquipmentModalSlot(null)
           }
 

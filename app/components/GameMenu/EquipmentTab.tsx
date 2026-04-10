@@ -1,5 +1,6 @@
 import { Player } from "@/game/entities/Player"
 import { EquipmentSlot, EquipmentItem } from "@/game/data/items/EquipmentItem"
+import { ItemRarity } from "@/game/data/items/ItemRarity"
 import { Items } from "@/game/data/items/items"
 import { useEffect, useState } from "react"
 import { RARITY_STYLES } from "@/game/data/items/rarityColors"
@@ -25,8 +26,8 @@ interface EquipmentTabProps {
     selectedSlotIndex: number
     setSelectedSlotIndex: (i: number) => void
   
-    modalSlot: string | null
-    setModalSlot: (slot: string | null) => void
+    modalSlot: EquipmentSlot | null
+    setModalSlot: (slot: EquipmentSlot | null) => void
   
     selectedItemIndex: number
     setSelectedItemIndex: (i: number) => void
@@ -44,8 +45,8 @@ interface EquipmentTabProps {
     setSelectedItemIndex,
     onEquipItem,
   }: EquipmentTabProps) {
-    const currentSlot = modalSlot ?? EQUIPMENT_SLOTS[selectedSlotIndex]
-  
+    const currentSlot = (modalSlot ?? EQUIPMENT_SLOTS[selectedSlotIndex]) as EquipmentSlot
+
     const equippedItem = player.equipment[currentSlot]
 
     const inventoryEquipables = player.inventory.filter((i) => {
@@ -117,7 +118,7 @@ interface EquipmentTabProps {
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               {equipableItems.length === 0 && <span>No items available</span>}
               {equipableItems.map((item, index) => {
-                const rarity = RARITY_STYLES[item.rarity]
+                const rarity = RARITY_STYLES[item.rarity as ItemRarity]
                 const isEquipped = equippedItem?.id === item.id
                 const isSelected = index === selectedItemIndex
                 return (

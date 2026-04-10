@@ -19,13 +19,14 @@ export function runEvent(event: GameEvent, state: GameState) {
 
       let lines: DialogLine[] = []
 
-      if ("dialogId" in event) {
-        lines = loadDialog(event.dialogId)
-      } else if ("lines" in event) {
-        lines = event.lines
-      } else if ("text" in event) {
-        // fallback for old single-line dialogs
-        lines = [{ name: "", message: Array.isArray(event.text) ? event.text.join("\n") : event.text }]
+      // Narrow the event shape safely to avoid undefined values
+      if (typeof (event as any).dialogId === "string") {
+        lines = loadDialog((event as any).dialogId)
+      } else if (Array.isArray((event as any).lines)) {
+        lines = (event as any).lines
+      } else if (typeof (event as any).text === "string" || Array.isArray((event as any).text)) {
+        const t = (event as any).text
+        lines = [{ name: "", message: Array.isArray(t) ? t.join("\n") : t }]
       }
 
       state.ui.dialog = { lines, index: 0 }

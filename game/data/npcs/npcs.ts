@@ -42,7 +42,7 @@ export const NPCS = {
             },
             {
               label: "No",
-              event: {}
+              event: { type: "sequence", events: [] }
             }
           ]
         }

@@ -1,12 +1,12 @@
 import { GameState } from "../core/GameState"
-import { directionToDelta } from "../utils/direction"
+import { directionToDelta, Direction } from "../utils/direction"
 import { Chest } from "../entities/ChestEntity"
 import { runEvent } from "../events/EventRunner"
 
 export const ChestSystem = {
   interact(state: GameState): boolean {
     const player = state.player
-    const { dx, dy } = directionToDelta(player.direction)
+    const { dx, dy } = directionToDelta(player.direction ?? Direction.Down)
 
     const chest = state.currentMap.entities.find(
       (e): e is Chest =>

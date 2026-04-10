@@ -243,10 +243,15 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                     )}
 
                     <button
-                        disabled={!canBuy}
-                        onClick={() => buy(itemId, price, index)}
+                      disabled={!canBuy}
+                      onClick={() => {
+                        // open quantity modal before buying
+                        setSelectedIndex(index)
+                        setModalOpen(true)
+                        setQuantity(1)
+                      }}
                     >
-                        {isSoldOut ? "Sold Out" : "Buy"}
+                      {isSoldOut ? "Sold Out" : "Buy"}
                     </button>
                 </div>
               </div>

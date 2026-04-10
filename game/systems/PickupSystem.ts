@@ -1,6 +1,6 @@
 import { GameState } from "../core/GameState"
 import { ItemEntity } from "../entities/ItemEntity"
-import { directionToDelta } from "../utils/direction"
+import { directionToDelta, Direction } from "../utils/direction"
 import { InventorySystem } from "./InventorySystem"
 import { ToastSystem } from "./ToastSystem"
 
@@ -14,7 +14,7 @@ export const PickupSystem = {
         e.x === player.x &&
         e.y === player.y &&
         "itemId" in e &&
-        e.pickupOnTouch
+        e.pickupOnTouch === true
     )
 
     if (!item) return
@@ -35,7 +35,7 @@ export const PickupSystem = {
 
   pickupFacing(state: GameState) {
     const player = state.player
-    const { dx, dy } = directionToDelta(player.direction)
+    const { dx, dy } = directionToDelta(player.direction ?? Direction.Down)
 
     const item = state.currentMap.entities.find(
       (e): e is ItemEntity =>

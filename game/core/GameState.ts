@@ -25,7 +25,7 @@ export interface GameState {
     merchant?: MerchantEvent
     fight?: FightEvent
     menuOpen?: boolean
-    menuTab?: "status" | "inventory" | "close" | null
+    menuTab?: "status" | "inventory" | "equipment" | "save" | "settings" | "close" | null
     levelUp?: {
       newLevel: number
       previousStats: Record<string, number>

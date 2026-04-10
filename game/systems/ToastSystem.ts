@@ -40,12 +40,14 @@ export const ToastSystem = {
     },
 
     addLevelUpToast(state: GameState, level: number) {
-        state.ui.toasts.push({
-          type: "levelup",
-          message: `Level Up! You are now level ${level}!`,
-          duration: 3000,
-          icon: "/assets/ui/levelup.png"
-        })
+                state.toasts.push({
+                    id: `${Date.now()}-${Math.random()}`,
+                    type: "levelup",
+                    message: `Level Up! You are now level ${level}!`,
+                    createdAt: Date.now(),
+                    duration: 3000,
+                    icon: "/assets/ui/levelup.png",
+                })
     },
 
     update(state: GameState) {

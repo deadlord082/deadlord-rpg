@@ -11,14 +11,15 @@ export function SettingsTab() {
   useEffect(() => {
     if (!recording) return
     function onKey(e: KeyboardEvent) {
-      e.preventDefault()
+    e.preventDefault()
+    if (!recording) return
       // allow canceling recording with cancel action
       if (isActionKey(e, "cancel") || e.key === "Escape") {
         setRecording(null)
         return
       }
       const k = e.key === " " ? " " : e.key
-      const next = setKey(recording, k)
+      const next = setKey(recording as keyof typeof bindings, k)
       setBindings(next)
       setRecording(null)
     }

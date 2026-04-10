@@ -13,7 +13,7 @@ import { isActionKey } from "@/game/input/keybindings"
 
 interface CombatUIProps {
   state: GameState
-  onAction: (action: "attack" | "guard" | "item" | "flee", targetIndex?: number) => void
+  onAction: (action: "attack" | "guard" | "item" | "flee" | "skill", targetIndex?: number) => void
 }
 
 export function CombatUI({ state, onAction }: CombatUIProps) {
@@ -121,7 +121,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
             if (Array.isArray(res)) {
               res.forEach(r => {
                 if (r.type === "damage") combat.log.push(`You used ${item.name} and dealt ${r.amount} damage.`)
-                if (r.type === "debuff") combat.log.push(`You used ${item.name} on ${enemies[r.targetIndex].name}.`)
+                    if (r.type === "debuff") combat.log.push(`You used ${item.name} on ${(enemies[r.targetIndex] as any)?.name}.`)
               })
             }
             // after applying damage/debuffs, check victory
@@ -183,9 +183,9 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
           const gaugePercent = Math.min((gauge / 100) * 100, 100)
           return (
             <div key={en.id} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <img src={en.image || "/assets/ui/enemy_placeholder.png"} alt={en.id} style={{ width: 72, height: 72 }} />
+              <img src={(en as any).image || "/assets/ui/enemy_placeholder.png"} alt={en.id} style={{ width: 72, height: 72 }} />
               <div>
-                <strong>{en.name ?? en.enemyId ?? en.id}</strong>
+                <strong>{(en as any).name ?? en.enemyId ?? en.id}</strong>
                 <div style={{ width: 180, height: 12, backgroundColor: "#400", borderRadius: 4, overflow: "hidden" }}>
                   <div
                     style={{
@@ -235,7 +235,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
 
       {/* Player info */}
       <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16 }}>
-        <img src={player.image || "/assets/entities/players/playerIcon.png"} alt={player.id} style={{ width: 96, height: 96 }} />
+        <img src={(player as any).image || "/assets/entities/players/playerIcon.png"} alt={player.id} style={{ width: 96, height: 96 }} />
         <div>
           <strong>{player.id}</strong>
           <div style={{ width: 300, height: 16, backgroundColor: "#222", borderRadius: 4, overflow: "hidden" }}>

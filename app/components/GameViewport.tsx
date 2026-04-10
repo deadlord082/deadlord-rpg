@@ -63,7 +63,7 @@ export function GameViewport({
           return (
             <Image
               key={`${mx}-${my}`}
-              src={tile.image}
+              src={tile.image as string}
               alt={tile.name}
               width={tileSize}
               height={tileSize}

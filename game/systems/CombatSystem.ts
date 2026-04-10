@@ -65,7 +65,7 @@ export class CombatSystem {
 
   static executeEnemyAttack(state: CombatState, gameState: GameState, enemyIndex: number) {
     // pick a valid alive enemy for this index
-    let enemy = state.enemies[enemyIndex]
+    let enemy: (typeof state.enemies)[number] | undefined = state.enemies[enemyIndex]
     if (!enemy || enemy.hp <= 0) {
       enemy = state.enemies.find(e => e.hp > 0)
     }
@@ -83,7 +83,7 @@ export class CombatSystem {
   }
 
   static executePlayerAttack(state: CombatState, gameState: GameState, targetIndex = 0) {
-    let target = state.enemies[targetIndex]
+    let target: (typeof state.enemies)[number] | undefined = state.enemies[targetIndex]
     if (!target || target.hp <= 0) {
       target = state.enemies.find(e => e.hp > 0)
     }

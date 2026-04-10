@@ -4,8 +4,8 @@ import npcJason from "./data/npcJason.json"
 import { DialogLine } from "./DialogLine"
 
 const dialogs: Record<string, DialogLine[]> = {
-  npcBob,
-  npcJason,
+  npcBob: npcBob as unknown as DialogLine[],
+  npcJason: npcJason as unknown as DialogLine[],
 }
 
 export function loadDialog(id: string): DialogLine[] {

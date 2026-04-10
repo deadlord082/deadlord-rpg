@@ -17,7 +17,7 @@ import { GameState } from "@/game/core/GameState"
 interface GameMenuProps {
   player: Player
   onClose: () => void
-  initialTab?: "status" | "inventory" |  "equipment" | "save" | null
+  initialTab?: "status" | "inventory" |  "equipment" | "save" | "settings" | "close" | null
 }
 
 type MenuState = "menu" | "status" | "inventory" | "equipment" | "save" | "settings"
@@ -57,7 +57,7 @@ export function GameMenu({
   const [itemDetailsIndex, setItemDetailsIndex] = useState<number | null>(null)
   // Equipment-related state
   const [selectedEquipSlot, setSelectedEquipSlot] = useState(0)
-  const [equipmentModalSlot, setEquipmentModalSlot] = useState<string | null>(null)
+  const [equipmentModalSlot, setEquipmentModalSlot] = useState<import("@/game/data/items/EquipmentItem").EquipmentSlot | null>(null)
   const [selectedEquipItemIndex, setSelectedEquipItemIndex] = useState(0)
   
 
@@ -152,12 +152,14 @@ export function GameMenu({
             onEquipItem={(slot, item) => {
             // unequip old
             for (const s of Array.isArray(item.slot) ? item.slot : [item.slot]) {
-              if (player.equipment[s]?.id === item.id) player.equipment[s] = undefined
+              if (!s) continue
+              const key = s as import("@/game/data/items/EquipmentItem").EquipmentSlot
+              if (player.equipment[key]?.id === item.id) player.equipment[key] = undefined
             }
             player.equipment[slot] = item
             // remove from inventory
-              player.inventory = player.inventory.filter((i) => i.id !== item.id)
-              (player as any)._eventBus?.emit("uiUpdate")
+            player.inventory = player.inventory.filter((i) => i.id !== item.id)
+            ;(player as any)._eventBus?.emit("uiUpdate")
           }}
         />
       )}

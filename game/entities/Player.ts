@@ -46,7 +46,7 @@ export function createPlayer(x: number, y: number): Player {
     },
   }
 
-  const player = createCombatEntity(baseEntity, baseStats, 100) as Player
+  const player = createCombatEntity(baseEntity, baseStats, 100) as unknown as Player
 
   player.inventory = []
   player.level = 1
