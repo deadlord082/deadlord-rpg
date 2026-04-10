@@ -1,4 +1,4 @@
-import { ItemRarity } from "./ItemRarity"
+import type { ItemRarity } from "./ItemRarity"
 
 export type EffectTarget = "self" | "enemy" | "allEnemies"
 

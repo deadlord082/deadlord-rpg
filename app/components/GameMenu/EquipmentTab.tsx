@@ -1,6 +1,6 @@
 import { Player } from "@/game/entities/Player"
 import { EquipmentSlot, EquipmentItem } from "@/game/data/items/EquipmentItem"
-import { ItemRarity } from "@/game/data/items/ItemRarity"
+import type { ItemRarity } from "@/game/data/items/ItemRarity"
 import { Items } from "@/game/data/items/items"
 import { useEffect, useState } from "react"
 import { RARITY_STYLES } from "@/game/data/items/rarityColors"

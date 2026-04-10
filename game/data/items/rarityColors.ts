@@ -1,4 +1,4 @@
-import { ItemRarity } from "./ItemRarity"
+import type { ItemRarity } from "./ItemRarity"
 
 export const RARITY_STYLES: Record<
   ItemRarity,
