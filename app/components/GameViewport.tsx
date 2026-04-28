@@ -1,7 +1,16 @@
-import { Tiles } from "@/game/data/tiles/tileSet"
+import { Tiles, resolveTileId } from "@/game/data/tiles/tileSet"
 import { Entity } from "@/game/entities/Entity"
 import Image from "next/image"
 import { Direction } from "@/game/utils/direction"
+
+function directionToAnimationDir(d: Direction) {
+  switch (d) {
+    case Direction.Up: return "north"
+    case Direction.Down: return "south"
+    case Direction.Left: return "west"
+    case Direction.Right: return "east"
+  }
+}
 
 interface GameViewportProps {
   map: any
@@ -9,6 +18,8 @@ interface GameViewportProps {
   tileSize: number
   viewWidth: number
   viewHeight: number
+  cameraX?: number
+  cameraY?: number
 }
 
 function getEntitySprite(entity: any): string | undefined {
@@ -21,6 +32,18 @@ function getEntitySprite(entity: any): string | undefined {
 
   // Directional entity (player, NPCs)
   if (entity.sprites && entity.direction) {
+    // If entity is moving and has move state, prefer animation frames for player
+    if (entity.moving && entity.id === "player") {
+      const dir = directionToAnimationDir(entity.direction)
+      const elapsed = entity.moveElapsed ?? 0
+      const dur = entity.moveDuration ?? 200
+      const frames = 4
+      const t = Math.min(1, elapsed / dur)
+      const idx = Math.min(frames - 1, Math.floor(t * frames))
+      const pad = String(idx).padStart(3, "0")
+      return `/assets/entities/npcs/hero/animations/walking/${dir}/frame_${pad}.png`
+    }
+
     return entity.sprites[entity.direction]
   }
 
@@ -34,30 +57,38 @@ export function GameViewport({
   tileSize,
   viewWidth,
   viewHeight,
+  cameraX: propCameraX,
+  cameraY: propCameraY,
 }: GameViewportProps) {
   const radiusX = Math.floor(viewWidth / 2)
   const radiusY = Math.floor(viewHeight / 2)
 
-  const cameraX = Math.max(
-    0,
-    Math.min(player.x - radiusX, map.width - viewWidth)
-  )
+  // allow caller to provide smoothed camera position (top-left in tiles)
+  const cameraX = typeof propCameraX === "number"
+    ? propCameraX
+    : Math.max(0, Math.min(player.x - radiusX, map.width - viewWidth))
 
-  const cameraY = Math.max(
-    0,
-    Math.min(player.y - radiusY, map.height - viewHeight)
-  )
+  const cameraY = typeof propCameraY === "number"
+    ? propCameraY
+    : Math.max(0, Math.min(player.y - radiusY, map.height - viewHeight))
+
+  // Compute starting tile indices and fractional offsets so we can render with sub-tile precision
+  const startTileX = Math.floor(cameraX)
+  const startTileY = Math.floor(cameraY)
+  const offsetX = (cameraX - startTileX) * tileSize
+  const offsetY = (cameraY - startTileY) * tileSize
 
   return (
     <div style={{ position: "absolute", inset: 0 }}>
       {/* Tiles */}
       {Array.from({ length: viewHeight }).map((_, sy) =>
         Array.from({ length: viewWidth }).map((_, sx) => {
-          const mx = cameraX + sx
-          const my = cameraY + sy
-          const tileId = map.tiles[my]?.[mx]
-          if (tileId == null) return null
+          const mx = startTileX + sx
+          const my = startTileY + sy
+          const raw = map.tiles[my]?.[mx]
+          if (raw == null) return null
 
+          const tileId = resolveTileId(map.id ?? "", raw, mx, my)
           const tile = Tiles[tileId]
 
           return (
@@ -69,8 +100,8 @@ export function GameViewport({
               height={tileSize}
               style={{
                 position: "absolute",
-                left: sx * tileSize,
-                top: sy * tileSize,
+                left: sx * tileSize - offsetX,
+                top: sy * tileSize - offsetY,
               }}
             />
           )
@@ -79,10 +110,20 @@ export function GameViewport({
 
       {/* Entities */}
       {[...map.entities, player].map((e) => {
-        const sx = e.x - cameraX
-        const sy = e.y - cameraY
+        // compute render position (interpolated if moving)
+        const from = e.moveFrom ?? { x: e.x, y: e.y }
+        const elapsed = e.moveElapsed ?? 0
+        const dur = e.moveDuration ?? 200
+        const t = dur > 0 ? Math.min(1, elapsed / dur) : 1
 
-        if (sx < 0 || sy < 0 || sx >= viewWidth || sy >= viewHeight)
+        const renderX = from.x + (e.x - from.x) * t
+        const renderY = from.y + (e.y - from.y) * t
+
+        // compute entity position relative to startTile so fractional camera offsets apply uniformly
+        const sxEntity = renderX - startTileX
+        const syEntity = renderY - startTileY
+
+        if (sxEntity < -1 || syEntity < -1 || sxEntity >= viewWidth || syEntity >= viewHeight)
           return null
 
         const sprite = getEntitySprite(e)
@@ -96,8 +137,9 @@ export function GameViewport({
               position: "absolute",
               width: tileSize,
               height: tileSize,
-              left: sx * tileSize,
-              top: sy * tileSize,
+              left: sxEntity * tileSize - offsetX,
+              top: syEntity * tileSize - offsetY,
+              transform: "translateZ(0)",
             }}
           />
         )

@@ -1,0 +1,26 @@
+{
+  "character": {
+    "id": "ab88aeff-6452-4347-b8e7-95d2fd99b9ca",
+    "name": "merchant, in the medieval era",
+    "prompt": "merchant, in the medieval era",
+    "size": {
+      "width": 56,
+      "height": 56
+    },
+    "template_id": "mannequin",
+    "directions": 4,
+    "view": "low top-down",
+    "created_at": "2026-03-27T11:20:29.030165+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "west": "rotations/west.png",
+      "east": "rotations/east.png",
+      "north": "rotations/north.png"
+    },
+    "animations": {}
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-10T12:19:19.821899"
+}

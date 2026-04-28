@@ -1,0 +1,26 @@
+{
+  "character": {
+    "id": "48a87cf1-d187-49a4-b19b-f4dce4a8afd5",
+    "name": "elder",
+    "prompt": "An elderly village chief from a medieval setting, full body view. The character has a wise, weathered face with deep wrinkles, a long gray beard, and calm, authoritative eyes. His posture is upright but slightly aged, showing both strength and years of experience. He wears layered traditional garments made of coarse fabrics and furs, decorated with simple tribal or village ornaments such as beads, carved pendants, and leather bindings. A heavy cloak drapes over his shoulders, fastened with a handcrafted brooch. His clothing shows signs of wear but carries symbolic importance. His hands are aged and rough, reflecting a life of leadership and hardship. His expression is calm, serious, and thoughtful, embodying wisdom and authority. he has white hair.",
+    "size": {
+      "width": 56,
+      "height": 56
+    },
+    "template_id": "mannequin",
+    "directions": 4,
+    "view": "low top-down",
+    "created_at": "2026-03-27T15:22:16.431621+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "west": "rotations/west.png",
+      "east": "rotations/east.png",
+      "north": "rotations/north.png"
+    },
+    "animations": {}
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-10T12:19:41.414430"
+}

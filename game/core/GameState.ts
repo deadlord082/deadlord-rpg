@@ -13,6 +13,10 @@ export interface GameState {
   currentMap: GameMap
   player: Player
 
+  // Camera center position in tile coordinates (fractional for smooth movement)
+  cameraX?: number
+  cameraY?: number
+
   ui: {
     dialog?: {
       lines: DialogLine[]
@@ -51,6 +55,8 @@ export function createInitialGameState(
   return {
     currentMap: map,
     player,
+    cameraX: player.x,
+    cameraY: player.y,
     ui: {},
     eventQueue: [],
     removedEntityIdsByMap: {},

@@ -29,4 +29,10 @@ export interface Entity {
 
   // Optional link to the engine's EventBus for emitting domain/UI events
   _eventBus?: EventBus
+
+  // Optional movement animation state (used for smooth interpolation)
+  moving?: boolean
+  moveFrom?: { x: number; y: number }
+  moveElapsed?: number // milliseconds
+  moveDuration?: number // milliseconds
 }

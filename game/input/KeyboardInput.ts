@@ -45,7 +45,16 @@ export function bindKeyboard(game: Game) {
     // Block movement when the engine is not running or a choice UI is open
     if (!game.state.running || game.state.ui.choice) return
 
-    // Movement
+    // Movement — block new move while player movement animation is in progress
+    const playerMoving = !!game.state.player.moving
+    if (playerMoving) {
+      // still consume movement keys to avoid browser defaults while animating
+      if (isActionKey(e, "up") || isActionKey(e, "down") || isActionKey(e, "left") || isActionKey(e, "right")) {
+        e.preventDefault()
+        return
+      }
+    }
+
     if (isActionKey(e, "up")) {
       MovementSystem.move(game.state, Direction.Up)
       PickupSystem.checkPickup(game.state)

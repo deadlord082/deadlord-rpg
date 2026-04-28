@@ -1,0 +1,53 @@
+{
+  "character": {
+    "id": "365ba522-9317-46a3-8005-afbabcbcaea6",
+    "name": "blacksmith",
+    "prompt": "A medieval village blacksmith. The character is a strong, rugged man with muscular arms, wearing a worn leather apron over simple linen clothing. His hands are rough and soot-covered. He has a short beard and unkempt hair, with a focused, hardened expression. He holds a hammer in one hand",
+    "size": {
+      "width": 56,
+      "height": 56
+    },
+    "template_id": "mannequin",
+    "directions": 4,
+    "view": "low top-down",
+    "created_at": "2026-03-27T14:50:01.714758+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "west": "rotations/west.png",
+      "east": "rotations/east.png",
+      "north": "rotations/north.png"
+    },
+    "animations": {
+      "Walking-22ddf5ac": {
+        "south": [
+          "animations/Walking-22ddf5ac/south/frame_000.png",
+          "animations/Walking-22ddf5ac/south/frame_001.png",
+          "animations/Walking-22ddf5ac/south/frame_002.png",
+          "animations/Walking-22ddf5ac/south/frame_003.png"
+        ],
+        "north": [
+          "animations/Walking-22ddf5ac/north/frame_000.png",
+          "animations/Walking-22ddf5ac/north/frame_001.png",
+          "animations/Walking-22ddf5ac/north/frame_002.png",
+          "animations/Walking-22ddf5ac/north/frame_003.png"
+        ],
+        "east": [
+          "animations/Walking-22ddf5ac/east/frame_000.png",
+          "animations/Walking-22ddf5ac/east/frame_001.png",
+          "animations/Walking-22ddf5ac/east/frame_002.png",
+          "animations/Walking-22ddf5ac/east/frame_003.png"
+        ],
+        "west": [
+          "animations/Walking-22ddf5ac/west/frame_000.png",
+          "animations/Walking-22ddf5ac/west/frame_001.png",
+          "animations/Walking-22ddf5ac/west/frame_002.png",
+          "animations/Walking-22ddf5ac/west/frame_003.png"
+        ]
+      }
+    }
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-10T12:19:37.883927"
+}

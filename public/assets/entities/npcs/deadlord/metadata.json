@@ -1,0 +1,53 @@
+{
+  "character": {
+    "id": "ecfe4880-f0f9-4058-9c0f-581ee32650e6",
+    "name": "deadlord",
+    "prompt": "A dark fantasy armored warlord. The character wears massive, ornate black steel armor with glowing cyan-blue magical energy emanating from cracks, runes across the armor and it's eyes. The helmet is menacing with tall, curved horn-like spikes and a shadowed face. Broad shoulders with spiked pauldrons, intricate engravings, and heavy gauntlets. A long, tattered cape flows behind him, deep crimson fading into darkness. Subtle blue light glows from the character, illuminating parts of the armor and ground. The pose is powerful and imposing, slightly facing forward, like a death knight or undead general.",
+    "size": {
+      "width": 56,
+      "height": 56
+    },
+    "template_id": "mannequin",
+    "directions": 4,
+    "view": "low top-down",
+    "created_at": "2026-03-27T13:46:10.536297+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "west": "rotations/west.png",
+      "east": "rotations/east.png",
+      "north": "rotations/north.png"
+    },
+    "animations": {
+      "Walking-79c463ae": {
+        "north": [
+          "animations/Walking-79c463ae/north/frame_000.png",
+          "animations/Walking-79c463ae/north/frame_001.png",
+          "animations/Walking-79c463ae/north/frame_002.png",
+          "animations/Walking-79c463ae/north/frame_003.png"
+        ],
+        "west": [
+          "animations/Walking-79c463ae/west/frame_000.png",
+          "animations/Walking-79c463ae/west/frame_001.png",
+          "animations/Walking-79c463ae/west/frame_002.png",
+          "animations/Walking-79c463ae/west/frame_003.png"
+        ],
+        "south": [
+          "animations/Walking-79c463ae/south/frame_000.png",
+          "animations/Walking-79c463ae/south/frame_001.png",
+          "animations/Walking-79c463ae/south/frame_002.png",
+          "animations/Walking-79c463ae/south/frame_003.png"
+        ],
+        "east": [
+          "animations/Walking-79c463ae/east/frame_000.png",
+          "animations/Walking-79c463ae/east/frame_001.png",
+          "animations/Walking-79c463ae/east/frame_002.png",
+          "animations/Walking-79c463ae/east/frame_003.png"
+        ]
+      }
+    }
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-10T12:19:23.072466"
+}

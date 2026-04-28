@@ -39,11 +39,16 @@ export function createPlayer(x: number, y: number): Player {
     direction: Direction.Down,
 
     sprites: {
-      [Direction.Up]: "/assets/entities/players/up.png",
-      [Direction.Down]: "/assets/entities/players/down.png",
-      [Direction.Left]: "/assets/entities/players/left.png",
-      [Direction.Right]: "/assets/entities/players/right.png",
+      [Direction.Up]: "/assets/entities/npcs/hero/rotations/north.png",
+      [Direction.Down]: "/assets/entities/npcs/hero/rotations/south.png",
+      [Direction.Left]: "/assets/entities/npcs/hero/rotations/west.png",
+      [Direction.Right]: "/assets/entities/npcs/hero/rotations/east.png",
     },
+    // movement animation defaults
+    moving: false,
+    moveFrom: { x, y },
+    moveElapsed: 0,
+    moveDuration: 300,
   }
 
   const player = createCombatEntity(baseEntity, baseStats, 100) as unknown as Player

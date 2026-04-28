@@ -15,6 +15,14 @@ export const MovementSystem = {
 
     if (!CollisionSystem.canMoveTo(state, nx, ny)) return
 
+    // record visual movement start for interpolation, keep logical position updated
+    player.moveFrom = { x: player.x, y: player.y }
+    player.moveElapsed = 0
+    player.moveDuration = player.moveDuration ?? 200
+    player.moving = true
+
+    // update logical position immediately so other systems (events, collisions)
+    // operate on the moved position as before
     player.x = nx
     player.y = ny
 
@@ -29,8 +37,19 @@ export const MovementSystem = {
     if (tile?.onEnter) runEvent(tile.onEnter, state)
   },
 
-  // optional placeholder for future NPC updates
+  // advance any in-progress movement animations
   update(state: GameState, delta: number) {
-    // currently nothing
+    const player = state.player
+    if (player.moving) {
+      player.moveElapsed = (player.moveElapsed ?? 0) + Math.round(delta * 1000)
+      const dur = player.moveDuration ?? 200
+      if ((player.moveElapsed ?? 0) >= dur) {
+        // finish movement
+        player.moving = false
+        player.moveElapsed = dur
+        // ensure moveFrom cleared (optional)
+        player.moveFrom = { x: player.x, y: player.y }
+      }
+    }
   }
 }

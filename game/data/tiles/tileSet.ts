@@ -66,12 +66,12 @@ export const Tiles: Record<string, Tile> = {
     walkable: true,
     image: "/assets/tiles/floors/tilegrass3.png",
   },
-  tile_grass_4: {
-    id: "tile_grass_4",
-    name: "Tile Grass",
-    walkable: true,
-    image: "/assets/tiles/floors/tilegrass4.png",
-  },
+  // tile_grass_4: {
+  //   id: "tile_grass_4",
+  //   name: "Tile Grass",
+  //   walkable: true,
+  //   image: "/assets/tiles/floors/tilegrass4.png",
+  // },
   tile_grass_5: {
     id: "tile_grass_5",
     name: "Tile Grass",
@@ -254,6 +254,44 @@ export const Tiles: Record<string, Tile> = {
   },
 
   //
+  // Walls — House walls
+  //
+  house_wall: {
+    id: "house_wall",
+    name: "Wall",
+    walkable: false,
+    image: "/assets/tiles/walls/stonebrickwall1.png",
+  },
+  house_roof: {
+    id: "house_roof",
+    name: "Roof",
+    walkable: false,
+    image: "/assets/tiles/walls/roof.png",
+  },
+  house_door: {
+    id: "house_roof",
+    name: "Door",
+    walkable: false,
+    image: "/assets/tiles/walls/wooddoorinstonebick.png",
+  },
+  //
+  // Walls — Village decorations
+  //
+  well: {
+    id: "well",
+    name: "Well",
+    walkable: false,
+    image: "/assets/tiles/walls/well.png",
+  },
+  tree: {
+    id: "tree",
+    name: "Tree",
+    walkable: false,
+    image: "/assets/tiles/walls/tree.png",
+  },
+
+
+  //
   // Walls — Forest
   //
   wall_forest_1: {
@@ -348,4 +386,50 @@ export const Tiles: Record<string, Tile> = {
       y: 20,
     },
   },
+  nier_town_out_right: {
+    id: "nier_town_out_right",
+    name: "Warp",
+    walkable: true,
+    image: "/assets/tiles/floors/grass1.png",
+    onEnter: {
+      type: "warp",
+      targetMap: "frontYardHeroHouse",
+      x: 1,
+      y: 7,
+    },
+  },
+  nier_town_in_right: {
+    id: "nier_town_in_right",
+    name: "Warp",
+    walkable: true,
+    image: "/assets/tiles/floors/grass1.png",
+    onEnter: {
+      type: "warp",
+      targetMap: "nierTown",
+      x: 17,
+      y: 13,
+    },
+  },
+}
+
+// Resolve a tile key possibly referring to a family (e.g. "grass")
+// to a concrete tile id (e.g. "grass_1"). Deterministic per map coordinate.
+export function resolveTileId(mapId: string, key: string, x: number, y: number): string {
+  // If exact tile exists, return it
+  if (Tiles[key]) return key
+
+  // Find candidates that share the prefix 'key_'
+  const prefix = key + "_"
+  const candidates = Object.keys(Tiles).filter(k => k.startsWith(prefix))
+  if (candidates.length === 0) return key
+
+  // Simple deterministic hash using map id and coordinates
+  let hash = 2166136261 >>> 0
+  for (let i = 0; i < mapId.length; i++) {
+    hash = Math.imul(hash ^ mapId.charCodeAt(i), 16777619) >>> 0
+  }
+  hash = (hash + (x * 73856093) + (y * 19349663)) >>> 0
+
+  const idx = hash % candidates.length
+  return candidates[idx]
 }

@@ -88,7 +88,12 @@ export const NPCS = {
     "jason",
     "Jason",
     1, 5,
-    NPC_SPRITES,
+    {
+      [Direction.Up]: "/assets/entities/npcs/elder/rotations/north.png",
+      [Direction.Down]: "/assets/entities/npcs/elder/rotations/south.png",
+      [Direction.Left]: "/assets/entities/npcs/elder/rotations/west.png",
+      [Direction.Right]: "/assets/entities/npcs/elder/rotations/east.png",
+    },
     { type: "dialog", dialogId: "npcJason" }
   ),
     
@@ -159,11 +164,16 @@ export const NPCS = {
     }
   ),
 
-  jacob: createNPC(
-    "jacob",
-    "Jacob",
+  merchant: createNPC(
+    "merchant",
+    "Merchant",
     4, 1,
-    NPC_SPRITES,
+    {
+      [Direction.Up]: "/assets/entities/npcs/merchant/rotations/north.png",
+      [Direction.Down]: "/assets/entities/npcs/merchant/rotations/south.png",
+      [Direction.Left]: "/assets/entities/npcs/merchant/rotations/west.png",
+      [Direction.Right]: "/assets/entities/npcs/merchant/rotations/east.png",
+    },
     {
       type: "sequence",
       events: [
@@ -175,18 +185,87 @@ export const NPCS = {
             { itemId: "great_potion", price: 25, stock: 5 },
             { itemId: "ultima_potion", price: 100, stock: 1 },
             { itemId: "old_key", price: 50, stock: 1 },
+            { itemId: "gold_ring", price: 100, stock: 1 },
+          ]
+        },
+        { type: "dialog", text: "Come again!" }
+      ]
+    },
+    Direction.Left
+  ),
+
+  blacksmith_t1: createNPC(
+    "blacksmith_t1",
+    "Blacksmith",
+    4, 2,
+    {
+      [Direction.Up]: "/assets/entities/npcs/blacksmith/rotations/north.png",
+      [Direction.Down]: "/assets/entities/npcs/blacksmith/rotations/south.png",
+      [Direction.Left]: "/assets/entities/npcs/blacksmith/rotations/west.png",
+      [Direction.Right]: "/assets/entities/npcs/blacksmith/rotations/east.png",
+    },
+    {
+      type: "sequence",
+      events: [
+        { type: "dialog", text: "Take a look at my wares!" },
+        {
+          type: "merchant",
+          inventory: [
+            { itemId: "stone_sword", price: 20, stock: 1 },
             { itemId: "iron_sword", price: 50, stock: 1 },
+            { itemId: "wooden_shield", price: 20, stock: 1 },
             { itemId: "iron_shield", price: 50, stock: 1 },
+            { itemId: "stone_mace", price: 20, stock: 1 },
             { itemId: "iron_mace", price: 50, stock: 1 },
+            { itemId: "leather_chest_plate", price: 20, stock: 1 },
             { itemId: "iron_chest_plate", price: 50, stock: 1 },
+            { itemId: "leather_helmet", price: 20, stock: 1 },
             { itemId: "iron_helmet", price: 50, stock: 1 },
             { itemId: "iron_ring", price: 50, stock: 1 },
-            { itemId: "stone_sword", price: 20, stock: 1 },
-            { itemId: "wooden_shield", price: 20, stock: 1 },
-            { itemId: "stone_mace", price: 20, stock: 1 },
-            { itemId: "leather_chest_plate", price: 20, stock: 1 },
-            { itemId: "leather_helmet", price: 20, stock: 1 },
             { itemId: "gold_ring", price: 100, stock: 1 },
+          ]
+        },
+        { type: "dialog", text: "Come again!" }
+      ]
+    },
+    Direction.Left
+  ),
+
+  blacksmith_t2: createNPC(
+    "blacksmith_t2",
+    "Blacksmith",
+    4, 2,
+    {
+      [Direction.Up]: "/assets/entities/npcs/blacksmith/rotations/north.png",
+      [Direction.Down]: "/assets/entities/npcs/blacksmith/rotations/south.png",
+      [Direction.Left]: "/assets/entities/npcs/blacksmith/rotations/west.png",
+      [Direction.Right]: "/assets/entities/npcs/blacksmith/rotations/east.png",
+    },
+    {
+      type: "sequence",
+      events: [
+        { type: "dialog", text: "Take a look at my wares!" },
+        {
+          type: "merchant",
+          inventory: [
+            { itemId: "stone_sword", price: 20, stock: 1 },
+            { itemId: "iron_sword", price: 50, stock: 1 },
+            { itemId: "steel_sword", price: 100, stock: 1 },
+            { itemId: "wooden_shield", price: 20, stock: 1 },
+            { itemId: "iron_shield", price: 50, stock: 1 },
+            { itemId: "steel_shield", price: 100, stock: 1 },
+            { itemId: "stone_mace", price: 20, stock: 1 },
+            { itemId: "iron_mace", price: 50, stock: 1 },
+            { itemId: "steel_mace", price: 100, stock: 1 },
+            { itemId: "leather_chest_plate", price: 20, stock: 1 },
+            { itemId: "iron_chest_plate", price: 50, stock: 1 },
+            { itemId: "steel_chest_plate", price: 100, stock: 1 },
+            { itemId: "leather_helmet", price: 20, stock: 1 },
+            { itemId: "iron_helmet", price: 50, stock: 1 },
+            { itemId: "steel_helmet", price: 100, stock: 1 },
+            { itemId: "iron_ring", price: 50, stock: 1 },
+            { itemId: "gold_ring", price: 100, stock: 1 },
+            { itemId: "ornate_ring", price: 150, stock: 1 },
           ]
         },
         { type: "dialog", text: "Come again!" }

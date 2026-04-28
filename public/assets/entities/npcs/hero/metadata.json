@@ -1,0 +1,53 @@
+{
+  "character": {
+    "id": "7fb401c3-feba-4e22-9e77-c4a422c1a002",
+    "name": "hero",
+    "prompt": "ancient farmer, now aventurer with a short beard brown hair. simple clothing with small leather protection and one shoulder pad, in the medieval era",
+    "size": {
+      "width": 56,
+      "height": 56
+    },
+    "template_id": "mannequin",
+    "directions": 4,
+    "view": "low top-down",
+    "created_at": "2026-03-27T11:11:34.077234+00:00"
+  },
+  "frames": {
+    "rotations": {
+      "south": "rotations/south.png",
+      "west": "rotations/west.png",
+      "east": "rotations/east.png",
+      "north": "rotations/north.png"
+    },
+    "animations": {
+      "Walking-cea7459a": {
+        "west": [
+          "animations/Walking-cea7459a/west/frame_000.png",
+          "animations/Walking-cea7459a/west/frame_001.png",
+          "animations/Walking-cea7459a/west/frame_002.png",
+          "animations/Walking-cea7459a/west/frame_003.png"
+        ],
+        "east": [
+          "animations/Walking-cea7459a/east/frame_000.png",
+          "animations/Walking-cea7459a/east/frame_001.png",
+          "animations/Walking-cea7459a/east/frame_002.png",
+          "animations/Walking-cea7459a/east/frame_003.png"
+        ],
+        "south": [
+          "animations/Walking-cea7459a/south/frame_000.png",
+          "animations/Walking-cea7459a/south/frame_001.png",
+          "animations/Walking-cea7459a/south/frame_002.png",
+          "animations/Walking-cea7459a/south/frame_003.png"
+        ],
+        "north": [
+          "animations/Walking-cea7459a/north/frame_000.png",
+          "animations/Walking-cea7459a/north/frame_001.png",
+          "animations/Walking-cea7459a/north/frame_002.png",
+          "animations/Walking-cea7459a/north/frame_003.png"
+        ]
+      }
+    }
+  },
+  "export_version": "2.0",
+  "export_date": "2026-04-10T12:19:06.187287"
+}

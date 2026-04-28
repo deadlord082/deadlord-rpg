@@ -1,5 +1,5 @@
 import { GameMap } from "../data/maps/mapTypes"
-import { Tiles } from "../data/tiles/tileSet"
+import { Tiles, resolveTileId } from "../data/tiles/tileSet"
 import { Entity } from "../entities/Entity"
 
 export function getTileAt(
@@ -7,9 +7,10 @@ export function getTileAt(
     x: number,
     y: number
 ) {
-    const tileId = map.tiles[y]?.[x]
-    if (tileId === undefined) return null
+    const raw = map.tiles[y]?.[x]
+    if (raw === undefined) return null
 
+    const tileId = resolveTileId(map.id ?? "", raw, x, y)
     return Tiles[tileId]
 }
 

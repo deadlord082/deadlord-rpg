@@ -14,8 +14,11 @@ import { LevelUpUI } from "./components/LevelUpUi"
 import { CombatUI } from "./components/CombatUi"
 import { DeathScreen } from "./components/DeathScreen"
 import { CombatSystem } from "@/game/systems/CombatSystem"
+import { MovementSystem } from "@/game/systems/MovementSystem"
+import { CameraSystem } from "@/game/systems/CameraSystem"
 import { runEvent } from "@/game/events/EventRunner"
 import { TitleScreen } from "./components/TitleScreen"
+import { LoadingScreen } from "./components/LoadingScreen"
 import { isActionKey } from "@/game/input/keybindings"
 import { ConfirmModal } from "./components/ConfirmModal"
 import { TitleLoadModal } from "./components/TitleLoadModal"
@@ -29,6 +32,7 @@ const VIEW_TILES_Y = 17
 export default function Page() {
   const [showLoadModal, setShowLoadModal] = useState(false)
   const [showSettingsMsg, setShowSettingsMsg] = useState(false)
+  const [loadingDone, setLoadingDone] = useState(false)
   const [game, setGame] = useState<Game | null>(null)
   const [, forceUpdate] = useState(0)
   const dialogLockRef = useRef(false)
@@ -50,6 +54,8 @@ export default function Page() {
       if (g) {
         ToastSystem.update(g.state)
         animationScheduler.update(frameDelta / 1000)
+        MovementSystem.update(g.state, frameDelta / 1000)
+        CameraSystem.update(g.state, frameDelta / 1000, VIEW_TILES_X, VIEW_TILES_Y)
 
         while (accumulator >= timestep) {
           const dt = timestep / 1000
@@ -158,6 +164,10 @@ export default function Page() {
   }
 
   if (!game) {
+    if (!loadingDone) {
+      return <LoadingScreen onDone={() => setLoadingDone(true)} />
+    }
+
     return (
       <>
         <TitleScreen onNew={startNewGame} onLoad={() => setShowLoadModal(true)} onSettings={() => setShowSettingsMsg(true)} />
@@ -185,9 +195,25 @@ export default function Page() {
 
   // render game UI when a game exists
   const g = game
+
+  // compute camera left/top from smoothed camera center
+  const radiusX = Math.floor(VIEW_TILES_X / 2)
+  const radiusY = Math.floor(VIEW_TILES_Y / 2)
+
+  const camCenterX = g ? g.state.cameraX ?? g.state.player.x : 0
+  const camCenterY = g ? g.state.cameraY ?? g.state.player.y : 0
+
+  // compute fractional top-left (do NOT floor — keep fractional for smooth movement)
+  let cameraLeft = camCenterX - radiusX
+  let cameraTop = camCenterY - radiusY
+  const maxLeft = (g?.state.currentMap.width ?? 0) - VIEW_TILES_X
+  const maxTop = (g?.state.currentMap.height ?? 0) - VIEW_TILES_Y
+  cameraLeft = Math.max(0, Math.min(cameraLeft, maxLeft))
+  cameraTop = Math.max(0, Math.min(cameraTop, maxTop))
+
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", overflow: "hidden", background: "black" }}>
-      <GameViewport map={g!.state.currentMap} player={g!.state.player} tileSize={TILE_SIZE} viewWidth={VIEW_TILES_X} viewHeight={VIEW_TILES_Y} />
+      <GameViewport map={g!.state.currentMap} player={g!.state.player} tileSize={TILE_SIZE} viewWidth={VIEW_TILES_X} viewHeight={VIEW_TILES_Y} cameraX={cameraLeft} cameraY={cameraTop} />
 
       {g!.state.ui.menuOpen && (
         <GameMenu player={g!.state.player} state={g!.state} initialTab={g!.state.ui.menuTab ?? null} onClose={() => { g!.state.ui.menuOpen = false; g!.state.running = true; g!.state._eventBus?.emit('uiUpdate') }} />

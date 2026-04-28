@@ -35,15 +35,10 @@ export const heroHouse: GameMap = {
       },
       {
         type: "reward",
-        items: ["potion", "gold_coin","bomb","smoke_bomb","tonic","ring_of_power"],
+        items: ["potion", "wooden_sword"],
         gold: 25,
       }
     ),    
-    createItemEntity("item1", "potion", 3, 2, true),
-    createItemEntity("item2", "crown_of_deadlord", 3, 3, true),
-    createItemEntity("item3", "old_key", 4, 3, true),
-    createItemEntity("item4", "great_potion", 4, 3, true),
-    createItemEntity("item5", "ultima_potion", 4, 3, true),
-    createItemEntity("item6", "test", 4, 3, true),
+    // createItemEntity("item1", "potion", 3, 2, true),
   ],
 }
