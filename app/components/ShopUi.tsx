@@ -140,19 +140,20 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
       style={{
         position: "absolute",
         inset: "15% 20%",
-        background: "#111",
-        border: "2px solid white",
+        background: "#0b0b0b",
+        border: `2px solid ${"#222"}`,
         borderRadius: 8,
         padding: 20,
         zIndex: 3000,
         display: "flex",
         flexDirection: "column",
         gap: 16,
+        color: "white",
       }}
     >
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h3>Shop</h3>
+        <h3 style={{ margin: 0, color: "white" }}>Shop</h3>
 
         {/* Player Gold */}
         <div
@@ -166,25 +167,12 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
             src="/assets/ui/gold.png"
             style={{ width: 24, height: 24}}
           />
-          <span
-            style={{
-              fontWeight: "bold",
-            }}
-          >
-            {player.gold}
-          </span>
+          <span style={{ fontWeight: "bold", color: "#ffecb3" }}>{player.gold}</span>
         </div>
       </div>
 
       {/* Items */}
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: 12,
-          overflowY: "auto",
-        }}
-      >
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, overflowY: "auto" }}>
         {event.inventory.map(({ itemId, price, stock }, index) => {
           const item = Items[itemId]
           if (!item) return null
@@ -226,14 +214,25 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                 )}
 
                 <div>
-                  <div style={{ color: rarity.text }}>{item.name}</div>
-                  <small>{item.description}</small>
+                  <div style={{ color: rarity.text, fontWeight: 600 }}>{item.name}</div>
+                  <small style={{ color: "#ccc" }}>{item.description}</small>
+
+                  {/* Equipment stats */}
+                  {"stats" in item && item.stats && (
+                    <div style={{ marginTop: 6, display: "flex", gap: 10, flexWrap: "wrap" }}>
+                      {Object.entries(item.stats).map(([k, v]) => (
+                        <div key={k} style={{ fontSize: 12, color: "#d1fae5" }}>
+                          +{v} {k}
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               </div>
 
               {/* Right side */}
               <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span style={{ color: "#ffcc33" }}>{price}</span>
+                <span style={{ color: "#ffcc33", fontWeight: 700 }}>{price}</span>
 
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     {!isInfinite && (
@@ -249,6 +248,14 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                         setSelectedIndex(index)
                         setModalOpen(true)
                         setQuantity(1)
+                      }}
+                      style={{
+                        padding: "6px 10px",
+                        background: canBuy ? "#666" : "#444",
+                        color: "white",
+                        border: "none",
+                        borderRadius: 4,
+                        cursor: canBuy ? "pointer" : "not-allowed",
                       }}
                     >
                       {isSoldOut ? "Sold Out" : "Buy"}
