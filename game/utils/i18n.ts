@@ -8,17 +8,20 @@ import shop_en from "@/game/lang/en/shop_ui"
 import menu_en from "@/game/lang/en/game_menu"
 import death_en from "@/game/lang/en/death_screen"
 import items_en from "@/game/lang/en/items"
+import dialogs_en from "@/game/lang/en/dialogs"
 
 import main_fr from "@/game/lang/fr/main_menu"
 import shop_fr from "@/game/lang/fr/shop_ui"
 import menu_fr from "@/game/lang/fr/game_menu"
 import death_fr from "@/game/lang/fr/death_screen"
 import items_fr from "@/game/lang/fr/items"
+import dialogs_fr from "@/game/lang/fr/dialogs"
 
 const translations: Record<Lang, Record<string, string>> = {
   en: {
     ...main_en,
     ...shop_en,
+    ...dialogs_en,
     ...items_en,
     ...menu_en,
     ...death_en,
@@ -26,6 +29,7 @@ const translations: Record<Lang, Record<string, string>> = {
   fr: {
     ...main_fr,
     ...shop_fr,
+    ...dialogs_fr,
     ...items_fr,
     ...menu_fr,
     ...death_fr,

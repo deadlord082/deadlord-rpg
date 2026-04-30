@@ -41,8 +41,9 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
     for (let i = 0; i < qty; i++) {
       InventorySystem.addItem(player, itemId)
     }
-  
-    ToastSystem.addItemToast(state, itemId)
+
+    // show toast with quantity
+    ToastSystem.addItemToast(state, itemId, qty)
   
     setModalOpen(false)
     setQuantity(1)
@@ -317,7 +318,6 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
           onClose()
         }}>
         {t("LEAVE")}
-        Leave
       </button>
     </div>
   )

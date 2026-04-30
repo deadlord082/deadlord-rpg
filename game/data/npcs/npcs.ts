@@ -32,7 +32,7 @@ export const NPCS = {
       events: [
         {
           type: "choice",
-          text: "Do you want to rest on the bed ?",
+          textKey: "DIALOG.BED.REST_PROMPT",
           choices: [
             {
               label: "Yes",
@@ -105,17 +105,17 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "Do you want to help me ?" },
+        { type: "dialog", textKey: "DIALOG.JOHN.HELP_PROMPT" },
         {
           type: "choice",
-          text: "help john ?",
+          textKey: "DIALOG.JOHN.HELP_SHORT",
           choices: [
             {
               label: "Yes",
               event: { 
                 type: "sequence",
                 events: [
-                  { type: "dialog", text: "Thanks ! Here, take this potion as a reward." },
+                  { type: "dialog", textKey: "DIALOG.JOHN.THANKS" },
                   { type: "reward", items: ["potion"] },
                   { type: "removeEntity", entityId: "john"}
                 ]
@@ -126,7 +126,7 @@ export const NPCS = {
               event: { 
                 type: "sequence",
                 events: [
-                  { type: "dialog", text: "Oh… okay."},
+                  { type: "dialog", textKey: "DIALOG.JOHN.OH_OK"},
                   { type: "removeEntity", entityId: "john"}
                 ]
               }
@@ -145,9 +145,9 @@ export const NPCS = {
       type: "requireItem",
       itemId: "potion",
       consume: true,
-      prompt: "Give John a potion ?",
-      success: { type: "dialog", text: "Thanks for the potion!" },
-      fail: { type: "dialog", text: "You don't have a potion." }
+      promptKey: "DIALOG.JOHN.GIVE_PROMPT",
+      success: { type: "dialog", textKey: "DIALOG.JOHN.GIVE_SUCCESS" },
+      fail: { type: "dialog", textKey: "DIALOG.JOHN.GIVE_FAIL" }
     }
   ),
   john3: createNPC(
@@ -177,7 +177,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "Take a look at my wares!" },
+          { type: "dialog", textKey: "DIALOG.MERCHANT.WARES" },
         {
           type: "merchant",
           inventory: [
@@ -188,7 +188,7 @@ export const NPCS = {
             { itemId: "gold_ring", price: 100, stock: 1 },
           ]
         },
-        { type: "dialog", text: "Come again!" }
+        { type: "dialog", textKey: "DIALOG.MERCHANT.COME_AGAIN" }
       ]
     },
     Direction.Left
@@ -207,7 +207,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "Take a look at my wares!" },
+        { type: "dialog", textKey: "DIALOG.MERCHANT.WARES" },
         {
           type: "merchant",
           inventory: [
@@ -225,7 +225,7 @@ export const NPCS = {
             { itemId: "gold_ring", price: 100, stock: 1 },
           ]
         },
-        { type: "dialog", text: "Come again!" }
+        { type: "dialog", textKey: "DIALOG.MERCHANT.COME_AGAIN" }
       ]
     },
     Direction.Left
@@ -244,7 +244,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "Take a look at my wares!" },
+        { type: "dialog", textKey: "DIALOG.MERCHANT.WARES" },
         {
           type: "merchant",
           inventory: [
@@ -268,7 +268,7 @@ export const NPCS = {
             { itemId: "ornate_ring", price: 150, stock: 1 },
           ]
         },
-        { type: "dialog", text: "Come again!" }
+        { type: "dialog", textKey: "DIALOG.MERCHANT.COME_AGAIN" }
       ]
     },
     Direction.Left
@@ -282,7 +282,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "Go inside?" },
+        { type: "dialog", textKey: "DIALOG.PERO.GO_INSIDE" },
         { type: "warp", targetMap: "heroHouse", x: 2, y: 3 }
       ]
     },
@@ -307,7 +307,7 @@ export const NPCS = {
       type: "sequence",
       events: [
         { type: "fight", enemyId: "slime" },
-        { type: "dialog", text: "You defeated the slime!" },
+        { type: "dialog", textKey: "DIALOG.SLIME.DEFEATED" },
         { type: "removeEntity", entityId: "slime"}
       ]
     },
@@ -328,7 +328,7 @@ export const NPCS = {
       type: "sequence",
       events: [
         { type: "fight", enemyId: "goblin_leader" },
-        { type: "dialog", text: "You defeated the goblin Leader !" },
+        { type: "dialog", textKey: "DIALOG.GOBLIN.DEFEATED" },
         { type: "removeEntity", entityId: "goblin_leader"}
       ]
     },
@@ -344,7 +344,7 @@ export const NPCS = {
       type: "sequence",
       events: [
         { type: "fight", enemyIds: ["goblin_leader", "slime"] },
-        { type: "dialog", text: "You defeated all the monsters!" },
+        { type: "dialog", textKey: "DIALOG.DOUBLE_MONSTER.DEFEATED" },
         { type: "removeEntity", entityId: "double_monster"}
       ]
     },
@@ -364,11 +364,11 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", text: "A sword is stuck in the ground before you." },
-        { type: "dialog", text: "Ropes with ancient talismans seems to seal it." },
+        { type: "dialog", textKey: "DIALOG.DEATH_SWORD.LINE1" },
+        { type: "dialog", textKey: "DIALOG.DEATH_SWORD.LINE2" },
         {
           type: "choice",
-          text: "cut the ropes ?",
+          textKey: "DIALOG.DEATH_SWORD.CUT_PROMPT",
           choices: [
             {
               label: "Yes",

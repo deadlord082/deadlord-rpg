@@ -116,15 +116,15 @@ export function SaveTab({ state }: { state: GameState }) {
     }
   }
 
-  // keyboard navigation
+  // keyboard navigation (Up/Down for slot + action navigation)
   useEffect(() => {
     function onKey(e: KeyboardEvent) {
       // when a confirm modal or error is open, do not change slots/options here
       if (pendingAction || error) return
 
       if (mode === "slots") {
-        if (isActionKey(e, "left")) setSelected(s => Math.max(0, s - 1))
-        if (isActionKey(e, "right")) setSelected(s => Math.min(2, s + 1))
+        if (isActionKey(e, "up")) setSelected(s => Math.max(0, s - 1))
+        if (isActionKey(e, "down")) setSelected(s => Math.min(2, s + 1))
         if (isActionKey(e, "confirm")) {
           // enter options selection for the focused slot
           setMode("options")
@@ -132,8 +132,8 @@ export function SaveTab({ state }: { state: GameState }) {
           return
         }
       } else if (mode === "options") {
-        if (isActionKey(e, "left")) setSelectedAction(a => (a - 1 + ACTIONS.length) % ACTIONS.length)
-        if (isActionKey(e, "right")) setSelectedAction(a => (a + 1) % ACTIONS.length)
+        if (isActionKey(e, "up")) setSelectedAction(a => Math.max(0, a - 1))
+        if (isActionKey(e, "down")) setSelectedAction(a => Math.min(ACTIONS.length - 1, a + 1))
         if (isActionKey(e, "confirm")) {
           const act = ACTIONS[selectedAction]
           if (act === "save") requestSave(selected)
@@ -159,44 +159,46 @@ export function SaveTab({ state }: { state: GameState }) {
   return (
     <div>
       <h3>{t("SAVE_LOAD_TITLE")}</h3>
-      <div style={{ display: "flex", gap: 12 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 12, width: "100%" }}>
         {slots.map((slot, i) => (
-          <div key={i} style={{ padding: 8, border: i === selected ? "2px solid #fff" : "1px solid #666", borderRadius: 6, minWidth: 220 }}>
-            <div style={{ fontWeight: 600 }}>{t("SLOT")} {i + 1}</div>
-            <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : t("EMPTY")}</div>
-            {mode === "options" && i === selected ? (
-              <div style={{ marginTop: 8, display: "flex", gap: 8, justifyContent: "center" }}>
-                {ACTIONS.map((act, idx) => {
+          <div key={i} style={{ padding: 12, border: i === selected ? "2px solid #fff" : "1px solid #666", borderRadius: 8, width: "100%" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 16 }}>{t("SLOT")} {i + 1}</div>
+                <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : t("EMPTY")}</div>
+              </div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.data ? null : <span>{t("EMPTY")}</span>}</div>
+            </div>
+
+            <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 8 }}>
+              {mode === "options" && i === selected ? (
+                ACTIONS.map((act, idx) => {
                   const disabled = (act === "load" || act === "delete" || act === "export") && !slot.data
                   const label = act === "save" ? t("SAVE") : act === "load" ? t("LOAD") : act === "export" ? t("EXPORT") : act === "import" ? t("IMPORT") : t("DELETE")
                   return (
-                    <div key={act} style={{ padding: 6, border: idx === selectedAction ? "2px solid #fff" : "1px solid #666", borderRadius: 6 }}>
-                      <button
-                        onClick={() => {
-                          setSelectedAction(idx)
-                          if (act === "save") requestSave(i)
-                          if (act === "load") requestLoad(i)
-                          if (act === "delete") requestDelete(i)
-                          if (act === "export") requestExport(i)
-                          if (act === "import") requestImport(i)
-                        }}
-                        disabled={disabled}
-                      >
-                        {label}
-                      </button>
-                    </div>
+                    <button
+                      key={act}
+                      onClick={() => {
+                        setSelectedAction(idx)
+                        if (act === "save") requestSave(i)
+                        if (act === "load") requestLoad(i)
+                        if (act === "delete") requestDelete(i)
+                        if (act === "export") requestExport(i)
+                        if (act === "import") requestImport(i)
+                      }}
+                      disabled={disabled}
+                      style={{ padding: "10px 14px", borderRadius: 8, border: idx === selectedAction ? "2px solid #fff" : "1px solid #666", background: idx === selectedAction ? "#333" : "#222", color: "white", textAlign: "left" }}
+                    >
+                      {label}
+                    </button>
                   )
-                })}
-              </div>
-            ) : (
-              <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <button onClick={() => requestSave(i)}>{t("SAVE")}</button>
-                <button onClick={() => requestLoad(i)} disabled={!slot.data}>{t("LOAD")}</button>
-                <button onClick={() => requestDelete(i)} disabled={!slot.data}>{t("DELETE")}</button>
-                <button onClick={() => requestExport(i)} disabled={!slot.data}>{t("EXPORT")}</button>
-                <button onClick={() => requestImport(i)}>{t("IMPORT")}</button>
-              </div>
-            )}
+                })
+              ) : (
+                <div style={{ display: "flex", gap: 8 }}>
+                  <button onClick={() => { setSelected(i); setMode("options"); setSelectedAction(0) }} style={{ padding: "8px 12px", borderRadius: 8 }}>{t("DETAILS")}</button>
+                </div>
+              )}
+            </div>
           </div>
         ))}
       </div>

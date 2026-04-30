@@ -11,6 +11,8 @@ import { SetEntityBlockingEvent } from "./SetEntityBlockingEvent"
 import { LevelSystem } from "../systems/LevelSystem"
 import { createEnemyFromId } from "../entities/createEnemyFromId"
 import { ENEMIES } from "../data/enemies/enemies"
+import { NPCS } from "../data/npcs/npcs"
+import { t } from "@/game/utils/i18n"
 
 export function runEvent(event: GameEvent, state: GameState) {
   switch (event.type) {
@@ -23,10 +25,22 @@ export function runEvent(event: GameEvent, state: GameState) {
       if (typeof (event as any).dialogId === "string") {
         lines = loadDialog((event as any).dialogId)
       } else if (Array.isArray((event as any).lines)) {
-        lines = (event as any).lines
+        // translate each line.message if it's a translation key or plain string
+        lines = (event as any).lines.map((l: DialogLine) => ({
+          ...l,
+          message: typeof l.message === "string" ? t(l.message) : l.message,
+        }))
+      } else if (typeof (event as any).textKey === "string") {
+        // keep keys for UI to translate at render time
+        lines = [{ name: "", textKey: (event as any).textKey }]
       } else if (typeof (event as any).text === "string" || Array.isArray((event as any).text)) {
-        const t = (event as any).text
-        lines = [{ name: "", message: Array.isArray(t) ? t.join("\n") : t }]
+        const raw = (event as any).text
+        if (Array.isArray(raw)) {
+          const joined = raw.map(r => (typeof r === "string" ? t(r) : r)).join("\n")
+          lines = [{ name: "", message: joined }]
+        } else {
+          lines = [{ name: "", message: t(raw) }]
+        }
       }
 
       state.ui.dialog = { lines, index: 0 }
@@ -35,6 +49,33 @@ export function runEvent(event: GameEvent, state: GameState) {
 
     case "choice":
       state.running = false
+      // translate any default yes/no labels so UI shows localized text
+      try {
+        const ev: any = event
+          // translate the prompt/text for the choice itself; prefer `textKey` so UI t()s it
+          if (typeof ev.text === "string") {
+            if ((ev.text as string).startsWith("DIALOG.")) {
+              ev.textKey = ev.text
+            } else {
+              ev.text = t(ev.text)
+            }
+          } else if (Array.isArray(ev.text)) {
+            // join array into a single translated string
+            ev.text = ev.text.map((r: any) => (typeof r === "string" ? (r.startsWith("DIALOG.") ? t(r) : t(r)) : r)).join("\n")
+          }
+
+          if (Array.isArray(ev.choices)) {
+            for (const c of ev.choices) {
+              if (c && typeof c.label === "string") {
+                if (c.label === "Yes") c.labelKey = "YES"
+                else if (c.label === "No") c.labelKey = "NO"
+                else if ((c.label as string).startsWith("DIALOG.")) c.labelKey = c.label
+                else c.label = t(c.label)
+              }
+            }
+          }
+      } catch (e) {}
+
       state.ui.choice = event
       state._eventBus?.emit("uiUpdate")
       break
@@ -90,15 +131,22 @@ export function runEvent(event: GameEvent, state: GameState) {
     case "requireItem": {
       // present a choice to confirm giving the item
       const e = event as any
-      const text = e.prompt ?? `Give ${e.itemId}?`
-      const choiceEvent: any = {
-        type: "choice",
-        text,
-        choices: [
-          { label: "Yes", event: { type: "giveItem", itemId: e.itemId, consume: e.consume ?? true, success: e.success, fail: e.fail } },
-          { label: "No", event: { type: "dialog", text: "You keep your item." } },
-        ],
+      // allow using a translation key via `promptKey` or raw `prompt` starting with DIALOG.
+      const choiceEvent: any = { type: "choice", choices: [] }
+
+      if (typeof e.promptKey === "string") {
+        choiceEvent.textKey = e.promptKey
+      } else if (typeof e.prompt === "string" && e.prompt.startsWith("DIALOG.")) {
+        choiceEvent.textKey = e.prompt
+      } else {
+        choiceEvent.text = e.prompt ?? `Give ${e.itemId}?`
       }
+
+      // Use label keys so the UI can localize and react to language changes
+      choiceEvent.choices = [
+        { labelKey: "YES", event: { type: "giveItem", itemId: e.itemId, consume: e.consume ?? true, success: e.success, fail: e.fail } },
+        { labelKey: "NO", event: { type: "dialog", text: "You keep your item." } },
+      ]
 
       state.running = false
       state.ui.choice = choiceEvent
@@ -139,9 +187,12 @@ export function runEvent(event: GameEvent, state: GameState) {
       // record persistent removal (skip for enemies marked `respawn: true`)
       if (removedId) {
         // if this removed entity corresponds to an enemy that should respawn,
-        // do not record it in persistent removals.
-        const shouldRespawn = ENEMIES[removedId]?.respawn === true
-        if (!shouldRespawn) {
+        // do not record it in persistent removals. Also skip recording for
+        // NPCs (so NPCs will reappear when reloading the map), unless you
+        // explicitly add a `respawn` flag to the NPC data.
+        const isEnemyRespawn = ENEMIES[removedId]?.respawn === true
+        const isNPC = (NPCS as any)[removedId] !== undefined
+        if (!isEnemyRespawn && !isNPC) {
           const mapId = state.currentMap.id
           if (!state.removedEntityIdsByMap) state.removedEntityIdsByMap = {}
           const arr = state.removedEntityIdsByMap[mapId] ?? []
@@ -172,6 +223,15 @@ export function runEvent(event: GameEvent, state: GameState) {
         } else if (e.amount < 0) {
           state.toasts.push({ id: `${Date.now()}-${Math.random()}`, type: "danger", message: e.message ?? `Took ${-e.amount} damage.`, createdAt: Date.now(), duration: 3000 })
         }
+      }
+      // If HP reached zero, show the death UI (match combat defeat behavior)
+      if (player.hp <= 0) {
+        // clear combat/fight UI if present
+        state.combat = undefined
+        state.ui.fight = undefined
+        // stop the game loop and show death screen
+        state.running = false
+        state.ui.death = {}
       }
 
       state._eventBus?.emit("uiUpdate")

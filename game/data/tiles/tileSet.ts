@@ -289,6 +289,18 @@ export const Tiles: Record<string, Tile> = {
     walkable: false,
     image: "/assets/tiles/walls/tree.png",
   },
+  fence_h: {
+    id: "fence_h",
+    name: "fence",
+    walkable: false,
+    image: "/assets/tiles/walls/fence_horizontal.png",
+  },
+  fence_v: {
+    id: "fence_v",
+    name: "fence",
+    walkable: false,
+    image: "/assets/tiles/walls/fence_vertical.png",
+  },
 
 
   //
@@ -394,7 +406,7 @@ export const Tiles: Record<string, Tile> = {
     onEnter: {
       type: "warp",
       targetMap: "frontYardHeroHouse",
-      x: 1,
+      x: 2,
       y: 7,
     },
   },

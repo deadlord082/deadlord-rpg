@@ -21,8 +21,8 @@ export function InventoryTab({
   const totalSlots = columns * rows
 
   return (
-    <div style={{ display: "flex", gap: 12 }}>
-      <div style={{ display: "grid", gridTemplateColumns: `repeat(${columns}, 64px)`, gap: 8 }}>
+    <div style={{ display: "flex", gap: 12, flex: 1, width: "100%", height: "100%" }}>
+      <div style={{ display: "grid", gridTemplateColumns: `repeat(5, 1fr)`, gridTemplateRows: `repeat(4, 1fr)`, gap: 12, width: "100%", height: "100%" }}>
         {Array.from({ length: totalSlots }).map((_, i) => {
           const item = player.inventory[i]
           const isSelected = i === selectedIndex
@@ -32,17 +32,19 @@ export function InventoryTab({
             <div
               key={i}
               style={{
-                width: 64,
-                height: 64,
                 border: `2px solid ${isSelected ? "#fff" : rarityStyle?.border ?? "#444"}`,
                 background: rarityStyle?.bg ?? "#222",
-                boxShadow: item ? `0 0 6px ${rarityStyle?.border}` : "none",
+                boxShadow: item ? `0 0 8px ${rarityStyle?.border}` : "none",
                 display: "flex",
                 flexDirection: "column",
                 justifyContent: "center",
                 alignItems: "center",
-                fontSize: 12,
+                fontSize: 14,
                 cursor: "pointer",
+                width: "100%",
+                height: "100%",
+                padding: 10,
+                boxSizing: "border-box",
               }}
               onClick={() => {
                 setSelectedIndex(i)
@@ -51,8 +53,8 @@ export function InventoryTab({
             >
               {item && (
                 <>
-                  <img src={item.image} />
-                  <span>{t(`SHOP.ITEMS.${item.id}.NAME`) || item.name}</span>
+                  <img src={item.image} style={{ maxWidth: "60%", maxHeight: "60%" }} />
+                  <span style={{ marginTop: 6 }}>{t(`SHOP.ITEMS.${item.id}.NAME`) || item.name}</span>
                   <span>x{item.quantity}</span>
                 </>
               )}

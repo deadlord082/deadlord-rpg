@@ -6,4 +6,6 @@ export interface DialogEvent {
   dialogId?: string
   lines?: DialogLine[]
   text?: string | string[]
+  // optional translation key (preferred) so UI can call `t()` at render time
+  textKey?: string
 }

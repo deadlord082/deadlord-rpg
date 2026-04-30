@@ -41,6 +41,7 @@ export const ENEMIES: Record<string, Enemy> = {
 
     goldReward: 32,
     xpReward: 45,
+    respawn: true,
   },
   death_sword: {
     id: "death_sword",
@@ -61,6 +62,7 @@ export const ENEMIES: Record<string, Enemy> = {
 
     goldReward: 0,
     xpReward: 0,
+    respawn: false,
   },
 }
 
