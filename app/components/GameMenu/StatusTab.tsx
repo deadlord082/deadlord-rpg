@@ -1,4 +1,5 @@
 import { Player } from "@/game/entities/Player"
+import { t } from "@/game/utils/i18n"
 
 const renderStat = (
   name: string,
@@ -24,9 +25,9 @@ const renderStat = (
       />
 
       <span>
-        <strong style={{ textTransform: "capitalize" }}>
-          {name}:
-        </strong>{" "}
+          <strong style={{ textTransform: "capitalize" }}>
+            {t(name.toUpperCase().replace(/ /g, "_"))}:
+          </strong>{" "}
         {baseValue}
         {isPercent ? "%" : ""}{" "}
         <span
@@ -60,9 +61,9 @@ export function StatusTab({ player }: { player: Player }) {
     >
       {/* Row 1 — Name / Gold */}
       <div>
-        <strong>Name:</strong> {player.id}
+        <strong>{t("NAME")}:</strong> {player.id}
         <br />
-        <small>Level {player.level}</small>
+        <small>{t("LEVEL")} {player.level}</small>
       </div>
   
       <div
@@ -88,7 +89,7 @@ export function StatusTab({ player }: { player: Player }) {
   
       {/* Row 2 — Health / XP */}
       <div>
-        <strong>Health</strong>
+        <strong>{t("HEALTH")}</strong>
         <div
           style={{
             marginTop: 4,
@@ -111,7 +112,7 @@ export function StatusTab({ player }: { player: Player }) {
       </div>
   
       <div>
-        <strong>XP</strong>
+        <strong>{t("XP")}</strong>
         <div
           style={{
             marginTop: 4,
@@ -146,7 +147,7 @@ export function StatusTab({ player }: { player: Player }) {
       {/* Right Column — 3 Stats */}
       <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
         {renderStat("charisma", player.stats.charisma, totalStats.charisma)}
-        {renderStat(
+          {renderStat(
           "crit chance",
           player.stats.critChance,
           totalStats.critChance,

@@ -5,6 +5,7 @@ import { GameState } from "@/game/core/GameState"
 import { applySavedState, serializeGameState } from "@/game/core/saveLoad"
 import { ConfirmModal } from "../ConfirmModal"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 const STORAGE_KEY = "deadlord_saves_v1"
 
@@ -157,17 +158,17 @@ export function SaveTab({ state }: { state: GameState }) {
 
   return (
     <div>
-      <h3>Save / Load</h3>
+      <h3>{t("SAVE_LOAD_TITLE")}</h3>
       <div style={{ display: "flex", gap: 12 }}>
         {slots.map((slot, i) => (
           <div key={i} style={{ padding: 8, border: i === selected ? "2px solid #fff" : "1px solid #666", borderRadius: 6, minWidth: 220 }}>
-            <div style={{ fontWeight: 600 }}>Slot {i + 1}</div>
-            <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : "Empty"}</div>
+            <div style={{ fontWeight: 600 }}>{t("SLOT")} {i + 1}</div>
+            <div style={{ fontSize: 12, opacity: 0.8 }}>{slot.timestamp ? new Date(slot.timestamp).toLocaleString() : t("EMPTY")}</div>
             {mode === "options" && i === selected ? (
               <div style={{ marginTop: 8, display: "flex", gap: 8, justifyContent: "center" }}>
                 {ACTIONS.map((act, idx) => {
                   const disabled = (act === "load" || act === "delete" || act === "export") && !slot.data
-                  const label = act === "save" ? "Save" : act === "load" ? "Load" : act === "export" ? "Export" : act === "import" ? "Import" : "Delete"
+                  const label = act === "save" ? t("SAVE") : act === "load" ? t("LOAD") : act === "export" ? t("EXPORT") : act === "import" ? t("IMPORT") : t("DELETE")
                   return (
                     <div key={act} style={{ padding: 6, border: idx === selectedAction ? "2px solid #fff" : "1px solid #666", borderRadius: 6 }}>
                       <button
@@ -189,22 +190,30 @@ export function SaveTab({ state }: { state: GameState }) {
               </div>
             ) : (
               <div style={{ marginTop: 8, display: "flex", gap: 8 }}>
-                <button onClick={() => requestSave(i)}>Save</button>
-                <button onClick={() => requestLoad(i)} disabled={!slot.data}>Load</button>
-                <button onClick={() => requestDelete(i)} disabled={!slot.data}>Delete</button>
-                <button onClick={() => requestExport(i)} disabled={!slot.data}>Export</button>
-                <button onClick={() => requestImport(i)}>Import</button>
+                <button onClick={() => requestSave(i)}>{t("SAVE")}</button>
+                <button onClick={() => requestLoad(i)} disabled={!slot.data}>{t("LOAD")}</button>
+                <button onClick={() => requestDelete(i)} disabled={!slot.data}>{t("DELETE")}</button>
+                <button onClick={() => requestExport(i)} disabled={!slot.data}>{t("EXPORT")}</button>
+                <button onClick={() => requestImport(i)}>{t("IMPORT")}</button>
               </div>
             )}
           </div>
         ))}
       </div>
       <input ref={fileInputRef} type="file" accept="application/json" style={{ display: "none" }} />
-      <div style={{ marginTop: 8, opacity: 0.8 }}>Saves are stored in your browser localStorage.</div>
+      <div style={{ marginTop: 8, opacity: 0.8 }}>{t("SAVES_STORED_NOTE")}</div>
 
       {pendingAction && (
         <ConfirmModal
-          message={pendingAction.type === "save" ? `Overwrite save in slot ${pendingAction.index + 1}?` : pendingAction.type === "load" ? `Load save from slot ${pendingAction.index + 1}? Unsaved progress will be lost.` : pendingAction.type === "delete" ? `Delete save in slot ${pendingAction.index + 1}?` : `Import file into slot ${pendingAction.index + 1}?`}
+          message={
+            pendingAction.type === "save"
+              ? t("OVERWRITE_SAVE_PROMPT").replace("{n}", String(pendingAction.index + 1))
+              : pendingAction.type === "load"
+              ? t("LOAD_SAVE_PROMPT").replace("{n}", String(pendingAction.index + 1))
+              : pendingAction.type === "delete"
+              ? t("DELETE_SAVE_PROMPT").replace("{n}", String(pendingAction.index + 1))
+              : t("IMPORT_SAVE_PROMPT").replace("{n}", String(pendingAction.index + 1))
+          }
           onCancel={() => setPendingAction(null)}
           onConfirm={() => {
             const a = pendingAction
@@ -223,7 +232,7 @@ export function SaveTab({ state }: { state: GameState }) {
       )}
 
       {error && (
-        <ConfirmModal message={error} onCancel={() => setError(null)} onConfirm={() => setError(null)} confirmLabel="OK" />
+        <ConfirmModal message={error} onCancel={() => setError(null)} onConfirm={() => setError(null)} confirmLabel={t("OK")} />
       )}
     </div>
   )

@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Jason",
+    "message": "Hey there! I haven't seen you around before.",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  },
+  {
+    "name": "Player",
+    "message": "Yeah, I just arrived in town. I'm still exploring.",
+    "image": "/assets/entities/players/playerIcon.png",
+    "side": "right"
+  },
+  {
+    "name": "Jason",
+    "message": "Nice! If you're looking for supplies, the market is just down the road.",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  },
+  {
+    "name": "Player",
+    "message": "Thanks for the tip. I'll check it out.",
+    "image": "/assets/entities/players/playerIcon.png",
+    "side": "right"
+  },
+  {
+    "name": "Jason",
+    "message": "No problem. Good luck on your adventure!",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  }
+]

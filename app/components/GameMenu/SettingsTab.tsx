@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { loadKeyMap, setKey, isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 export function SettingsTab() {
   const [active, setActive] = useState("keybindings")
@@ -60,14 +61,14 @@ export function SettingsTab() {
   return (
     <div style={{ padding: 8 }}>
       <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
-        <button onClick={() => setActive("keybindings")} style={{ padding: 8, background: active === "keybindings" ? "#666" : undefined }}>Keybindings</button>
-        <button onClick={() => setActive("audio")} style={{ padding: 8, background: active === "audio" ? "#666" : undefined }}>Audio</button>
-        <button onClick={() => setActive("graphics")} style={{ padding: 8, background: active === "graphics" ? "#666" : undefined }}>Graphics</button>
+        <button onClick={() => setActive("keybindings")} style={{ padding: 8, background: active === "keybindings" ? "#666" : undefined }}>{t("KEYBINDINGS")}</button>
+        <button onClick={() => setActive("audio")} style={{ padding: 8, background: active === "audio" ? "#666" : undefined }}>{t("AUDIO")}</button>
+        <button onClick={() => setActive("graphics")} style={{ padding: 8, background: active === "graphics" ? "#666" : undefined }}>{t("GRAPHICS")}</button>
       </div>
 
       {active === "keybindings" && (
         <div>
-          <h3>Keybindings</h3>
+          <h3>{t("KEYBINDINGS")}</h3>
           <table>
             <tbody>
               {(
@@ -77,7 +78,7 @@ export function SettingsTab() {
                   <td style={{ paddingRight: 12 }}>{k.toUpperCase()}</td>
                   <td style={{ paddingRight: 12 }}>{bindings[k]}</td>
                   <td>
-                    <button onClick={() => { setSelectedIndex(i); setRecording(k) }}>{recording === k ? "Press a key..." : "Record"}</button>
+                    <button onClick={() => { setSelectedIndex(i); setRecording(k) }}>{recording === k ? t("PRESS_A_KEY") : t("RECORD")}</button>
                   </td>
                 </tr>
               ))}
@@ -88,15 +89,15 @@ export function SettingsTab() {
 
       {active === "audio" && (
         <div>
-          <h3>Audio</h3>
-          <p>Audio settings are not implemented yet.</p>
+          <h3>{t("AUDIO")}</h3>
+          <p>{t("AUDIO_NOT_IMPLEMENTED")}</p>
         </div>
       )}
 
       {active === "graphics" && (
         <div>
-          <h3>Graphics</h3>
-          <p>Graphics settings are not implemented yet.</p>
+          <h3>{t("GRAPHICS")}</h3>
+          <p>{t("GRAPHICS_NOT_IMPLEMENTED")}</p>
         </div>
       )}
     </div>

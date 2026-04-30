@@ -1,0 +1,16 @@
+export default {
+  NEW_GAME: "NEW GAME",
+  LOAD_GAME: "LOAD GAME",
+  SETTINGS: "SETTINGS",
+  LANGUAGE: "Language",
+  CLOSE: "Close",
+  YES: "Yes",
+  NO: "No",
+  CANCEL: "Cancel",
+  LOAD: "Load",
+  SLOT: "Slot",
+  EMPTY: "Empty",
+  LOADING: "Loading…",
+  MAIN_MENU: "Main Menu",
+  MENU_TITLE: "Deadlord",
+}

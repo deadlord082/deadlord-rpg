@@ -1,5 +1,6 @@
 import { GameState } from "@/game/core/GameState"
 import { useMemo } from "react"
+import { t } from "@/game/utils/i18n"
 
 interface LevelUpUIProps {
   state: GameState
@@ -55,8 +56,8 @@ export function LevelUpUI({ state }: LevelUpUIProps) {
           gap: 30,
         }}
       >
-        <h1 style={{ fontSize: 48, color: "#ffd700" }}>LEVEL UP!</h1>
-        <h2>Now Level {newLevel}</h2>
+        <h1 style={{ fontSize: 48, color: "#ffd700" }}>{t("LEVEL_UP_TITLE")}</h1>
+        <h2>{t("NOW_LEVEL").replace("{n}", String(newLevel))}</h2>
 
         <div
           style={{
@@ -88,7 +89,7 @@ export function LevelUpUI({ state }: LevelUpUIProps) {
                 />
 
                 <span style={{ minWidth: 120, textTransform: "capitalize" }}>
-                  {stat}
+                  {t(stat.replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase())}
                 </span>
 
                 <span>
@@ -103,7 +104,7 @@ export function LevelUpUI({ state }: LevelUpUIProps) {
         </div>
 
         <small style={{ opacity: 0.6, marginTop: 40 }}>
-          Press Enter to continue
+          {t("PRESS_ENTER_TO_CONTINUE")}
         </small>
       </div>
     </div>

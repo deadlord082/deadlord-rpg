@@ -6,6 +6,7 @@ import { InventorySystem } from "@/game/systems/InventorySystem"
 import { ToastSystem } from "@/game/systems/ToastSystem"
 import { GameState } from "@/game/core/GameState"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 interface ShopUIProps {
   state: GameState
@@ -153,7 +154,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
     >
       {/* Header */}
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <h3 style={{ margin: 0, color: "white" }}>Shop</h3>
+        <h3 style={{ margin: 0, color: "white" }}>{t("SHOP")}</h3>
 
         {/* Player Gold */}
         <div
@@ -214,8 +215,8 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                 )}
 
                 <div>
-                  <div style={{ color: rarity.text, fontWeight: 600 }}>{item.name}</div>
-                  <small style={{ color: "#ccc" }}>{item.description}</small>
+                      <div style={{ color: rarity.text, fontWeight: 600 }}>{t(`SHOP.ITEMS.${item.id}.NAME`) || item.name}</div>
+                      <small style={{ color: "#ccc" }}>{t(`SHOP.ITEMS.${item.id}.DESCRIPTION`) || item.description}</small>
 
                   {/* Equipment stats */}
                   {"stats" in item && item.stats && (
@@ -237,7 +238,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                 <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                     {!isInfinite && (
                         <small>
-                        {isSoldOut ? "Sold Out" : `Stock: ${stock}`}
+                        {isSoldOut ? t("SOLD_OUT") : `${t("STOCK")}: ${stock}`}
                         </small>
                     )}
 
@@ -258,7 +259,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                         cursor: canBuy ? "pointer" : "not-allowed",
                       }}
                     >
-                      {isSoldOut ? "Sold Out" : "Buy"}
+                      {isSoldOut ? t("SOLD_OUT") : t("BUY")}
                     </button>
                 </div>
               </div>
@@ -279,8 +280,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                     gap: 10,
                   }}
                 >
-                  <div>Choose Quantity</div>
-
+                  <div>{t("CHOOSE_QUANTITY")}</div>
                   <div
                     style={{
                       fontSize: 24,
@@ -290,9 +290,9 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
                     {quantity}
                   </div>
 
-                  <small>↑ ↓ to change</small>
-                  <small>Enter to confirm</small>
-                  <small>Esc to cancel</small>
+                  <small>{t("UP_DOWN_TO_CHANGE")}</small>
+                  <small>{t("ENTER_TO_CONFIRM")}</small>
+                  <small>{t("ESC_TO_CANCEL")}</small>
                 </div>
               )}
             </div>
@@ -301,7 +301,7 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
       </div>
 
       {/* Close */}
-      <button
+        <button
           onClick={() => {
           state.ui.merchant = undefined
           state.running = true
@@ -315,8 +315,8 @@ export function ShopUI({ state, event, onClose }: ShopUIProps) {
 
           ;(state as any)._eventBus?.emit("uiUpdate")
           onClose()
-        }}
-      >
+        }}>
+        {t("LEAVE")}
         Leave
       </button>
     </div>

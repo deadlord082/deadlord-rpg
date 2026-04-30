@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { ConfirmModal } from "./ConfirmModal"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 const STORAGE_KEY = "deadlord_saves_v1"
 
@@ -45,18 +46,18 @@ export function TitleLoadModal({ onClose, onLoad }: { onClose: () => void; onLoa
   return (
     <div data-modal="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 1500 }}>
       <div style={{ background: "rgba(0,0,0,0.95)", color: "white", padding: 20, borderRadius: 8, minWidth: 520 }}>
-        <h3>Load Game</h3>
+        <h3>{t("LOAD_GAME")}</h3>
         <div style={{ display: "flex", gap: 12 }}>
           {slots.map((s, i) => (
             <div key={i} style={{ padding: 8, border: i === selected ? "2px solid #fff" : "1px solid #666", borderRadius: 6, minWidth: 160 }}>
-              <div style={{ fontWeight: 600 }}>Slot {i + 1}</div>
-              <div style={{ fontSize: 12, opacity: 0.8 }}>{s.timestamp ? new Date(s.timestamp).toLocaleString() : "Empty"}</div>
+              <div style={{ fontWeight: 600 }}>{t("SLOT")} {i + 1}</div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>{s.timestamp ? new Date(s.timestamp).toLocaleString() : t("EMPTY")}</div>
             </div>
           ))}
         </div>
         <div style={{ marginTop: 12, display: "flex", justifyContent: "flex-end", gap: 8 }}>
-          <button onClick={onClose}>Cancel</button>
-          <button onClick={() => { const slot = slots[selected]; if (slot?.data) onLoad(slot.data) }} disabled={!slots[selected]?.data}>Load</button>
+          <button onClick={onClose}>{t("CANCEL")}</button>
+          <button onClick={() => { const slot = slots[selected]; if (slot?.data) onLoad(slot.data) }} disabled={!slots[selected]?.data}>{t("LOAD")}</button>
         </div>
       </div>
       {/* loading from title no longer shows a confirmation dialog; loads immediately */}

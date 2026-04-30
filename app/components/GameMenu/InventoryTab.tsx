@@ -1,6 +1,7 @@
 import { Item } from "@/game/data/items/Item"
 import { Player } from "@/game/entities/Player"
 import { RARITY_STYLES } from "@/game/data/items/rarityColors"
+import { t } from "@/game/utils/i18n"
 
 interface InventoryTabProps {
   player: Player
@@ -51,7 +52,7 @@ export function InventoryTab({
               {item && (
                 <>
                   <img src={item.image} />
-                  <span>{item.name}</span>
+                  <span>{t(`SHOP.ITEMS.${item.id}.NAME`) || item.name}</span>
                   <span>x{item.quantity}</span>
                 </>
               )}

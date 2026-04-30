@@ -1,3 +1,5 @@
+import { t } from "@/game/utils/i18n"
+
 interface MenuTabsProps {
     menuOptions: ("status" | "inventory" | "equipment" | "save" | "settings" | "quit" | "close")[]
     menuIndex: number
@@ -11,6 +13,19 @@ interface MenuTabsProps {
     setMenuIndex,
     onSelect,
   }: MenuTabsProps) {
+    const labelFor = (tab: string) => {
+      switch (tab) {
+        case "status": return t("STATUS")
+        case "inventory": return t("INVENTORY")
+        case "equipment": return t("EQUIPMENT")
+        case "save": return t("SAVE")
+        case "settings": return t("SETTINGS")
+        case "quit": return t("QUIT")
+        case "close": return t("CLOSE")
+        default: return tab.toUpperCase()
+      }
+    }
+  
     return (
       <div style={{ display: "flex", gap: 12 }}>
         {menuOptions.map((tab, i) => (
@@ -28,8 +43,8 @@ interface MenuTabsProps {
               setMenuIndex(i)
               onSelect(tab)
             }}
-          >
-            {tab.toUpperCase()}
+            >
+            {labelFor(tab)}
           </button>
         ))}
       </div>

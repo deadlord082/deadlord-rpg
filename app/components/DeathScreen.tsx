@@ -2,9 +2,10 @@
 
 import { useEffect, useState } from "react"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 export function DeathScreen() {
-  const options = ["Main Menu", "Load Game"]
+  const options = [t("MAIN_MENU"), t("LOAD_GAME")]
   const [selected, setSelected] = useState(0)
 
   useEffect(() => {
@@ -32,7 +33,7 @@ export function DeathScreen() {
     <div data-modal="true" style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 4000 }}>
       <div style={{ width: 640, background: "rgba(0,0,0,0.95)", color: "white", padding: 20, borderRadius: 8, textAlign: "center" }}>
         <img src="/assets/ui/death_bg.png" alt="You died" style={{ maxWidth: "100%", marginBottom: 12 }} />
-        <h2>You were defeated</h2>
+        <h2>{t("DEFEATED_MESSAGE")}</h2>
         <div style={{ display: "flex", gap: 12, justifyContent: "center", marginTop: 12 }}>
           {options.map((o, i) => (
             <button key={o} onClick={() => {

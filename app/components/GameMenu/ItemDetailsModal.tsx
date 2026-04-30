@@ -5,6 +5,7 @@ import { Items } from "@/game/data/items/items"
 import { useEffect, useState } from "react"
 import { ConfirmModal } from "../ConfirmModal"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 export function ItemDetailsModal({
   player,
@@ -81,21 +82,21 @@ export function ItemDetailsModal({
 
   function handleUse() {
     if (!base?.effects || base.effects.length === 0) {
-      setModalMsg("This item cannot be used.")
+      setModalMsg(t("ITEM_CANNOT_BE_USED"))
       return
     }
 
     // If item targets enemies, disallow using from inventory outside combat
     const needsEnemy = base.effects.some(e => e.target === "enemy" || e.target === "allEnemies")
     if (needsEnemy) {
-      setModalMsg("This item must be used in combat (targets enemies).")
+      setModalMsg(t("ITEM_MUST_BE_USED_IN_COMBAT"))
       return
     }
 
     const res = InventorySystem.useItem(player, item.id)
     if (res) {
       // simple feedback
-      setModalMsg(`${item.name} used.`)
+      setModalMsg(t("ITEM_USED_MESSAGE").replace("{name}", item.name))
     }
     onClose()
   }
@@ -114,10 +115,10 @@ export function ItemDetailsModal({
         zIndex: 2000,
       }}
     >
-      <h3 style={{ color: rarity.text }}>{item.name}</h3>
-        <small style={{ opacity: 0.8 }}>{item.rarity.toUpperCase()}</small>
-        {item.image && <img src={item.image} style={{ width: 64, alignSelf: "center" }} />}
-        <p>{item.description}</p>
+      <h3 style={{ color: rarity.text }}>{t(`SHOP.ITEMS.${item.id}.NAME`) || item.name}</h3>
+      <small style={{ opacity: 0.8 }}>{item.rarity.toUpperCase()}</small>
+      {item.image && <img src={item.image} style={{ width: 64, alignSelf: "center" }} />}
+      <p>{t(`SHOP.ITEMS.${item.id}.DESCRIPTION`) || item.description}</p>
         <p><strong>Quantity:</strong> {item.quantity}</p>
 
         <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", alignItems: "center" }}>
@@ -130,33 +131,33 @@ export function ItemDetailsModal({
                   if (item.quantity > 1) setDiscardMode(true)
                   else { InventorySystem.removeItem(player, item.id, 1); onClose() }
                 }
-              }}>{opt === "use" ? "Use" : "Discard"}</button>
+              }}>{opt === "use" ? t("USE") : t("DISCARD")}</button>
             </div>
           ))}
         </div>
 
-        <small style={{ opacity: 0.6 }}>Left/Right to change, Enter to confirm, ESC to return</small>
+        <small style={{ opacity: 0.6 }}>{t("INSTRUCTIONS_NAV_CONFIRM")}</small>
     </div>
 
     {discardMode && (
       <div style={{ position: "fixed", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", zIndex: 3000 }}>
         <div style={{ width: 320, background: "#111", border: "2px solid white", padding: 16, borderRadius: 8 }}>
-          <h4>Discard {item.name}</h4>
+          <h4>{t("DISCARD_PROMPT_TITLE").replace("{name}", item.name)}</h4>
           <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 8 }}>
             <button onClick={() => setDiscardCount(c => Math.max(1, c - 1))}>-</button>
             <div style={{ minWidth: 40, textAlign: "center" }}>{discardCount}</div>
             <button onClick={() => setDiscardCount(c => Math.min(item.quantity, c + 1))}>+</button>
           </div>
           <div style={{ display: "flex", gap: 8, justifyContent: "flex-end", marginTop: 12 }}>
-            <button onClick={() => { setDiscardMode(false) }}>Cancel</button>
-            <button onClick={() => { InventorySystem.removeItem(player, item.id, discardCount); setDiscardMode(false); onClose() }}>Confirm</button>
+            <button onClick={() => { setDiscardMode(false) }}>{t("CANCEL")}</button>
+            <button onClick={() => { InventorySystem.removeItem(player, item.id, discardCount); setDiscardMode(false); onClose() }}>{t("OK")}</button>
           </div>
-          <small style={{ opacity: 0.6 }}>Up/Down or +/- to change, Enter to confirm, ESC to cancel</small>
+          <small style={{ opacity: 0.6 }}>{t("DISCARD_CONTROLS")}</small>
         </div>
       </div>
     )}
     {modalMsg && (
-      <ConfirmModal message={modalMsg} onCancel={() => setModalMsg(null)} onConfirm={() => setModalMsg(null)} confirmLabel="OK" />
+      <ConfirmModal message={modalMsg} onCancel={() => setModalMsg(null)} onConfirm={() => setModalMsg(null)} confirmLabel={t("OK")} />
     )}
     </>
   )

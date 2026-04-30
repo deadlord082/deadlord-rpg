@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Jason",
+    "message": "Salut ! Je ne t'avais jamais vu auparavant.",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  },
+  {
+    "name": "Joueur",
+    "message": "Oui, je viens d'arriver en ville. J'explore encore.",
+    "image": "/assets/entities/players/playerIcon.png",
+    "side": "right"
+  },
+  {
+    "name": "Jason",
+    "message": "Super ! Si tu cherches des fournitures, le marché est juste en bas de la route.",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  },
+  {
+    "name": "Joueur",
+    "message": "Merci du tuyau. Je vais jeter un œil.",
+    "image": "/assets/entities/players/playerIcon.png",
+    "side": "right"
+  },
+  {
+    "name": "Jason",
+    "message": "Pas de problème. Bonne chance pour ton aventure !",
+    "image": "/assets/entities/npcs/jason.png",
+    "side": "left"
+  }
+]

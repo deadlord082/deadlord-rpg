@@ -1,0 +1,14 @@
+[
+    {
+      "name": "Bob",
+      "message": "Salut ! Bienvenue chez moi.",
+      "image": "/assets/entities/npcs/npc.png",
+      "side": "left"
+    },
+    {
+      "name": "Héros",
+      "message": "Salut Bob ! Merci de m'avoir laissé entrer.",
+      "image": "/assets/entities/players/playerIcon.png",
+      "side": "right"
+    }
+  ]

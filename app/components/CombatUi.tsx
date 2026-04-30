@@ -10,6 +10,7 @@ import { InventorySystem } from "@/game/systems/InventorySystem"
 import { Items } from "@/game/data/items/items"
 import { CombatSystem } from "@/game/systems/CombatSystem"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 interface CombatUIProps {
   state: GameState
@@ -120,8 +121,8 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
             const res = InventorySystem.useItem(player, item.id, { combat: combat as any, targetIndex: itemTargetIndex })
             if (Array.isArray(res)) {
               res.forEach(r => {
-                if (r.type === "damage") combat.log.push(`You used ${item.name} and dealt ${r.amount} damage.`)
-                    if (r.type === "debuff") combat.log.push(`You used ${item.name} on ${(enemies[r.targetIndex] as any)?.name}.`)
+                if (r.type === "damage") combat.log.push(t("COMBAT_USED_DAMAGE").replace("{name}", item.name).replace("{amount}", String(r.amount)))
+                    if (r.type === "debuff") combat.log.push(t("COMBAT_USED_ON").replace("{name}", item.name).replace("{target}", ((enemies[r.targetIndex] as any)?.name) || ""))
               })
             }
             // after applying damage/debuffs, check victory
@@ -139,9 +140,9 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
           const res = InventorySystem.useItem(player, item.id, { combat: combat as any })
           if (Array.isArray(res)) {
             res.forEach(r => {
-              if (r.type === "heal") combat.log.push(`You used ${item.name} and recovered ${r.amount} HP.`)
-              if (r.type === "buff") combat.log.push(`You used ${item.name}.`)
-              if (r.type === "damage") combat.log.push(`You used ${item.name} and dealt ${r.amount} damage.`)
+              if (r.type === "heal") combat.log.push(t("COMBAT_USED_HEAL").replace("{name}", item.name).replace("{amount}", String(r.amount)))
+              if (r.type === "buff") combat.log.push(t("COMBAT_USED_BUFF").replace("{name}", item.name))
+              if (r.type === "damage") combat.log.push(t("COMBAT_USED_DAMAGE").replace("{name}", item.name).replace("{amount}", String(r.amount)))
             })
           }
           // check victory for AoE or other damage
@@ -265,7 +266,7 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
       {/* Action selection */}
           {combat.awaitingPlayerInput && !itemOpen && (
             <div style={{ display: "flex", gap: 16 }}>
-              {["ATTACK", "GUARD", "ITEM", "FLEE"].map((a, i) => (
+              {[t("ATTACK").toUpperCase(), t("GUARD").toUpperCase(), t("ITEM").toUpperCase(), t("FLEE").toUpperCase()].map((a, i) => (
                 <div
                   key={a}
                   style={{
@@ -285,15 +286,15 @@ export function CombatUI({ state, onAction }: CombatUIProps) {
       {/* Item picker */}
       {itemOpen && (
         <div style={{ marginTop: 8, padding: 8, backgroundColor: "#111", border: "1px solid white", borderRadius: 4 }}>
-          <strong>Item:</strong>
+          <strong>{t("ITEM_LABEL")}</strong>
           <div style={{ marginTop: 8 }}>
-            {player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0).length === 0 && <div>No consumables.</div>}
+            {player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0).length === 0 && <div>{t("NO_CONSUMABLES")}</div>}
             {player.inventory.filter(i => Items[i.id]?.effects && i.quantity > 0).map((it, idx) => (
               <div key={it.id} style={{ padding: 4, backgroundColor: idx === selectedItemIndex ? "#333" : "transparent" }}>
-                {it.name} x{it.quantity}
+                {t(`SHOP.ITEMS.${it.id}.NAME`) || it.name} x{it.quantity}
               </div>
             ))}
-            <div style={{ marginTop: 6 }}>Enter to use, Escape to cancel, Up/Down to navigate{itemTargeting ? ", Left/Right to pick target" : ""}</div>
+            <div style={{ marginTop: 6 }}>{t("ITEM_USAGE_INSTRUCTIONS")}{itemTargeting ? `, ${t("INSTRUCTIONS_NAV_CONFIRM")}` : ""}</div>
           </div>
         </div>
       )}

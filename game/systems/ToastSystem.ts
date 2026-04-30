@@ -1,5 +1,6 @@
 import { GameState } from "../core/GameState"
 import { Items } from "../data/items/items"
+import { t } from "@/game/utils/i18n"
 
 export const ToastSystem = {
     addItemToast(state: GameState, itemId: string, quantity = 1) {
@@ -9,7 +10,7 @@ export const ToastSystem = {
         state.toasts.push({
             id: `${Date.now()}-${Math.random()}`,
             type: "item",
-            message: `Obtained ${item.name}${quantity > 1 ? ` x${quantity}` : ""}`,
+            message: t("TOAST_OBTAINED_ITEM").replace("{name}", item.name).replace("{qty}", quantity > 1 ? ` x${quantity}` : ""),
             rarity: item.rarity,
             icon: item.image,
             createdAt: Date.now(),
@@ -21,7 +22,7 @@ export const ToastSystem = {
         state.toasts.push({
           id: `${Date.now()}-${Math.random()}`,
           type: "gold",
-          message: `Obtained ${amount} Gold`,
+          message: t("TOAST_OBTAINED_GOLD").replace("{amount}", String(amount)),
           icon: "/assets/ui/gold.png",
           createdAt: Date.now(),
           duration: 3000,
@@ -32,7 +33,7 @@ export const ToastSystem = {
         state.toasts.push({
           id: `${Date.now()}-${Math.random()}`,
           type: "xp",
-          message: `Obtained ${amount} XP`,
+          message: t("TOAST_OBTAINED_XP").replace("{amount}", String(amount)),
           icon: "/assets/ui/xp.png",
           createdAt: Date.now(),
           duration: 3000,
@@ -43,7 +44,7 @@ export const ToastSystem = {
                 state.toasts.push({
                     id: `${Date.now()}-${Math.random()}`,
                     type: "levelup",
-                    message: `Level Up! You are now level ${level}!`,
+                    message: t("TOAST_LEVEL_UP").replace("{n}", String(level)),
                     createdAt: Date.now(),
                     duration: 3000,
                     icon: "/assets/ui/levelup.png",

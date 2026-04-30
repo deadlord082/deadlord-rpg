@@ -1,0 +1,15 @@
+export default {
+  NEW_GAME: "NOUVEAU JEU",
+  LOAD_GAME: "CHARGER",
+  SETTINGS: "PARAMÈTRES",
+  LANGUAGE: "Langue",
+  CLOSE: "Fermer",
+  YES: "Oui",
+  NO: "Non",
+  MENU_TITLE: "Deadlord",
+  CANCEL: "Annuler",
+  LOAD: "Charger",
+  SLOT: "Emplacement",
+  EMPTY: "Vide",
+  LOADING: "Chargement…",
+}

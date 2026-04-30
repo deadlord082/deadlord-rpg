@@ -2,13 +2,14 @@
 
 import { useEffect, useState } from "react"
 import { isActionKey } from "@/game/input/keybindings"
+import { t } from "@/game/utils/i18n"
 
 export function ConfirmModal({
   message,
   onConfirm,
   onCancel,
-  confirmLabel = "Yes",
-  cancelLabel = "No",
+  confirmLabel,
+  cancelLabel,
 }: {
   message: string
   onConfirm: () => void
@@ -43,8 +44,8 @@ export function ConfirmModal({
       <div style={{ background: "rgba(0,0,0,0.95)", color: "white", padding: 20, borderRadius: 8, minWidth: 360 }}>
         <div style={{ marginBottom: 12 }}>{message}</div>
         <div style={{ display: "flex", gap: 12, justifyContent: "flex-end" }}>
-          <button onClick={onConfirm} style={{ padding: "8px 14px", background: focused === 0 ? "#666" : "#333", color: "white" }}>{confirmLabel}</button>
-          <button onClick={onCancel} style={{ padding: "8px 14px", background: focused === 1 ? "#666" : "#333", color: "white" }}>{cancelLabel}</button>
+          <button onClick={onConfirm} style={{ padding: "8px 14px", background: focused === 0 ? "#666" : "#333", color: "white" }}>{confirmLabel ?? t("YES")}</button>
+          <button onClick={onCancel} style={{ padding: "8px 14px", background: focused === 1 ? "#666" : "#333", color: "white" }}>{cancelLabel ?? t("NO")}</button>
         </div>
       </div>
     </div>

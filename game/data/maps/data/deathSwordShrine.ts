@@ -5,7 +5,7 @@ import { NPCS } from "../../npcs/npcs"
 export const deathSwordShrine: GameMap = {
   id: "deathSwordShrine",
   width: 9,
-  height: 22,
+  height: 27,
   tiles: [
     ["wall_void","wall_void","wall_void","wall_forest_2","wall_forest_2","wall_forest_2","wall_forest_2","wall_forest_2","wall_void","wall_void","wall_void"],
     ["wall_void","wall_void","wall_forest_2","wall_forest_3","grass","grass","grass","wall_forest_4","wall_forest_2","wall_void","wall_void"],

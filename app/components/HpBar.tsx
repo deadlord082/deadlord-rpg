@@ -1,3 +1,5 @@
+import { t } from "@/game/utils/i18n"
+
 interface HpBarProps {
     hp: number
     maxHp: number
@@ -26,7 +28,7 @@ interface HpBarProps {
           />
         </div>
         <div style={{ fontSize: 12, marginTop: 4 }}>
-          HP {hp} / {maxHp}
+          {t("HP_LABEL")} {hp} / {maxHp}
         </div>
       </div>
     )

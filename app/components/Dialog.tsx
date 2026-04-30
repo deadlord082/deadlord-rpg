@@ -9,6 +9,8 @@ const PORTRAIT_HEIGHT = 220
 const NAME_FONT_SIZE = 20
 const TEXT_FONT_SIZE = 16
 
+import { t } from "@/game/utils/i18n"
+
 export function DialogUI({ dialog }: DialogUIProps) {
   if (!dialog) return null
 
@@ -65,7 +67,7 @@ export function DialogUI({ dialog }: DialogUIProps) {
             marginBottom: 6,
           }}
         >
-          {line.name}
+          {line.nameKey ? t(line.nameKey) : line.name}
         </div>
 
         {/* Message */}
@@ -76,7 +78,7 @@ export function DialogUI({ dialog }: DialogUIProps) {
             flex: 1,
           }}
         >
-          {line.message}
+          {line.textKey ? t(line.textKey) : line.message}
         </div>
 
         {/* Continue hint */}

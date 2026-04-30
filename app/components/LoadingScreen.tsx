@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react"
 import preloadAll from "@/game/utils/preloader"
+import { t } from "@/game/utils/i18n"
 
 export function LoadingScreen({ onDone }: { onDone?: () => void }) {
   const [progress, setProgress] = useState(0)
+  const [mounted, setMounted] = useState(false)
 
   useEffect(() => {
+    setMounted(true)
     let mounted = true
     preloadAll((loaded, total) => {
       if (!mounted) return
@@ -26,7 +29,7 @@ export function LoadingScreen({ onDone }: { onDone?: () => void }) {
   return (
     <div style={{ position: "relative", width: "100vw", height: "100vh", background: "black", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
       <div style={{ textAlign: "center" }}>
-        <h2 style={{ margin: 0 }}>Loading…</h2>
+        <h2 style={{ margin: 0 }}>{mounted ? t("LOADING") : "Loading…"}</h2>
         <div style={{ width: 360, height: 20, background: "#222", borderRadius: 6, marginTop: 12, overflow: "hidden" }}>
           <div style={{ width: `${progress}%`, height: "100%", background: "#6b7280" }} />
         </div>

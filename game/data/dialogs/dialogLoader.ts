@@ -1,15 +1,28 @@
 // game/data/dialogs/dialogLoader.ts
-import npcBob from "./data/npcBob.json"
-import npcJason from "./data/npcJason.json"
 import { DialogLine } from "./DialogLine"
+import { getLanguage } from "@/game/utils/i18n"
 
-const dialogs: Record<string, DialogLine[]> = {
-  npcBob: npcBob as unknown as DialogLine[],
-  npcJason: npcJason as unknown as DialogLine[],
+function loadJson(modulePath: string) {
+  try {
+    // dynamic import will be statically analyzable by bundlers when paths are relative
+    // but here we construct per-language folders
+    return require(modulePath)
+  } catch (e) {
+    return null
+  }
 }
 
 export function loadDialog(id: string): DialogLine[] {
-  const dialog = dialogs[id]
-  if (!dialog) throw new Error(`Dialog not found: ${id}`)
-  return structuredClone(dialog)
+  const lang = getLanguage()
+  // try language-specific folder first
+  const localizedPath = `./${lang}/${id}.json`
+  const fallbackPath = `./data/${id}.json`
+
+  const localized = loadJson(localizedPath)
+  if (localized) return structuredClone(localized as DialogLine[])
+
+  const fallback = loadJson(fallbackPath)
+  if (fallback) return structuredClone(fallback as DialogLine[])
+
+  throw new Error(`Dialog not found: ${id}`)
 }
