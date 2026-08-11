@@ -1,6 +1,6 @@
-import { GameMap } from "../mapTypes"
-import { createItemEntity } from "../../../entities/ItemEntity"
-import { NPCS } from "../../npcs/npcs"
+import { GameMap } from "../../mapTypes"
+import { createItemEntity } from "../../../../entities/ItemEntity"
+import { NPCS } from "../../../npcs/npcs"
 
 export const nierTownMap: GameMap = {
   id: "nierTown",
@@ -21,7 +21,7 @@ export const nierTownMap: GameMap = {
     
     ["wall_forest_1","wall_forest_3","grass","grass","grass","grass","grass","grass","grass","grass","house_wall","house_wall","house_wall","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","house_wall","house_wall","house_wall","house_wall","grass","grass","grass","tree","grass","grass","wall_forest_4","wall_forest_1"],
 
-    ["wall_forest_1","wall_forest_3","grass","grass","tree","grass","grass","grass","grass","grass","house_wall","house_wall","house_door","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","house_door","house_wall","house_wall","house_wall","grass","grass","grass","grass","grass","grass","wall_forest_4","wall_forest_1"],
+    ["wall_forest_1","wall_forest_3","grass","grass","tree","grass","grass","grass","grass","grass","house_wall","house_wall","nier_town_door_in_1","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","nier_town_door_in_2","house_wall","house_wall","house_wall","grass","grass","grass","grass","grass","grass","wall_forest_4","wall_forest_1"],
     
     ["wall_forest_3","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","tile_grass","tile_grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","wall_forest_4"],
 
@@ -49,7 +49,7 @@ export const nierTownMap: GameMap = {
     
     ["wall_forest_3","grass","grass","fence_v","grass","grass","grass","grass","grass","house_roof","house_roof","house_wall","house_wall","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","house_wall","house_wall","house_wall","house_wall","grass","grass","grass","grass","tile_grass","grass","grass","wall_forest_4"],
 
-    ["wall_forest_3","grass","grass","fence_v","grass","grass","grass","grass","grass","house_roof","house_roof","house_wall","house_door","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","house_wall","house_door","house_wall","house_wall","grass","grass","grass","grass","grass","tile_grass","grass","wall_forest_4"],
+    ["wall_forest_3","grass","grass","fence_v","grass","grass","grass","grass","grass","house_roof","house_roof","house_wall","nier_town_door_in_3","house_wall","grass","grass","tile_grass","tile_grass","grass","house_wall","house_wall","nier_town_door_in_4","house_wall","house_wall","grass","grass","grass","grass","grass","tile_grass","grass","wall_forest_4"],
     
     ["wall_forest_3","grass","grass","fence_v","fence_h","fence_h","fence_h","fence_h","fence_h","house_wall","house_wall","grass","grass","grass","grass","grass","tile_grass","tile_grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","grass","nier_town_out_right"],
 

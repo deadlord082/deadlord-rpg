@@ -164,6 +164,46 @@ export const NPCS = {
     }
   ),
 
+  farmer: createNPC(
+    "farmer",
+    "Farmer",
+    1, 1,
+    NPC_SPRITES,
+    {
+      type: "sequence",
+      events: [
+        { type: "dialog", textKey: "DIALOG.FARMER.HELP_PROMPT" },
+        {
+          type: "choice",
+          textKey: "DIALOG.FARMER.HELP_SHORT",
+          choices: [
+            {
+              label: "Yes",
+              event: { 
+                type: "sequence",
+                events: [
+                  { type: "dialog", textKey: "DIALOG.FARMER.THANKS" },
+                  { type: "reward", items: ["potion"] },
+                  { type: "removeEntity", entityId: "farmer"}
+                ]
+              }
+            },
+            {
+              label: "No",
+              event: { 
+                type: "sequence",
+                events: [
+                  { type: "dialog", textKey: "DIALOG.FARMER.OH_OK"},
+                  { type: "removeEntity", entityId: "farmer"}
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ),
+
   merchant: createNPC(
     "merchant",
     "Merchant",
@@ -197,7 +237,7 @@ export const NPCS = {
   blacksmith_t1: createNPC(
     "blacksmith_t1",
     "Blacksmith",
-    4, 2,
+    3, 2,
     {
       [Direction.Up]: "/assets/entities/npcs/blacksmith/rotations/north.png",
       [Direction.Down]: "/assets/entities/npcs/blacksmith/rotations/south.png",
@@ -207,7 +247,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", textKey: "DIALOG.MERCHANT.WARES" },
+        { type: "dialog", textKey: "DIALOG.BLACKSMITH.WARES" },
         {
           type: "merchant",
           inventory: [
@@ -225,7 +265,7 @@ export const NPCS = {
             { itemId: "gold_ring", price: 100, stock: 1 },
           ]
         },
-        { type: "dialog", textKey: "DIALOG.MERCHANT.COME_AGAIN" }
+        { type: "dialog", textKey: "DIALOG.BLACKSMITH.COME_AGAIN" }
       ]
     },
     Direction.Left
@@ -234,7 +274,7 @@ export const NPCS = {
   blacksmith_t2: createNPC(
     "blacksmith_t2",
     "Blacksmith",
-    4, 2,
+    3, 2,
     {
       [Direction.Up]: "/assets/entities/npcs/blacksmith/rotations/north.png",
       [Direction.Down]: "/assets/entities/npcs/blacksmith/rotations/south.png",
@@ -244,7 +284,7 @@ export const NPCS = {
     {
       type: "sequence",
       events: [
-        { type: "dialog", textKey: "DIALOG.MERCHANT.WARES" },
+        { type: "dialog", textKey: "DIALOG.BLACKSMITH.WARES" },
         {
           type: "merchant",
           inventory: [
@@ -268,7 +308,7 @@ export const NPCS = {
             { itemId: "ornate_ring", price: 150, stock: 1 },
           ]
         },
-        { type: "dialog", textKey: "DIALOG.MERCHANT.COME_AGAIN" }
+        { type: "dialog", textKey: "DIALOG.BLACKSMITH.COME_AGAIN" }
       ]
     },
     Direction.Left

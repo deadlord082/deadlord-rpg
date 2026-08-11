@@ -12,6 +12,9 @@ export default {
   "DIALOG.MERCHANT.WARES": "Take a look at my wares!",
   "DIALOG.MERCHANT.COME_AGAIN": "Come again!",
 
+  "DIALOG.BLACKSMITH.WARES": "Looking for some weapons or armor?",
+  "DIALOG.BLACKSMITH.COME_AGAIN": "Come again!",
+
   "DIALOG.DEATH_SWORD.LINE1": "A sword is stuck in the ground before you.",
   "DIALOG.DEATH_SWORD.LINE2": "Ropes with ancient talismans seem to seal it.",
   "DIALOG.DEATH_SWORD.CUT_PROMPT": "Cut the ropes?",

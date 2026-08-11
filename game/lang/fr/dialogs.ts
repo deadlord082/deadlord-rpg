@@ -10,7 +10,10 @@ export default {
   "DIALOG.JOHN.GIVE_FAIL": "Vous n'avez pas de potion.",
 
   "DIALOG.MERCHANT.WARES": "Regardez mes marchandises !",
-  "DIALOG.MERCHANT.COME_AGAIN": "Revenez !",
+  "DIALOG.MERCHANT.COME_AGAIN": "Revenez me voir !",
+
+  "DIALOG.BLACKSMITH.WARES": "Vous cherchez des armes ou de l'armure ?",
+  "DIALOG.BLACKSMITH.COME_AGAIN": "Revenez me voir!",
 
   "DIALOG.DEATH_SWORD.LINE1": "Une épée est plantée dans le sol devant vous.",
   "DIALOG.DEATH_SWORD.LINE2": "Des cordes avec des talismans anciens semblent la sceller.",
